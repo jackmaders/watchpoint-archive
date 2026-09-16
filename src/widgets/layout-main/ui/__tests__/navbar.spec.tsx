@@ -147,6 +147,19 @@ describe("Navbar", () => {
 		expect(screen.getByText("Home")).toBeDefined();
 	});
 
+	it("renders section for privacy route", () => {
+		// Arrange
+		vi.mocked(useLocation).mockReturnValue({
+			pathname: "/privacy",
+		} as never);
+
+		// Act
+		render(<Navbar />);
+
+		// Assert
+		expect(screen.getByText("Privacy Statement")).toBeDefined();
+	});
+
 	it("renders fallback title on unknown path", () => {
 		// Arrange
 		vi.mocked(useLocation).mockReturnValue({

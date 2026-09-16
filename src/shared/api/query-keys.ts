@@ -12,6 +12,7 @@ export const queryKeys = {
 	historyDetail: ["history-detail"],
 	home: ["home"],
 	posts: ["posts"],
+	privacy: ["privacy"],
 	scenarios: ["scenarios"],
 	sessionPlaythrough: ["session-playthrough"],
 	users: ["users"],

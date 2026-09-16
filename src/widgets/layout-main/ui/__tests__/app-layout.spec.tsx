@@ -20,6 +20,10 @@ describe("AppLayout", () => {
 		expect(screen.getByRole("banner")).toBeDefined();
 		expect(screen.getByTestId("test-content")).toBeDefined();
 		expect(screen.getByText("VOD Catalog")).toBeDefined();
+		expect(screen.getByRole("contentinfo")).toBeDefined();
+		expect(
+			screen.getAllByRole("link", { name: "Privacy Statement" }),
+		).toHaveLength(2);
 	});
 
 	it("toggles desktop sidebar collapsed state when sidebar desktop toggle button is clicked", () => {
