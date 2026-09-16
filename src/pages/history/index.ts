@@ -6,6 +6,7 @@
  */
 
 export {
+	historyBeforeLoad,
 	historyQueryOptions,
 	loadHistoryIndexPage,
 	loadPlayerHistory,

@@ -8,7 +8,13 @@
 
 export * from "./audit";
 export * from "./auth";
-export { authClient } from "./auth-client";
+export {
+	authClient,
+	getSessionSyncTarget,
+	invalidateSessionState,
+	registerSessionSync,
+	type SessionSyncTarget,
+} from "./auth-client";
 export * from "./math";
 export * from "./metrics";
 export * from "./sentry";

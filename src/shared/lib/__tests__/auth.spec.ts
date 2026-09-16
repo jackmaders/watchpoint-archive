@@ -19,6 +19,7 @@ import {
 	getAuthConfig,
 	getCurrentUser,
 	getRegistrationStatus,
+	getSessionUser,
 	handleAuthRequest,
 	isRegistrationOpen,
 } from "../auth";
@@ -489,5 +490,44 @@ describe("auth", () => {
 
 		// Assert
 		expect(issuer).toBe("local:credential");
+	});
+
+	it("getSessionUser resolves the active session user", async () => {
+		// Arrange
+		const auth = await getAuth();
+		const mockHeaders = new Headers({ cookie: "session=123" });
+		vi.mocked(getRequestHeaders).mockReturnValueOnce(mockHeaders);
+		vi.spyOn(auth.api, "getSession").mockResolvedValueOnce({
+			session: {
+				createdAt: new Date(),
+				expiresAt: new Date(),
+				id: "sess_123",
+				token: "tok_123",
+				updatedAt: new Date(),
+				userId: "usr_123",
+			},
+			user: {
+				createdAt: new Date(),
+				email: "player@example.com",
+				emailVerified: true,
+				id: "usr_123",
+				name: "Player 1",
+				role: "PLAYER",
+				updatedAt: new Date(),
+			},
+		} as never);
+
+		// Act
+		const result = await (
+			getSessionUser as unknown as () => Promise<unknown>
+		)();
+
+		// Assert
+		expect(result).toEqual({
+			email: "player@example.com",
+			id: "usr_123",
+			name: "Player 1",
+			role: "PLAYER",
+		});
 	});
 });

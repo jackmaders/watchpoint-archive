@@ -10,7 +10,7 @@
 import { Link } from "@tanstack/react-router";
 import type { FormEvent } from "react";
 import { useCallback, useId, useState } from "react";
-import { authClient } from "@/shared/lib/auth-client";
+import { authClient, invalidateSessionState } from "@/shared/lib/auth-client";
 import { useControllableState } from "@/shared/lib/use-controllable-state";
 import { Alert, AlertDescription } from "@/shared/ui/alert";
 import { Button } from "@/shared/ui/button";
@@ -185,6 +185,7 @@ export function resolveAuthResult(
 		onError();
 		return;
 	}
+	void invalidateSessionState();
 	onSuccess();
 }
 
@@ -207,8 +208,10 @@ export function AccountControls({
 		setOpen(true);
 	}, []);
 
-	const signOut = useCallback(() => authClient.signOut(), []);
-
+	const signOut = useCallback(async () => {
+		await authClient.signOut();
+		await invalidateSessionState();
+	}, []);
 	if (session.data?.user) {
 		const isAdmin = (session.data.user as { role?: string }).role === "ADMIN";
 		return (
