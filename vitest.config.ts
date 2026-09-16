@@ -67,7 +67,7 @@ export default defineConfig({
 				`Unexpected console output detected during test execution (${type}):\n${log}`,
 			);
 		},
-		reporters: process.env.CI || process.env.AGENT ? ["basic"] : ["default"],
+		reporters: process.env.CI || process.env.AGENT ? ["dot"] : ["default"],
 		setupFiles: ["./vitest.setup.ts"],
 		testTimeout: 500,
 	},
