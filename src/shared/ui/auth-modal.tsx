@@ -2,15 +2,16 @@
  * Renders interactive authentication dialogs and header account controls for player sign-in, registration, and session management.
  *
  * Implements `AuthModal`, `AccountControls`, and `resolveAuthResult` using Radix UI `Dialog`, `Tabs`, and `Tooltip` primitives,
- * styled with Tailwind CSS, wired to `authClient` for authentication actions, and supporting registration toggle states and initial mode selection.
+ * styled with Tailwind CSS, wired to `authClient` for authentication actions, and supporting registration toggle states and controllable mode state.
  */
 
 "use client";
 
 import { Link } from "@tanstack/react-router";
 import type { FormEvent } from "react";
-import { useCallback, useEffect, useId, useState } from "react";
+import { useCallback, useId, useState } from "react";
 import { authClient } from "@/shared/lib/auth-client";
+import { useControllableState } from "@/shared/lib/use-controllable-state";
 import { Alert, AlertDescription } from "@/shared/ui/alert";
 import { Button } from "@/shared/ui/button";
 import {
@@ -35,6 +36,8 @@ export function AuthModal({
 	defaultMode = "sign-in",
 	expired = false,
 	initialMode,
+	mode: controlledMode,
+	onModeChange,
 	onOpenChange,
 	onSuccess,
 	open,
@@ -43,26 +46,28 @@ export function AuthModal({
 	defaultMode?: AuthMode;
 	expired?: boolean;
 	initialMode?: AuthMode;
+	mode?: AuthMode;
+	onModeChange?: (mode: AuthMode) => void;
 	onOpenChange: (open: boolean) => void;
 	onSuccess?: () => void;
 	open: boolean;
 	registrationEnabled?: boolean;
 }) {
-	const initialSelection = initialMode ?? defaultMode;
-	const [mode, setMode] = useState<AuthMode>(initialSelection);
+	const [mode = "sign-in", setMode] = useControllableState<AuthMode>({
+		defaultProp: initialMode ?? defaultMode,
+		onChange: onModeChange,
+		prop: controlledMode,
+	});
 	const [error, setError] = useState<string | null>(null);
 	const [busy, setBusy] = useState(false);
 	const ids = useId();
 
-	useEffect(() => {
-		if (open) {
-			setMode(initialSelection);
-			setError(null);
-		}
-	}, [open, initialSelection]);
 	const changeMode = useCallback(
-		(value: string) => setMode(value as AuthMode),
-		[],
+		(value: string) => {
+			setMode(value as AuthMode);
+			setError(null);
+		},
+		[setMode],
 	);
 	const submit = useCallback(
 		async (event: FormEvent<HTMLFormElement>) => {
@@ -234,7 +239,8 @@ export function AccountControls({
 				Sign Up
 			</Button>
 			<AuthModal
-				defaultMode={authMode}
+				mode={authMode}
+				onModeChange={setAuthMode}
 				onOpenChange={setOpen}
 				open={open}
 				registrationEnabled={registrationEnabled}

@@ -3,7 +3,7 @@
  * authentication helpers, domain metric calculators, and operational telemetry.
  *
  * Centralizes consumption for higher Feature-Sliced Design layers, aggregating exports
- * from `audit`, `auth`, `auth-client`, `math`, `metrics`, `sentry`, and `utils`.
+ * from `audit`, `auth`, `auth-client`, `math`, `metrics`, `sentry`, `use-controllable-state`, and `utils`.
  */
 
 export * from "./audit";
@@ -12,4 +12,5 @@ export { authClient } from "./auth-client";
 export * from "./math";
 export * from "./metrics";
 export * from "./sentry";
+export * from "./use-controllable-state";
 export * from "./utils";
