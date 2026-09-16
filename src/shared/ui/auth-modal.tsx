@@ -1,7 +1,7 @@
 /**
  * Renders interactive authentication dialogs and header account controls for player sign-in, registration, and session management.
  *
- * Implements `AuthModal`, `AccountControls`, and `resolveAuthResult` using Radix UI `Dialog` and `Tabs` primitives,
+ * Implements `AuthModal`, `AccountControls`, and `resolveAuthResult` using Radix UI `Dialog`, `Tabs`, and `Tooltip` primitives,
  * styled with Tailwind CSS, wired to `authClient` for authentication actions, and supporting registration toggle states.
  */
 
@@ -16,7 +16,6 @@ import { Button } from "@/shared/ui/button";
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
 	DialogHeader,
 	DialogTitle,
 } from "@/shared/ui/dialog";
@@ -28,6 +27,7 @@ import {
 } from "@/shared/ui/field";
 import { Input } from "@/shared/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/ui/tooltip";
 
 type AuthMode = "sign-in" | "register";
 
@@ -95,29 +95,39 @@ export function AuthModal({
 	return (
 		<Dialog onOpenChange={onOpenChange} open={open}>
 			<DialogContent
+				aria-describedby={undefined}
 				aria-labelledby={`${ids}-title`}
 				className="max-h-[calc(100vh-2rem)] overflow-y-auto"
 			>
 				<DialogHeader>
 					<span className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-						Watchpoint / player account
+						Watchpoint / Account
 					</span>
+				</DialogHeader>
+				<Tabs onValueChange={changeMode} value={mode}>
+					<TabsList>
+						<TabsTrigger value="sign-in">Sign in</TabsTrigger>
+						{!registrationEnabled ? (
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<TabsTrigger disabled value="register">
+										Register
+									</TabsTrigger>
+								</TooltipTrigger>
+								<TooltipContent>
+									Registration is currently unavailable. Existing players can
+									still sign in.
+								</TooltipContent>
+							</Tooltip>
+						) : (
+							<TabsTrigger value="register">Register</TabsTrigger>
+						)}
+					</TabsList>
 					<DialogTitle id={`${ids}-title`}>
 						{mode === "register"
 							? "Create your player identity"
 							: "Welcome back, player"}
 					</DialogTitle>
-					<DialogDescription>
-						Own your attempts and continue training where you left off.
-					</DialogDescription>
-				</DialogHeader>
-				<Tabs onValueChange={changeMode} value={mode}>
-					<TabsList>
-						<TabsTrigger value="sign-in">Sign in</TabsTrigger>
-						<TabsTrigger disabled={!registrationEnabled} value="register">
-							Register
-						</TabsTrigger>
-					</TabsList>
 					<TabsContent value="sign-in">
 						<AuthForm
 							busy={busy}
@@ -138,14 +148,6 @@ export function AuthModal({
 						/>
 					</TabsContent>
 				</Tabs>
-				{!registrationEnabled ? (
-					<Alert aria-live="polite" role="status">
-						<AlertDescription>
-							Registration is currently unavailable. Existing players can still
-							sign in.
-						</AlertDescription>
-					</Alert>
-				) : null}
 			</DialogContent>
 		</Dialog>
 	);

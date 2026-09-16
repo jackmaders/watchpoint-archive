@@ -1,11 +1,11 @@
 /**
  * Component test suite verifying rendering, accessibility attributes, and variant styling across shared UI primitives.
  *
- * Validates `Alert`, `Dialog`, `Field`, `Input`, `Label`, and `Tabs` using React Testing Library,
+ * Validates `Alert`, `Dialog`, `Field`, `Input`, `Label`, `Tabs`, and `Tooltip` using React Testing Library,
  * asserting proper DOM structure, ARIA role bindings, and conditional class applications.
  */
 
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { useId } from "react";
 import { afterEach, describe, expect, it } from "vitest";
 import { Alert, AlertDescription, AlertTitle } from "../alert";
@@ -30,6 +30,7 @@ import {
 import { Input } from "../input";
 import { Label } from "../label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../tabs";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../tooltip";
 
 describe("auth shadcn primitives", () => {
 	afterEach(() => {
@@ -121,6 +122,24 @@ describe("auth shadcn primitives", () => {
 
 		// Assert
 		expect(screen.getByText("Standalone").getAttribute("for")).toMatch(/^_r_/);
+	});
+
+	it("renders an accessible tooltip on focus", async () => {
+		// Arrange & Act
+		render(
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<button type="button">Hover me</button>
+				</TooltipTrigger>
+				<TooltipContent>Helpful info</TooltipContent>
+			</Tooltip>,
+		);
+
+		// Act
+		fireEvent.focus(screen.getByRole("button", { name: "Hover me" }));
+
+		// Assert
+		expect(await screen.findByText("Helpful info")).toBeDefined();
 	});
 });
 
