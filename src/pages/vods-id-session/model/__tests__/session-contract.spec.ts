@@ -74,7 +74,7 @@ describe("Scenario Input contract", () => {
 			id: "sc_ultimate",
 			inputConfig: { max: 100, min: 0 },
 			inputType: "PERCENT_SLIDER" as const,
-			moduleType: "ULTIMATE" as const,
+			moduleType: "TRACKING" as const,
 			promptText: "How close is the enemy ultimate?",
 			timeLimitSeconds: null,
 		};

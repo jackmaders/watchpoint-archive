@@ -60,7 +60,7 @@ This document defines the core domain terminology used across product discussion
   The mechanism that halts YouTube video playback when `currentTime >= scenario.timestamp_seconds` and transfers control to the Interactive Overlay Engine.
 
 * **Scenario Overlay**  
-  The interactive decision overlay component that renders when video playback pauses at a curated scenario timestamp across all 5 learning module types.
+  The interactive decision overlay component that renders when video playback pauses at a curated scenario timestamp across all 4 learning module types.
 
 * **Tactical Drawer**  
   The desktop responsive drawer layout presentation of the Scenario Overlay, docking alongside the video player on large viewports.
@@ -75,7 +75,7 @@ This document defines the core domain terminology used across product discussion
   A flexible JSON document structure embedded within each scenario record that specifies the input mechanism (`MULTIPLE_CHOICE`, `PERCENT_SLIDER`, `MAP_PIN_2D`) and validation constraints without hardcoding database schema structures.
 
 * **Module Filter**  
-  User-configured pre-session settings that filter which scenario module types are active during a VOD playthrough (e.g., allowing a user to isolate and practice only Ultimate Tracking).
+  User-configured pre-session settings that filter which scenario module types are active during a VOD playthrough (e.g., allowing a user to isolate and practice only Tracking).
 
 * **Pre-Session Module Filter UI**  
   Interactive pill toggle interface on the VOD detail landing view allowing users to customize active scenario modules before initiating a session.

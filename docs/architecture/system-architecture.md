@@ -130,7 +130,7 @@ Represents a curated pause point within a VOD.
 | `id` | UUID / String | Unique scenario identifier |
 | `vod_id` | Foreign Key (`VOD.id`) | Associated VOD |
 | `timestamp_seconds` | Float / Int | Video time trigger (1-second marker, $\pm 500\text{ms}$ tolerance) |
-| `module_type` | Enum | `STRATEGY`, `TACTICS`, `ULTIMATE`, `COOLDOWN`, `SPATIAL` |
+| `module_type` | Enum | `STRATEGY`, `TACTICS`, `TRACKING`, `SPATIAL` |
 | `time_limit_seconds` | Nullable Int | `3` for strictly timed `TACTICS` scenarios; `null` for untimed |
 | `prompt_text` | Text | Question or decision prompt shown to the user |
 | `explanation_text` | Text | Analytical explanation rendered after user responds |
@@ -140,7 +140,7 @@ Represents a curated pause point within a VOD.
 
 #### Polymorphic `input_config` Examples
 
-##### V1 Default: `MULTIPLE_CHOICE` (Used for Strategy, Tactics, Ult Tracking, Cooldowns, Spatial)
+##### V1 Default: `MULTIPLE_CHOICE` (Used for Strategy, Tactics, Tracking, Spatial)
 ```json
 {
   "options": [
@@ -213,8 +213,8 @@ sequenceDiagram
     participant API as Watchpoint Backend
     participant DB as Database
 
-    User->>Client: Select VOD + Choose Module Filters (e.g. Ult Tracking only)
-    Client->>API: GET /api/vods/{id}/manifest?modules=ULTIMATE
+    User->>Client: Select VOD + Choose Module Filters (e.g. Tracking only)
+    Client->>API: GET /api/vods/{id}/manifest?modules=TRACKING
     API->>DB: Query VOD + Filtered Scenarios ORDER BY timestamp_seconds ASC
     DB-->>API: Return VOD + Scenarios
     API-->>Client: Return Session Manifest JSON

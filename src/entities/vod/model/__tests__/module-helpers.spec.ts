@@ -48,7 +48,7 @@ describe("module-helpers", () => {
 		// Assert
 		expect(counts.STRATEGY).toBe(2);
 		expect(counts.TACTICS).toBe(1);
-		expect(counts.ULTIMATE).toBe(0);
+		expect(counts.TRACKING).toBe(0);
 	});
 
 	it("filters scenarios by active modules (Set or Array)", () => {
@@ -56,13 +56,13 @@ describe("module-helpers", () => {
 		const scenarios = [
 			{ id: 1, moduleType: "STRATEGY" as const },
 			{ id: 2, moduleType: "TACTICS" as const },
-			{ id: 3, moduleType: "ULTIMATE" as const },
+			{ id: 3, moduleType: "TRACKING" as const },
 		];
 
 		// Act
 		const resArray = filterScenariosByModules(scenarios, [
 			"STRATEGY",
-			"ULTIMATE",
+			"TRACKING",
 		]);
 		const resSet = filterScenariosByModules(
 			scenarios,
@@ -80,9 +80,9 @@ describe("module-helpers", () => {
 			"STRATEGY",
 			"TACTICS",
 		]);
-		expect(parseModuleTypes(["STRATEGY", "ULTIMATE", "INVALID"])).toEqual([
+		expect(parseModuleTypes(["STRATEGY", "TRACKING", "INVALID"])).toEqual([
 			"STRATEGY",
-			"ULTIMATE",
+			"TRACKING",
 		]);
 		expect(parseModuleTypes(null)).toEqual([]);
 		expect(parseModuleTypes(undefined)).toEqual([]);

@@ -62,8 +62,8 @@ describe("VodsIdPage", () => {
 				imageUrl: null,
 				inputConfig: {},
 				inputType: "MULTIPLE_CHOICE",
-				moduleType: "ULTIMATE",
-				promptText: "Ult tracking",
+				moduleType: "TRACKING",
+				promptText: "Tracking prompt",
 				timeLimitSeconds: null,
 				timestampSeconds: 90,
 				vodId: "vod_1",
@@ -74,8 +74,8 @@ describe("VodsIdPage", () => {
 				imageUrl: null,
 				inputConfig: {},
 				inputType: "MULTIPLE_CHOICE",
-				moduleType: "COOLDOWN",
-				promptText: "Cooldown tracking",
+				moduleType: "TRACKING",
+				promptText: "Tracking prompt 2",
 				timeLimitSeconds: null,
 				timestampSeconds: 120,
 				vodId: "vod_1",
@@ -165,7 +165,7 @@ describe("VodsIdPage", () => {
 			expect(navigate).toHaveBeenCalledWith({
 				params: { id: "vod_1" },
 				search: {
-					modules: "STRATEGY,TACTICS,ULTIMATE,COOLDOWN,SPATIAL",
+					modules: "STRATEGY,TACTICS,TRACKING,SPATIAL",
 					playthroughId: expect.any(String),
 				},
 				to: "/vods/$id/session",
@@ -189,22 +189,21 @@ describe("VodsIdPage", () => {
 		expect(screen.queryByRole("dialog")).toBeNull();
 	});
 
-	it("renders module filter controls for all 5 modules (STRATEGY, TACTICS, ULTIMATE, COOLDOWN, SPATIAL)", () => {
+	it("renders module filter controls for all 4 modules (STRATEGY, TACTICS, TRACKING, SPATIAL)", () => {
 		// Arrange & Act
 		render(<VodsIdPage vod={mockVod} />);
 
 		// Assert
-		expect(screen.getByRole("button", { name: /strategy/i })).toBeDefined();
-		expect(screen.getByRole("button", { name: /tactics/i })).toBeDefined();
-		expect(screen.getByRole("button", { name: /ultimate/i })).toBeDefined();
-		expect(screen.getByRole("button", { name: /cooldown/i })).toBeDefined();
-		expect(screen.getByRole("button", { name: /spatial/i })).toBeDefined();
+		expect(screen.getByRole("button", { name: /^strategy/i })).toBeDefined();
+		expect(screen.getByRole("button", { name: /^tactics/i })).toBeDefined();
+		expect(screen.getByRole("button", { name: /^tracking/i })).toBeDefined();
+		expect(screen.getByRole("button", { name: /^awareness/i })).toBeDefined();
 	});
 
 	it("updates session launcher href when a module filter is toggled off", async () => {
 		// Arrange
 		render(<VodsIdPage vod={mockVod} />);
-		const strategyBtn = screen.getByRole("button", { name: /strategy/i });
+		const strategyBtn = screen.getByRole("button", { name: /^strategy/i });
 
 		// Act
 		await act(async () => {
@@ -219,7 +218,7 @@ describe("VodsIdPage", () => {
 	it("re-enables a module filter when toggled back on", async () => {
 		// Arrange
 		render(<VodsIdPage vod={mockVod} />);
-		const strategyBtn = screen.getByRole("button", { name: /strategy/i });
+		const strategyBtn = screen.getByRole("button", { name: /^strategy/i });
 
 		// Act
 		await act(async () => {
@@ -237,18 +236,13 @@ describe("VodsIdPage", () => {
 	it("displays '1 module selected' when exactly 1 module remains selected", async () => {
 		// Arrange
 		render(<VodsIdPage vod={mockVod} />);
-		const modulesToDisable = [
-			"STRATEGY",
-			"TACTICS",
-			"ULTIMATE",
-			"COOLDOWN",
-		] as const;
+		const modulesToDisable = ["STRATEGY", "TACTICS", "TRACKING"] as const;
 
 		// Act
 		for (const mod of modulesToDisable) {
 			await act(async () => {
 				fireEvent.click(
-					screen.getByRole("button", { name: new RegExp(mod, "i") }),
+					screen.getByRole("button", { name: new RegExp(`^${mod}`, "i") }),
 				);
 			});
 		}

@@ -46,8 +46,8 @@ describe("seed fixtures", () => {
 		expect(moduleTypes).toEqual([
 			"STRATEGY",
 			"TACTICS",
-			"ULTIMATE",
-			"COOLDOWN",
+			"TRACKING",
+			"TRACKING",
 			"SPATIAL",
 		]);
 		for (const scenario of scenarios) {

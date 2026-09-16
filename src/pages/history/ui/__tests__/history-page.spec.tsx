@@ -103,7 +103,7 @@ const mockInProgressPlaythrough: PlayerHistoryItem = {
 	createdAt: new Date("2026-01-16T10:00:00.000Z"),
 	id: "playthrough_in_prog_1",
 	medianLatencyMs: null,
-	moduleSelections: [{ moduleType: "ULTIMATE" }],
+	moduleSelections: [{ moduleType: "TRACKING" }],
 	scenarioSnapshots: [],
 	status: "IN_PROGRESS",
 	userId: "player_1",

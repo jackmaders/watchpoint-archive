@@ -63,7 +63,7 @@ export const vods = sqliteTable("vod", {
   createdAt: integer("created_at", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
 });
 
-export const moduleTypeEnum = ["STRATEGY", "TACTICS", "ULTIMATE", "COOLDOWN", "SPATIAL"] as const;
+export const moduleTypeEnum = ["STRATEGY", "TACTICS", "TRACKING", "SPATIAL"] as const;
 export const inputTypeEnum = ["MULTIPLE_CHOICE", "PERCENT_SLIDER", "TIME_SLIDER", "MAP_PIN_2D"] as const;
 
 export const scenarios = sqliteTable("scenario", {

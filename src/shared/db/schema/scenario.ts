@@ -19,8 +19,7 @@ import { vods } from "./vod";
 export const moduleTypeEnum = [
 	"STRATEGY",
 	"TACTICS",
-	"ULTIMATE",
-	"COOLDOWN",
+	"TRACKING",
 	"SPATIAL",
 ] as const;
 export type ModuleType = (typeof moduleTypeEnum)[number];

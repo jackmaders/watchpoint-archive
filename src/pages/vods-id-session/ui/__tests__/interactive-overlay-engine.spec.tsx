@@ -20,8 +20,7 @@ const fourOptions = [
 const moduleTypes: ModuleType[] = [
 	"STRATEGY",
 	"TACTICS",
-	"ULTIMATE",
-	"COOLDOWN",
+	"TRACKING",
 	"SPATIAL",
 ];
 

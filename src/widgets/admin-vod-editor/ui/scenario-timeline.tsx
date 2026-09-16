@@ -4,7 +4,6 @@ import {
 	ArrowDown,
 	ArrowUp,
 	CheckSquare,
-	Clock,
 	Compass,
 	Eye,
 	Flame,
@@ -50,17 +49,11 @@ export function getModuleTypeBadge(moduleType: ModuleType) {
 				icon: Flame,
 				label: "TACTICS",
 			};
-		case "ULTIMATE":
+		case "TRACKING":
 			return {
 				className: "bg-amber-500/10 text-amber-400 border-amber-500/20",
 				icon: Sparkles,
-				label: "ULTIMATE",
-			};
-		case "COOLDOWN":
-			return {
-				className: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-				icon: Clock,
-				label: "COOLDOWN",
+				label: "TRACKING",
 			};
 		case "SPATIAL":
 			return {

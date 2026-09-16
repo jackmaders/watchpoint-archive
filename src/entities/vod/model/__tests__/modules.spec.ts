@@ -6,13 +6,12 @@ import {
 } from "../modules";
 
 describe("modules model", () => {
-	it("contains 5 default module types", () => {
+	it("contains 4 default module types", () => {
 		// Arrange & Act & Assert
-		expect(DEFAULT_MODULE_TYPES).toHaveLength(5);
+		expect(DEFAULT_MODULE_TYPES).toHaveLength(4);
 		expect(DEFAULT_MODULE_TYPES).toContain("STRATEGY");
 		expect(DEFAULT_MODULE_TYPES).toContain("TACTICS");
-		expect(DEFAULT_MODULE_TYPES).toContain("ULTIMATE");
-		expect(DEFAULT_MODULE_TYPES).toContain("COOLDOWN");
+		expect(DEFAULT_MODULE_TYPES).toContain("TRACKING");
 		expect(DEFAULT_MODULE_TYPES).toContain("SPATIAL");
 	});
 

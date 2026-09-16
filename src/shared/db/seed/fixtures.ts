@@ -3,8 +3,8 @@
  * models used for seeding local development and testing databases.
  *
  * Implements deterministic fixture data. Exports `FIXTURE_IDS`, `FIXTURE_VOD`, `getLocalFixtureVod`,
- * and `getLocalFixtureScenarios` covering all five learning module types (Strategy, Tactics,
- * Ultimate Tracking, Cooldown Tracking, and Spatial Awareness) with polymorphic configurations.
+ * and `getLocalFixtureScenarios` covering learning module types (Strategy, Tactics,
+ * Tracking, and Spatial Awareness) with polymorphic configurations.
  */
 
 export const FIXTURE_IDS = {
@@ -53,7 +53,7 @@ const FIXTURE_SCENARIOS = [
 		explanationText:
 			"Tracking enemy ultimate economy indicates the opposing Reinhardt has Earthshatter ready after two uninterrupted hammer swings in the previous fight.",
 		id: "scenario_local_ultimate",
-		moduleType: "ULTIMATE" as const,
+		moduleType: "TRACKING" as const,
 		promptText:
 			"Based on previous fight pacing, what is the status of the enemy Reinhardt's Earthshatter?",
 	},
@@ -61,7 +61,7 @@ const FIXTURE_SCENARIOS = [
 		explanationText:
 			"Kiriko just used Protection Suzu to cleanse an anti-heal grenade, leaving a 14-second vulnerability window for your Nano-Boosted teammate.",
 		id: "scenario_local_cooldown",
-		moduleType: "COOLDOWN" as const,
+		moduleType: "TRACKING" as const,
 		promptText:
 			"Enemy Kiriko deployed Protection Suzu 3 seconds ago. Is the defensive cooldown available for the upcoming Nano-Blade?",
 	},

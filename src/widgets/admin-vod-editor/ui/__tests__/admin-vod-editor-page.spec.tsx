@@ -62,7 +62,7 @@ describe("AdminVodEditorPage", () => {
 			imageUrl: null,
 			inputConfig: { target: 3 },
 			inputType: "TIME_SLIDER",
-			moduleType: "COOLDOWN",
+			moduleType: "TRACKING",
 			promptText: "Is sleep dart ready?",
 			timeLimitSeconds: null,
 			timestampSeconds: 120,

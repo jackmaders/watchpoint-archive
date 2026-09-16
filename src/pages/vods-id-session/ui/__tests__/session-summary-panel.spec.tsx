@@ -9,12 +9,6 @@ describe("SessionSummaryPanel", () => {
 		averageLatencyMs: 1450,
 		correctCount: 4,
 		moduleBreakdown: {
-			COOLDOWN: {
-				accuracyPercentage: 0,
-				averageLatencyMs: 0,
-				correct: 0,
-				total: 0,
-			},
 			SPATIAL: {
 				accuracyPercentage: 0,
 				averageLatencyMs: 0,
@@ -33,7 +27,7 @@ describe("SessionSummaryPanel", () => {
 				correct: 2,
 				total: 3,
 			},
-			ULTIMATE: {
+			TRACKING: {
 				accuracyPercentage: 0,
 				averageLatencyMs: 0,
 				correct: 0,
@@ -99,12 +93,6 @@ describe("SessionSummaryPanel", () => {
 			averageLatencyMs: 0,
 			correctCount: 0,
 			moduleBreakdown: {
-				COOLDOWN: {
-					accuracyPercentage: 0,
-					averageLatencyMs: 0,
-					correct: 0,
-					total: 0,
-				},
 				SPATIAL: {
 					accuracyPercentage: 0,
 					averageLatencyMs: 0,
@@ -123,7 +111,7 @@ describe("SessionSummaryPanel", () => {
 					correct: 0,
 					total: 0,
 				},
-				ULTIMATE: {
+				TRACKING: {
 					accuracyPercentage: 0,
 					averageLatencyMs: 0,
 					correct: 0,

@@ -7,20 +7,18 @@ describe("ModuleFilterPills", () => {
 	const allModules: ModuleType[] = [
 		"STRATEGY",
 		"TACTICS",
-		"ULTIMATE",
-		"COOLDOWN",
+		"TRACKING",
 		"SPATIAL",
 	];
 
-	it("renders all 5 module pills with active state and count badges", () => {
+	it("renders all 4 module pills with active state and count badges", () => {
 		// Arrange
 		const onChange = vi.fn();
 		const availableCounts: Record<ModuleType, number> = {
-			COOLDOWN: 1,
 			SPATIAL: 2,
 			STRATEGY: 3,
 			TACTICS: 4,
-			ULTIMATE: 5,
+			TRACKING: 5,
 		};
 
 		// Act
@@ -33,17 +31,10 @@ describe("ModuleFilterPills", () => {
 		);
 
 		// Assert
-		expect(screen.getByRole("button", { name: /strategy/i })).toBeDefined();
-		expect(screen.getByRole("button", { name: /tactics/i })).toBeDefined();
-		expect(
-			screen.getByRole("button", { name: /ultimate tracking/i }),
-		).toBeDefined();
-		expect(
-			screen.getByRole("button", { name: /cooldown tracking/i }),
-		).toBeDefined();
-		expect(
-			screen.getByRole("button", { name: /spatial awareness/i }),
-		).toBeDefined();
+		expect(screen.getByRole("button", { name: /^strategy/i })).toBeDefined();
+		expect(screen.getByRole("button", { name: /^tactics/i })).toBeDefined();
+		expect(screen.getByRole("button", { name: /^tracking/i })).toBeDefined();
+		expect(screen.getByRole("button", { name: /^awareness/i })).toBeDefined();
 
 		expect(screen.getByText("3 scenarios")).toBeDefined();
 		expect(screen.getByText("4 scenarios")).toBeDefined();

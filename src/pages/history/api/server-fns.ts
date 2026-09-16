@@ -12,7 +12,7 @@ import type { GetHistoryResult } from "../model/types";
 
 export const GetPlayerHistorySchema = z.object({
 	modules: z
-		.array(z.enum(["STRATEGY", "TACTICS", "ULTIMATE", "COOLDOWN", "SPATIAL"]))
+		.array(z.enum(["STRATEGY", "TACTICS", "TRACKING", "SPATIAL"]))
 		.optional(),
 	page: z.number().int().positive().optional(),
 	pageSize: z.number().int().positive().optional(),

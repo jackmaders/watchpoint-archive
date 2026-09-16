@@ -71,7 +71,7 @@ describe("useSessionPlayer", () => {
 					],
 				},
 				inputType: "MULTIPLE_CHOICE" as const,
-				moduleType: "ULTIMATE" as const,
+				moduleType: "TRACKING" as const,
 				promptText: "Estimate Genji ult.",
 				timeLimitSeconds: null,
 				timestampSeconds: 90.0,
@@ -266,7 +266,7 @@ describe("useSessionPlayer", () => {
 		// Assert
 		expect(result.current.activeScenarios).toHaveLength(2);
 		expect(result.current.activeScenarios[0].moduleType).toBe("STRATEGY");
-		expect(result.current.activeScenarios[1].moduleType).toBe("ULTIMATE");
+		expect(result.current.activeScenarios[1].moduleType).toBe("TRACKING");
 		expect(result.current.activeScenarios[0].inputType).toBe("MULTIPLE_CHOICE");
 		expect(result.current.activeScenarios[0].input.kind).toBe(
 			"multiple-choice",

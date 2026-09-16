@@ -36,7 +36,7 @@ describe("scenario-rules", () => {
 			options: [{ id: "opt-1", is_correct: true, text: "Sleep" }],
 		},
 		inputType: "MULTIPLE_CHOICE" as const,
-		moduleType: "COOLDOWN" as const,
+		moduleType: "TRACKING" as const,
 		promptText: "What cooldown should you use?",
 		timeLimitSeconds: 15,
 		timestampSeconds: 45.5,
