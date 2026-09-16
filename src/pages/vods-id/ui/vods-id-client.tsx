@@ -9,13 +9,13 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { type MouseEvent, useCallback, useMemo, useState } from "react";
 import {
-	buildSessionUrl,
 	calculateModuleCounts,
 	filterScenariosByModules,
 	MODULE_DEFINITIONS,
 	ModuleFilterPills,
 	type ModuleType,
 	type SessionManifest,
+	serializeModulesParam,
 } from "@/entities/vod";
 import { authClient } from "@/shared/lib/auth-client";
 import { AuthModal } from "@/shared/ui/auth-modal";
@@ -38,17 +38,21 @@ export function VodsIdClient({
 	const navigate = useNavigate();
 	const handleStart = useCallback(
 		(event: MouseEvent<HTMLAnchorElement>) => {
+			if (activeModules.length === 0) {
+				event.preventDefault();
+				return;
+			}
 			if (!session.data?.user) {
 				event.preventDefault();
 				setAuthOpen(true);
 			}
 		},
-		[session.data?.user],
+		[activeModules.length, session.data?.user],
 	);
 	const handleAuthenticated = useCallback(() => {
 		navigate({
 			params: { id: vod.id },
-			search: { modules: activeModules.join(","), playthroughId },
+			search: { modules: serializeModulesParam(activeModules), playthroughId },
 			to: "/vods/$id/session",
 		});
 	}, [activeModules, navigate, playthroughId, vod.id]);
@@ -63,20 +67,12 @@ export function VodsIdClient({
 		[vod.scenarios, activeModules],
 	);
 
-	const startHref = useMemo(
-		() => buildSessionUrl(vod.id, activeModules, playthroughId),
-		[activeModules, playthroughId, vod.id],
-	);
-
 	return (
 		<div className="space-y-6 sm:space-y-8">
 			<div className="rounded-lg border border-border bg-card p-4 sm:p-6 md:p-8 shadow-sm space-y-6">
 				<div className="flex items-center justify-between flex-wrap gap-4 border-b border-border pb-6">
 					<div>
-						<span className="text-xs font-semibold text-primary uppercase tracking-widest font-mono">
-							Pre-Session Setup
-						</span>
-						<h2 className="text-2xl font-bold text-card-foreground mt-1">
+						<h2 className="text-2xl font-bold text-card-foreground">
 							Configure Scenario Modules
 						</h2>
 						<p className="text-muted-foreground text-sm mt-1">
@@ -101,7 +97,7 @@ export function VodsIdClient({
 					selectedModules={activeModules}
 				/>
 
-				<div className="pt-4 border-t border-border flex items-center justify-between flex-wrap gap-4">
+				<div className="sticky bottom-0 z-10 -mx-4 -mb-4 sm:-mx-6 sm:-mb-6 md:-mx-8 md:-mb-8 p-4 sm:p-6 md:p-8 rounded-b-lg border-t border-border bg-card/95 backdrop-blur flex items-center justify-between flex-wrap gap-4">
 					<div className="text-xs text-muted-foreground">
 						<span>
 							{activeModules.length} module
@@ -115,9 +111,14 @@ export function VodsIdClient({
 								? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20 active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
 								: "bg-muted text-muted-foreground cursor-not-allowed pointer-events-none"
 						}`}
-						href={startHref}
+						disabled={activeModules.length === 0}
 						onClick={handleStart}
-						to={startHref}
+						params={{ id: vod.id }}
+						search={{
+							modules: serializeModulesParam(activeModules),
+							playthroughId,
+						}}
+						to="/vods/$id/session"
 					>
 						Start Training Session
 					</Link>

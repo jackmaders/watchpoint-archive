@@ -1,31 +1,68 @@
 import type React from "react";
 import { vi } from "vitest";
 
+function applyRouteParams(
+	path: string,
+	params?: Record<string, string>,
+): string {
+	if (!params) return path;
+	let resolved = path;
+	for (const [key, value] of Object.entries(params)) {
+		resolved = resolved.replace(`$${key}`, value);
+	}
+	return resolved;
+}
+
+function appendSearchQuery(
+	path: string,
+	search?: Record<string, unknown>,
+): string {
+	if (!search || Object.keys(search).length === 0) return path;
+	const searchParams = new URLSearchParams();
+	for (const [key, value] of Object.entries(search)) {
+		if (value !== undefined && value !== null) {
+			searchParams.set(key, String(value));
+		}
+	}
+	const queryString = searchParams.toString();
+	return queryString
+		? `${path}${path.includes("?") ? "&" : "?"}${queryString}`
+		: path;
+}
+
 export const Link = function MockLink({
 	activeOptions: _activeOptions,
 	activeProps: _activeProps,
 	children,
+	disabled,
 	to,
 	href,
 	params,
 	ref,
+	search,
 	...props
 }: React.AnchorHTMLAttributes<HTMLAnchorElement> & {
 	activeOptions?: Record<string, unknown>;
 	activeProps?: Record<string, unknown>;
+	disabled?: boolean;
 	href?: string;
 	params?: Record<string, string>;
 	ref?: React.Ref<HTMLAnchorElement>;
+	search?: Record<string, unknown>;
 	to?: string;
 }) {
-	let targetHref = to || href || "";
-	if (params) {
-		for (const [key, value] of Object.entries(params)) {
-			targetHref = targetHref.replace(`$${key}`, value);
-		}
-	}
+	const base = to || href || "";
+	const withParams = applyRouteParams(base, params);
+	const targetHref = appendSearchQuery(withParams, search);
+
 	return (
-		<a href={targetHref} ref={ref} {...props}>
+		<a
+			aria-disabled={disabled ? "true" : undefined}
+			href={disabled ? undefined : targetHref}
+			ref={ref}
+			role={disabled ? "link" : undefined}
+			{...props}
+		>
 			{children}
 		</a>
 	);
