@@ -62,7 +62,7 @@
 		"build": "vite build",
 		"build-preview": "bun scripts/serve-build-preview.ts",
 		"build:quiet": "vite build --logLevel warn",
-		"cf-typegen": "wrangler types cloudflare-env.d.ts --env-interface CloudflareEnv --include-runtime false --env-file .env.example",
+		"cf-typegen": "rm -rf dist && wrangler types cloudflare-env.d.ts --env-interface CloudflareEnv --include-runtime false --env-file .env.example",
 		"check:all": "biome check --error-on-warnings .",
 		"check:architecture": "steiger ./src",
 		"check:bundle-size": "bunx bundlewatch --config .bundlewatch.config.json",
