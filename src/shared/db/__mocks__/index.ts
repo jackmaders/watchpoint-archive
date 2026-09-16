@@ -7,10 +7,27 @@
  */
 
 import { vi } from "vitest";
-import { playthroughStatusEnum } from "../schema/playthrough";
-import { inputTypeEnum, moduleTypeEnum } from "../schema/scenario";
-import { userRoleEnum } from "../schema/user";
-import { heroRoleEnum } from "../schema/vod";
+import { accounts } from "../schema/account";
+import { attemptRecords } from "../schema/attempt-record";
+import { auditEntries } from "../schema/audit";
+import { playthroughStatusEnum, playthroughs } from "../schema/playthrough";
+import { playthroughCompletions } from "../schema/playthrough-completion";
+import { playthroughModuleSelections } from "../schema/playthrough-module-selection";
+import { relations } from "../schema/relations";
+import { inputTypeEnum, moduleTypeEnum, scenarios } from "../schema/scenario";
+import { scenarioSnapshots } from "../schema/scenario-snapshot";
+import { sessions } from "../schema/session";
+import { userRoleEnum, users } from "../schema/user";
+import { verifications } from "../schema/verification";
+import { heroRoleEnum, vods } from "../schema/vod";
+import {
+	FIXTURE_IDS,
+	FIXTURE_VOD,
+	getLocalFixtureScenarios,
+	getLocalFixtureVod,
+} from "../seed/fixtures";
+import { assertLocalSeedTarget, getSeedCredentials } from "../seed/policy";
+import { executeSeed } from "../seed/seeder";
 
 // Audit domain queries
 export const queryAuditEntries = vi.fn(async () => []);
@@ -42,6 +59,8 @@ export const getVodById = vi.fn(async () => null);
 export const createVod = vi.fn(async () => ({ id: "mock_vod_id" }));
 export const updateVod = vi.fn(async () => ({ id: "mock_vod_id" }));
 export const deleteVod = vi.fn(async () => ({ id: "mock_vod_id" }));
+export const bulkDeleteVods = vi.fn(async () => []);
+export const bulkPublishVods = vi.fn(async () => []);
 
 // Scenario domain queries
 export const queryScenarios = vi.fn(async () => []);
@@ -50,6 +69,7 @@ export const createScenario = vi.fn(async () => ({ id: "mock_scenario_id" }));
 export const createScenarios = vi.fn(async () => []);
 export const updateScenario = vi.fn(async () => ({ id: "mock_scenario_id" }));
 export const deleteScenario = vi.fn(async () => ({ id: "mock_scenario_id" }));
+export const reorderScenarios = vi.fn(async () => []);
 
 // Playthrough domain queries
 export const queryPlaythroughs = vi.fn(async () => []);
@@ -62,6 +82,9 @@ export const updatePlaythrough = vi.fn(async () => ({
 }));
 export const deletePlaythrough = vi.fn(async () => ({
 	id: "mock_playthrough_id",
+}));
+export const deleteOrphanInProgressPlaythroughs = vi.fn(async () => ({
+	count: 0,
 }));
 export const createPlaythroughCompletion = vi.fn(async () => ({
 	id: "mock_comp_id",
@@ -89,11 +112,34 @@ export const deleteAttemptRecord = vi.fn(async () => ({
 export const createDbClient = vi.fn();
 export const filterToSQL = vi.fn();
 export const orderToSQL = vi.fn();
+export const DEFAULT_LIMIT = 50;
 
+// Schema definitions & enums
+// Seed fixtures & runners
 export {
+	accounts,
+	assertLocalSeedTarget,
+	attemptRecords,
+	auditEntries,
+	executeSeed,
+	FIXTURE_IDS,
+	FIXTURE_VOD,
+	getLocalFixtureScenarios,
+	getLocalFixtureVod,
+	getSeedCredentials,
 	heroRoleEnum,
 	inputTypeEnum,
 	moduleTypeEnum,
+	playthroughCompletions,
+	playthroughModuleSelections,
 	playthroughStatusEnum,
+	playthroughs,
+	relations,
+	scenarioSnapshots,
+	scenarios,
+	sessions,
 	userRoleEnum,
+	users,
+	verifications,
+	vods,
 };
