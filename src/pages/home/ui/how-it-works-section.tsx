@@ -1,39 +1,35 @@
 /**
- * Details the four-step interactive training methodology and core user journey across Watchpoint.
+ * Details the 4 core game sense learning pillars across Watchpoint.
  *
- * Implements `HowItWorksSection` within `src/pages/home/ui/`, rendering responsive step cards
- * that describe the interactive decision lifecycle from match selection to post-scenario analysis.
+ * Implements `HowItWorksSection` within `src/pages/home/ui/`, rendering responsive cards
+ * covering Strategy, Tactics, Awareness, and Tracking.
  */
-import { BarChart3, Crosshair, Target, Zap } from "lucide-react";
+import { Activity, Compass, Eye, Swords } from "lucide-react";
 
-const STEPS = [
+const PILLARS = [
 	{
-		description:
-			"Study high-stakes fight moments selected from Grandmaster and Top 500 competitive matches.",
-		icon: Crosshair,
+		description: "Pre-fight positioning, win-conditions, and lose-conditions.",
+		icon: Compass,
 		number: "01",
-		title: "Curated Match Scenarios",
+		title: "Strategy",
 	},
 	{
-		description:
-			"The video pauses at high-pressure junctures. Choose your positioning, target priority, or cooldown usage.",
-		icon: Target,
+		description: "Mid-fight opportunities and cooldown usage.",
+		icon: Swords,
 		number: "02",
-		title: "Interactive Decision Moments",
+		title: "Tactics",
 	},
 	{
-		description:
-			"Receive immediate coaching feedback comparing your selection against the optimal play.",
-		icon: Zap,
+		description: "Spatial awareness and positional tracking.",
+		icon: Eye,
 		number: "03",
-		title: "Instant Tactical Breakdown",
+		title: "Awareness",
 	},
 	{
-		description:
-			"Track decision accuracy, role-specific strengths, and tactical speed over time to climb the ranks.",
-		icon: BarChart3,
+		description: "Ultimate and ability tracking.",
+		icon: Activity,
 		number: "04",
-		title: "Track Game Sense Mastery",
+		title: "Tracking",
 	},
 ] as const;
 
@@ -42,24 +38,24 @@ export function HowItWorksSection() {
 		<section className="space-y-10 py-12 sm:py-16">
 			<div className="space-y-3 text-center">
 				<p className="font-mono text-xs font-semibold uppercase tracking-widest text-primary">
-					Tactical Training Loop
+					Core Learning Pillars
 				</p>
 				<h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
 					How Watchpoint Works
 				</h2>
 				<p className="mx-auto max-w-2xl text-base text-muted-foreground">
-					Four deliberate steps to sharpen your competitive instincts and
-					eliminate costly teamfight mistakes.
+					Four core pillars designed to sharpen your competitive instincts and
+					decision-making.
 				</p>
 			</div>
 
 			<div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-				{STEPS.map((step) => {
-					const Icon = step.icon;
+				{PILLARS.map((pillar) => {
+					const Icon = pillar.icon;
 					return (
 						<div
 							className="relative flex flex-col justify-between rounded-lg border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:border-primary/50 hover:shadow-md"
-							key={step.number}
+							key={pillar.title}
 						>
 							<div className="space-y-4">
 								<div className="flex items-center justify-between">
@@ -67,14 +63,14 @@ export function HowItWorksSection() {
 										<Icon className="h-5 w-5" />
 									</div>
 									<span className="font-mono text-xs font-bold text-muted-foreground/60">
-										{step.number}
+										{pillar.number}
 									</span>
 								</div>
 								<h3 className="text-lg font-semibold text-card-foreground">
-									{step.title}
+									{pillar.title}
 								</h3>
 								<p className="text-sm leading-relaxed text-muted-foreground">
-									{step.description}
+									{pillar.description}
 								</p>
 							</div>
 						</div>
