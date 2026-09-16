@@ -12,7 +12,7 @@ vi.mock("@/shared/lib/auth");
 vi.mock("../server-fns");
 
 import { getPublishedVods } from "@/entities/vod";
-import { isRegistrationOpen } from "@/shared/lib/auth";
+import { getRegistrationStatus } from "@/shared/lib/auth";
 import {
 	historyQueryOptions,
 	loadHistoryIndexPage,
@@ -23,7 +23,7 @@ import { getPlayerHistory } from "../server-fns";
 describe("history loaders", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
-		vi.mocked(isRegistrationOpen).mockResolvedValue(true);
+		vi.mocked(getRegistrationStatus).mockResolvedValue(true);
 	});
 
 	describe("historyQueryOptions", () => {

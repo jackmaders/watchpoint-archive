@@ -2,14 +2,14 @@
  * Data loader and query options for the training match history page and search filter state.
  *
  * Implements `historyQueryOptions`, `loadPlayerHistory`, and `loadHistoryIndexPage` to concurrently fetch
- * published VODs, registration configuration, and paginated match history records using `queryKeys.history`.
+ * published VODs, registration configuration via server function, and paginated match history records using `queryKeys.history`.
  */
 
 import type { QueryClient } from "@tanstack/react-query";
 import { queryOptions } from "@tanstack/react-query";
 import { getPublishedVods } from "@/entities/vod";
 import { queryKeys } from "@/shared/api";
-import { isRegistrationOpen } from "@/shared/lib/auth";
+import { getRegistrationStatus } from "@/shared/lib/auth";
 import type { HistorySearchParams } from "../model/search-params";
 import { getPlayerHistory } from "./server-fns";
 
@@ -64,7 +64,7 @@ export async function loadHistoryIndexPage({
 
 	const [vods, registrationEnabled, historyResult] = await Promise.all([
 		getPublishedVods(),
-		isRegistrationOpen(),
+		getRegistrationStatus(),
 		loadPlayerHistory(deps),
 	]);
 

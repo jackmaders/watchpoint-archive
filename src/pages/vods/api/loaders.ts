@@ -1,15 +1,15 @@
 /**
  * Data loader for the public VOD catalog browsing page.
  *
- * Implements `loadVodsPage` by fetching published training VODs and platform registration flags.
+ * Implements `loadVodsPage` by fetching published training VODs and platform registration status via server function.
  */
 import { getPublishedVods } from "@/entities/vod";
-import { isRegistrationOpen } from "@/shared/lib/auth";
+import { getRegistrationStatus } from "@/shared/lib/auth";
 
 export async function loadVodsPage() {
 	const [vods, registrationEnabled] = await Promise.all([
 		getPublishedVods(),
-		isRegistrationOpen(),
+		getRegistrationStatus(),
 	]);
 	return { registrationEnabled, vods };
 }
