@@ -2,7 +2,7 @@
  * Client-side layout and player shell component for interactive VOD decision training playthroughs.
  *
  * Implements `SessionPlayerClient` coordinating the YouTube media container, tactical scenario overlays,
- * playback status rails, and terminal summary panels (`SessionSummaryPanel`).
+ * playback status rails, guest demo mode configurations, and terminal summary panels (`SessionSummaryPanel`).
  */
 "use client";
 
@@ -30,7 +30,10 @@ import { ScenarioOverlay } from "./scenario-overlay";
 import { SessionSummaryPanel } from "./session-summary-panel";
 
 export interface SessionPlayerClientProps {
+	isDemo?: boolean;
+	onExit?: () => void;
 	playthroughId?: string | null;
+	registrationEnabled?: boolean;
 	scenarioSnapshotIds?: readonly string[];
 	vod: ManifestVod;
 }
@@ -39,6 +42,7 @@ interface SessionPlayerHeaderProps {
 	activeCount: number;
 	currentIndex: number;
 	hero: string | null;
+	isDemo?: boolean;
 	vod: ManifestVod;
 }
 
@@ -46,19 +50,34 @@ function SessionPlayerHeader({
 	activeCount,
 	currentIndex,
 	hero,
+	isDemo = false,
 	vod,
 }: SessionPlayerHeaderProps) {
 	return (
 		<header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
 			<div className="space-y-1">
 				<div className="flex items-center gap-2 flex-wrap">
-					<Link
-						className="text-xs font-semibold text-muted-foreground hover:text-primary transition-colors mr-2 inline-flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-						params={{ id: vod.id }}
-						to="/vods/$id"
-					>
-						← Exit Session
-					</Link>
+					{isDemo ? (
+						<Link
+							className="text-xs font-semibold text-muted-foreground hover:text-primary transition-colors mr-2 inline-flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+							to="/"
+						>
+							← Back to Home
+						</Link>
+					) : (
+						<Link
+							className="text-xs font-semibold text-muted-foreground hover:text-primary transition-colors mr-2 inline-flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+							params={{ id: vod.id }}
+							to="/vods/$id"
+						>
+							← Exit Session
+						</Link>
+					)}
+					{isDemo ? (
+						<span className="px-2 py-0.5 rounded text-xs font-bold bg-primary/20 text-primary border border-primary/50">
+							Interactive Demo
+						</span>
+					) : null}
 					<span className="px-2 py-0.5 rounded text-xs font-bold bg-accent text-accent-foreground border border-border">
 						{vod.mapName}
 					</span>
@@ -324,7 +343,9 @@ function SessionPlayerHeaderOrSummary({
 	exitSession,
 	hero,
 	isCompleted,
+	isDemo,
 	onRetry,
+	registrationEnabled,
 	summary,
 	vod,
 }: {
@@ -333,15 +354,19 @@ function SessionPlayerHeaderOrSummary({
 	exitSession: () => void;
 	hero: string | null;
 	isCompleted: boolean;
+	isDemo?: boolean;
 	onRetry: () => void;
+	registrationEnabled?: boolean;
 	summary: SessionSummaryReport;
 	vod: ManifestVod;
 }) {
 	return isCompleted ? (
 		<div className="py-8 px-4 max-w-6xl mx-auto">
 			<SessionSummaryPanel
+				isDemo={isDemo}
 				onExit={exitSession}
 				onRetry={onRetry}
+				registrationEnabled={registrationEnabled}
 				summary={summary}
 			/>
 		</div>
@@ -350,12 +375,15 @@ function SessionPlayerHeaderOrSummary({
 			activeCount={activeCount}
 			currentIndex={currentIndex}
 			hero={hero}
+			isDemo={isDemo}
 			vod={vod}
 		/>
 	);
 }
 
-export function SessionPlayerClient({
+function useSessionPlayerClientState({
+	isDemo,
+	onExit,
 	playthroughId,
 	scenarioSnapshotIds,
 	vod,
@@ -367,88 +395,92 @@ export function SessionPlayerClient({
 		}
 	}, [playthroughId]);
 
-	const {
-		activeScenarioIndex,
-		activeScenarios,
-		containerRef,
-		currentScenario,
-		currentTime,
-		duration,
-		exitSession,
-		overlayState,
-		pause,
-		play,
-		mediaHealth,
-		remainingMs,
-		replayContext,
-		resumePlayback,
-		retrySession,
-		retryMedia,
-		selectOption,
-		skipUnsupportedInput,
-		state,
-		summary,
-		totalMs,
-	} = useSessionPlayer({
+	const player = useSessionPlayer({
 		initialManifest: vod,
+		isDemo,
+		onExit,
 		onSessionComplete: handleSessionComplete,
 		playthroughId,
 		scenarioSnapshotIds,
 		vodId: vod.id,
 	});
 
-	const effectiveDuration = duration > 0 ? duration : vod.durationSeconds;
+	const effectiveDuration =
+		player.duration > 0 ? player.duration : vod.durationSeconds;
 	const overlayScenarioData = useMemo(
-		() => toScenarioOverlayData(currentScenario),
-		[currentScenario],
+		() => toScenarioOverlayData(player.currentScenario),
+		[player.currentScenario],
 	);
-	const isCompleted = state === "COMPLETED" && summary !== null;
+	const isCompleted = player.state === "COMPLETED" && player.summary !== null;
 	const isOverlayVisible =
-		(state === "SCENARIO_ACTIVE" || state === "FEEDBACK") &&
-		mediaHealth === "ready" &&
-		currentScenario !== null &&
-		overlayState !== null;
+		(player.state === "SCENARIO_ACTIVE" || player.state === "FEEDBACK") &&
+		player.mediaHealth === "ready" &&
+		player.currentScenario !== null &&
+		player.overlayState !== null;
+
+	return {
+		effectiveDuration,
+		hero,
+		isCompleted,
+		isOverlayVisible,
+		overlayScenarioData,
+		player,
+	};
+}
+
+export function SessionPlayerClient(props: SessionPlayerClientProps) {
+	const { isDemo = false, registrationEnabled = true, vod } = props;
+	const {
+		effectiveDuration,
+		hero,
+		isCompleted,
+		isOverlayVisible,
+		overlayScenarioData,
+		player,
+	} = useSessionPlayerClientState(props);
 
 	return (
 		<div className="space-y-6 max-w-6xl mx-auto">
 			<SessionPlayerHeaderOrSummary
-				activeCount={activeScenarios.length}
-				currentIndex={activeScenarioIndex}
-				exitSession={exitSession}
+				activeCount={player.activeScenarios.length}
+				currentIndex={player.activeScenarioIndex}
+				exitSession={player.exitSession}
 				hero={hero}
 				isCompleted={isCompleted}
-				onRetry={retrySession}
-				summary={summary as SessionSummaryReport}
+				isDemo={isDemo}
+				onRetry={player.retrySession}
+				registrationEnabled={registrationEnabled}
+				summary={player.summary as SessionSummaryReport}
 				vod={vod}
 			/>
 
 			<SessionPlayerViewport
-				containerRef={containerRef}
+				containerRef={player.containerRef}
 				isCompleted={isCompleted}
-				isLoading={state === "LOADING"}
+				isLoading={player.state === "LOADING"}
 				isOverlayVisible={isOverlayVisible}
-				mediaHealth={mediaHealth}
-				onReplayContext={replayContext}
-				onRestartSession={retrySession}
-				onResume={resumePlayback}
-				onRetryMedia={retryMedia}
-				onSelectOption={selectOption}
-				onSkipUnsupportedInput={skipUnsupportedInput}
+				mediaHealth={player.mediaHealth}
+				onReplayContext={player.replayContext}
+				onRestartSession={player.retrySession}
+				onResume={player.resumePlayback}
+				onRetryMedia={player.retryMedia}
+				onSelectOption={player.selectOption}
+				onSkipUnsupportedInput={player.skipUnsupportedInput}
 				overlayScenarioData={overlayScenarioData}
-				overlayState={overlayState}
-				remainingMs={remainingMs}
-				totalMs={totalMs}
+				overlayState={player.overlayState}
+				remainingMs={player.remainingMs}
+				totalMs={player.totalMs}
 			/>
 
 			{!isCompleted && !isOverlayVisible ? (
 				<SessionPlayerControls
-					activeScenarios={activeScenarios}
-					currentTime={currentTime}
+					activeScenarios={player.activeScenarios}
+					currentTime={player.currentTime}
 					duration={effectiveDuration}
-					isPlaying={state === "PLAYING"}
-					onPause={pause}
-					onPlay={play}
-					onReplayContext={replayContext}
+					isPlaying={player.state === "PLAYING"}
+					onPause={player.pause}
+					onPlay={player.play}
+					onReplayContext={player.replayContext}
 				/>
 			) : null}
 		</div>

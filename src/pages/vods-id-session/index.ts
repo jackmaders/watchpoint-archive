@@ -1,92 +1,74 @@
 /**
- * Public API for the interactive VOD training session and scenario playthrough slice.
+ * Public API for the interactive VOD training session and scenario playthrough page slice.
  *
  * Re-exports the public interface of `src/pages/vods-id-session/` adhering to Feature-Sliced Design (FSD).
- * Exposes loaders, attempt retry hooks, playthrough reducer actions, contracts, overlays, and player components.
+ * Exposes loaders, route options, route views, and delegates playback widget exports.
  */
-export {
-	loadVodsIdSessionPage,
-	sessionPlaythroughQueryOptions,
-} from "./api/loaders";
-export {
-	calculateBackoffDelay,
-	executeRecordAttempt,
-	isRetryableAttemptError,
-	MAX_ATTEMPT_DELIVERY_ATTEMPTS,
-	useRecordAttemptMutation,
-} from "./api/use-record-attempt";
+
+// Re-export session-player widget primitives for backward compatibility
 export {
 	type AttemptOutcome,
+	calculateBackoffDelay,
+	calculateSessionSummary,
+	createSessionPlaythroughState,
+	executeRecordAttempt,
+	getScenarioLimitMs,
+	InteractiveOverlayEngine,
+	type InteractiveOverlayEngineProps,
+	initialSessionPlayerSession,
+	isRetryableAttemptError,
+	MAX_ATTEMPT_DELIVERY_ATTEMPTS,
+	type ManifestVod,
+	type MediaHealth,
+	type ModuleSummaryReport,
+	normalizeScenario,
+	normalizeScenarioInput,
+	type PlaythroughPlayerState,
 	type RecordAttemptInput,
 	RecordAttemptInputSchema,
 	type RecordAttemptResult,
-} from "./model/attempt";
-export { vodsIdSessionRouteOptions } from "./model/route-options";
-export {
-	normalizeScenario,
-	normalizeScenarioInput,
+	resolveNewStatusState,
 	type ScenarioAnswerSemantics,
 	type ScenarioData,
 	type ScenarioInput,
 	type ScenarioInputType,
+	type ScenarioItem,
 	type ScenarioOption,
+	ScenarioOverlay,
+	type ScenarioOverlayProps,
 	type ScenarioOverlayState,
-	toScenarioOverlayData,
-} from "./model/session-contract";
-export {
-	createSessionPlaythroughState,
-	getScenarioLimitMs,
-	initialSessionPlayerSession,
-	type MediaHealth,
-	resolveNewStatusState,
+	type SessionAttempt,
 	type SessionAttemptOutcome,
+	SessionPlayerClient,
+	type SessionPlayerClientProps,
+	SessionPlayerPage,
+	type SessionPlayerPageProps,
 	type SessionPlayerSession,
-	type SessionPlayerState as PlaythroughPlayerState,
+	type SessionPlayerState,
+	SessionPlayerViewport,
 	type SessionPlaythroughAction,
 	type SessionPlaythroughEffect,
 	type SessionPlaythroughState,
 	type SessionScenario,
+	SessionSummaryPanel,
+	type SessionSummaryPanelProps,
+	type SessionSummaryReport,
 	sessionPlaythroughReducer,
-} from "./model/session-playthrough-coordinator";
+	toScenarioOverlayData,
+	useRecordAttemptMutation,
+	useSessionPlayer,
+} from "@/widgets/session-player";
+export {
+	loadVodsIdSessionPage,
+	sessionPlaythroughQueryOptions,
+} from "./api/loaders";
+export { vodsIdSessionRouteOptions } from "./model/route-options";
 export {
 	type SessionSearch,
 	sessionSearchSchema,
 } from "./model/session-search";
 export {
-	calculateSessionSummary,
-	type ModuleSummaryReport,
-	type SessionAttempt,
-	type SessionSummaryReport,
-} from "./model/summary";
-export {
-	type ManifestVod,
-	type ScenarioItem,
-	type SessionPlayerState,
-	useSessionPlayer,
-} from "./model/use-session-player";
-export {
-	InteractiveOverlayEngine,
-	type InteractiveOverlayEngineProps,
-} from "./ui/interactive-overlay-engine";
-export {
-	ScenarioOverlay,
-	type ScenarioOverlayProps,
-} from "./ui/scenario-overlay";
-export {
-	SessionPlayerClient,
-	type SessionPlayerClientProps,
-	SessionPlayerViewport,
-} from "./ui/session-player-client";
-export {
-	SessionPlayerPage,
-	type SessionPlayerPageProps,
-} from "./ui/session-player-page";
-export {
 	SessionPlayerRouteView,
 	type SessionPlayerRouteViewProps,
 } from "./ui/session-player-route-view";
-export {
-	SessionSummaryPanel,
-	type SessionSummaryPanelProps,
-} from "./ui/session-summary-panel";
 export { VodsIdSessionRouteComponent } from "./ui/vods-id-session-route";

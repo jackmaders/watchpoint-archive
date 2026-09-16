@@ -2,18 +2,23 @@
  * End-of-session performance summary modal presented upon completing an interactive VOD playthrough.
  *
  * Implements `SessionSummaryPanel` rendering accuracy tiers, median latency stats, per-module performance breakdowns,
- * and retry/exit call-to-actions.
+ * guest post-demo registration triggers, and retry/exit call-to-actions.
  */
 "use client";
 
-import { useEffect, useRef } from "react";
+import { Link } from "@tanstack/react-router";
+import { Sparkles } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { MODULE_MAP } from "@/entities/vod";
+import { AuthModal } from "@/shared/ui/auth-modal";
 import type { SessionSummaryReport } from "../model/summary";
 import type { ModuleType } from "../model/types";
 
 export interface SessionSummaryPanelProps {
+	isDemo?: boolean;
 	onExit: () => void;
 	onRetry: () => void;
+	registrationEnabled?: boolean;
 	summary: SessionSummaryReport;
 }
 
@@ -61,12 +66,16 @@ function getRankBadge(accuracyPercentage: number): RankThreshold {
 }
 
 export function SessionSummaryPanel({
+	isDemo = false,
 	onExit,
 	onRetry,
+	registrationEnabled = true,
 	summary,
 }: SessionSummaryPanelProps) {
 	const containerRef = useRef<HTMLElement | null>(null);
+	const [authOpen, setAuthOpen] = useState(false);
 	const rank = getRankBadge(summary.accuracyPercentage);
+	const openAuthModal = useCallback(() => setAuthOpen(true), []);
 
 	useEffect(() => {
 		containerRef.current?.focus();
@@ -91,7 +100,7 @@ export function SessionSummaryPanel({
 				<div className="space-y-1">
 					<div className="flex items-center gap-2">
 						<span className="text-xs font-bold tracking-widest text-primary uppercase font-mono">
-							Session Complete
+							{isDemo ? "Demo Complete" : "Session Complete"}
 						</span>
 						<span
 							className={`text-xs font-extrabold px-2.5 py-0.5 rounded-md border ${rank.badgeClass}`}
@@ -100,10 +109,47 @@ export function SessionSummaryPanel({
 						</span>
 					</div>
 					<h2 className="text-2xl sm:text-3xl font-extrabold text-card-foreground tracking-tight">
-						Performance Summary
+						{isDemo ? "Interactive Demo Summary" : "Performance Summary"}
 					</h2>
 				</div>
 			</header>
+
+			{isDemo ? (
+				<div className="rounded-lg border border-primary/40 bg-gradient-to-br from-card via-card to-primary/10 p-6 space-y-4 shadow-sm">
+					<div className="flex items-center gap-2.5">
+						<Sparkles className="h-5 w-5 text-primary" />
+						<h3 className="text-lg font-bold text-card-foreground">
+							Save Your Scores & Access Full Training
+						</h3>
+					</div>
+					<p className="text-sm text-muted-foreground leading-relaxed">
+						Create a free account to save your match playthroughs, track your
+						tactical decision accuracy over time, and explore our complete
+						catalog of Grandmaster scenarios.
+					</p>
+					<div className="flex flex-wrap items-center gap-3 pt-1">
+						<button
+							className="px-5 py-2.5 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-bold shadow-md shadow-primary/20 transition-all active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+							onClick={openAuthModal}
+							type="button"
+						>
+							Sign In / Create Account
+						</button>
+						<Link
+							className="px-5 py-2.5 rounded-md border border-input bg-secondary hover:bg-accent hover:text-accent-foreground text-secondary-foreground text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+							to="/vods"
+						>
+							Explore Full Catalog
+						</Link>
+					</div>
+					<AuthModal
+						defaultMode="register"
+						onOpenChange={setAuthOpen}
+						open={authOpen}
+						registrationEnabled={registrationEnabled}
+					/>
+				</div>
+			) : null}
 
 			<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 				<div className="p-4 sm:p-5 rounded-lg border border-border bg-background/60 flex flex-col justify-between space-y-2">
@@ -180,14 +226,14 @@ export function SessionSummaryPanel({
 					onClick={onExit}
 					type="button"
 				>
-					Return to VOD
+					{isDemo ? "Exit Demo" : "Return to VOD"}
 				</button>
 				<button
 					className="w-full sm:w-auto px-6 py-2.5 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-bold shadow-sm transition-all active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
 					onClick={onRetry}
 					type="button"
 				>
-					Retry Training Session
+					{isDemo ? "Retry Demo Scenario" : "Retry Training Session"}
 				</button>
 			</footer>
 		</section>

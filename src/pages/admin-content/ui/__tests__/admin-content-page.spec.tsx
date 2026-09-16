@@ -13,6 +13,7 @@ import * as adminVodEditor from "@/widgets/admin-vod-editor";
 import { AdminContentPage } from "../admin-content-page";
 
 vi.mock("@tanstack/react-router");
+vi.mock("@/shared/lib/auth-client");
 
 const mockAdminUser: AuthenticatedUser = {
 	email: "admin@example.com",

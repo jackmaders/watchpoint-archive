@@ -4,6 +4,7 @@ import type { AuditEntryItem, ScenarioItem, VodItem } from "../../model";
 import { AdminVodEditorPage } from "../admin-vod-editor-page";
 
 vi.mock("@tanstack/react-router");
+vi.mock("@/shared/lib/auth-client");
 vi.mock("../../api/server-fns");
 
 import {

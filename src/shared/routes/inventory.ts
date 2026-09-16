@@ -39,6 +39,12 @@ export const DEFAULT_ROUTE_INVENTORY: readonly RouteInventoryEntry[] = [
 		isUserFacing: true,
 	},
 	{
+		accessStates: ["public", "authenticated_user", "registration_disabled"],
+		description: "Public unauthenticated interactive demo VOD scenario",
+		fullPath: "/demo",
+		isUserFacing: true,
+	},
+	{
 		accessStates: ["admin"],
 		description: "Administrator root redirect",
 		fullPath: "/admin",

@@ -43,7 +43,7 @@ describe("HeroSection", () => {
 		).toBeDefined();
 		expect(startTrainingLink).toBeDefined();
 		expect(tryItNowLink).toBeDefined();
-		expect(tryItNowLink.getAttribute("href")).toBe("/vods/vod_local_fixture");
+		expect(tryItNowLink.getAttribute("href")).toBe("/demo");
 		expect(
 			screen.queryByText(/overwatch 2 tactical decision training/i),
 		).toBeNull();
@@ -92,14 +92,5 @@ describe("HeroSection", () => {
 
 		// Assert
 		expect(screen.queryByRole("dialog")).toBeNull();
-	});
-
-	it("renders Try It Now CTA with custom demoVodId when provided", () => {
-		// Arrange & Act
-		render(<HeroSection demoVodId="vod_custom_demo" />);
-
-		// Assert
-		const tryItNowLink = screen.getByRole("link", { name: /try it now/i });
-		expect(tryItNowLink.getAttribute("href")).toBe("/vods/vod_custom_demo");
 	});
 });

@@ -136,6 +136,7 @@ describe("SessionPlayerPage", () => {
 
 		const page = await SessionPlayerPage({
 			params: { id: "vod_gm_ana" },
+			playthroughId: "playthrough_1",
 			vod: progressionVod,
 		});
 		renderWithClient(page);
@@ -182,8 +183,10 @@ describe("SessionPlayerPage", () => {
 				idempotencyKey: expect.any(String),
 				isCorrect: true,
 				isTimedOut: false,
+				playthroughId: "playthrough_1",
 				responseTimeMs: expect.any(Number),
 				scenarioId: "sc_1",
+				scenarioSnapshotId: undefined,
 				selectedOptionId: "opt_1a",
 			},
 		});
@@ -214,8 +217,10 @@ describe("SessionPlayerPage", () => {
 				idempotencyKey: expect.any(String),
 				isCorrect: false,
 				isTimedOut: false,
+				playthroughId: "playthrough_1",
 				responseTimeMs: expect.any(Number),
 				scenarioId: "sc_2",
+				scenarioSnapshotId: undefined,
 				selectedOptionId: "opt_2a",
 			},
 		});

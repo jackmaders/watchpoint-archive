@@ -19,7 +19,7 @@ describe("CtaSection", () => {
 		} as never);
 	});
 
-	it("renders conversion headline and dual CTAs (Start Training and Try It Now)", () => {
+	it("renders conversion headline and dual CTAs (Start Training and Try Interactive Demo)", () => {
 		// Arrange
 		render(<CtaSection />);
 
@@ -30,15 +30,15 @@ describe("CtaSection", () => {
 		const startTrainingLink = screen.getByRole("link", {
 			name: /start training/i,
 		});
-		const tryItNowLink = screen.getByRole("link", {
-			name: /try it now/i,
+		const demoLink = screen.getByRole("link", {
+			name: /try interactive demo/i,
 		});
 
 		// Assert
 		expect(heading).toBeDefined();
 		expect(startTrainingLink).toBeDefined();
-		expect(tryItNowLink).toBeDefined();
-		expect(tryItNowLink.getAttribute("href")).toBe("/vods/vod_local_fixture");
+		expect(demoLink).toBeDefined();
+		expect(demoLink.getAttribute("href")).toBe("/demo");
 	});
 
 	it("opens auth modal when unauthenticated player clicks Start Training and navigates on success", async () => {
@@ -81,14 +81,5 @@ describe("CtaSection", () => {
 
 		// Assert
 		expect(screen.queryByRole("dialog")).toBeNull();
-	});
-
-	it("renders Try It Now with custom demoVodId when passed", () => {
-		// Arrange & Act
-		render(<CtaSection demoVodId="vod_custom_demo" />);
-
-		// Assert
-		const tryItNowLink = screen.getByRole("link", { name: /try it now/i });
-		expect(tryItNowLink.getAttribute("href")).toBe("/vods/vod_custom_demo");
 	});
 });
