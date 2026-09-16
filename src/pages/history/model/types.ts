@@ -16,11 +16,15 @@ export type { JsonValue, ModuleType, PlaythroughStatus };
 export type PublishedVodItem = typeof vods.$inferSelect;
 
 export interface GetPlayerHistoryOptions {
+	hero?: string;
+	levelOfPlay?: string;
 	limit?: number;
+	map?: string;
 	modules?: readonly ModuleType[];
 	offset?: number;
 	page?: number;
 	pageSize?: number;
+	player?: string;
 	vodId?: string;
 }
 
@@ -65,6 +69,7 @@ export interface PlayerHistoryItem {
 	userId: string;
 	vod?: {
 		durationSeconds: number;
+		heroName?: string;
 		id: string;
 		mapName: string;
 		rankTier: string;

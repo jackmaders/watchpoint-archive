@@ -1,91 +1,326 @@
 /**
- * Catalog browser view presenting all published Overwatch 2 training VODs.
+ * Catalog browser view presenting all published Overwatch 2 training VODs with multi-dimensional filtering.
  *
  * Implements `VodsPage` wrapped in `AppLayout`, rendering hero tags, rank tier badges, map names,
- * video durations, and navigation links to pre-session setup pages.
+ * video durations, filter controls for Map, Hero, Level of Play, and Player, and navigation links to pre-session setup pages.
  */
 import { Link } from "@tanstack/react-router";
+import { type ChangeEvent, useCallback } from "react";
 import { formatDuration } from "@/shared/lib/utils";
+import { Button } from "@/shared/ui/button";
 import type { PublishedVodItem } from "@/widgets/admin-vod-editor";
 import { AppLayout } from "@/widgets/layout-main";
+import type { VodsSearchParams } from "../model/search-params";
 
 export type VodItem = PublishedVodItem;
 export { formatDuration };
 
-export function VodsPage(props?: {
+export interface VodsPageProps {
+	onFilterChange?: (newParams: VodsSearchParams) => void;
 	registrationEnabled?: boolean;
+	searchParams?: VodsSearchParams;
 	vods?: PublishedVodItem[];
-}) {
+}
+
+const DEFAULT_LEVELS_OF_PLAY = [
+	"Grandmaster",
+	"Champion",
+	"GM Ranked",
+	"FACEIT",
+	"OWCS",
+	"Top 500",
+	"Master",
+	"Diamond",
+];
+
+export function VodsPage(props?: VodsPageProps) {
 	const vods = props?.vods ?? [];
+	const searchParams = props?.searchParams;
+	const onFilterChange = props?.onFilterChange;
+
+	const hasActiveFilters = Boolean(
+		searchParams?.map ||
+			searchParams?.hero ||
+			searchParams?.levelOfPlay ||
+			searchParams?.player,
+	);
+
+	const handleClearFilters = useCallback(() => {
+		onFilterChange?.({});
+	}, [onFilterChange]);
 
 	return (
 		<AppLayout registrationEnabled={props?.registrationEnabled}>
 			<div className="mx-auto max-w-6xl space-y-8">
-				<header className="space-y-3 border-b border-border pb-6">
-					<h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-						VOD Training Catalog
-					</h1>
-					<p className="max-w-2xl text-base text-muted-foreground">
-						Select a match to practice decision making, cooldown management, and
-						tactical positioning.
-					</p>
-				</header>
+				<VodsHeader />
+
+				<VodsFilterBar
+					hasActiveFilters={hasActiveFilters}
+					onClearFilters={handleClearFilters}
+					onFilterChange={onFilterChange}
+					searchParams={searchParams}
+					vods={vods}
+				/>
 
 				{vods.length === 0 ? (
-					<div className="rounded-lg border border-dashed border-border bg-muted/50 p-8 text-center sm:p-12">
-						<p className="text-lg font-medium text-muted-foreground">
-							No training VODs currently available.
-						</p>
-						<p className="mt-1 text-sm text-muted-foreground/80">
-							Check back soon for new Grandmaster and Top 500 session uploads.
-						</p>
-					</div>
+					<VodsEmptyState
+						hasActiveFilters={hasActiveFilters}
+						onClearFilters={handleClearFilters}
+					/>
 				) : (
-					<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-						{vods.map((vod) => (
-							<div
-								className="flex flex-col justify-between rounded-lg border border-border bg-card p-5 text-card-foreground shadow-sm transition-[border-color,box-shadow] duration-200 hover:border-primary/60 hover:shadow-md motion-reduce:transition-none"
-								key={vod.id}
-							>
-								<div className="space-y-4">
-									<div className="flex items-center justify-between gap-2 flex-wrap">
-										<div className="flex items-center gap-1.5 flex-wrap">
-											<span className="rounded-sm border border-accent bg-accent px-2 py-0.5 text-xs font-semibold text-accent-foreground">
-												{vod.mapName}
-											</span>
-											<span className="rounded-sm border border-secondary bg-secondary px-2 py-0.5 text-xs font-semibold text-secondary-foreground">
-												{vod.heroName}
-											</span>
-										</div>
-										<span className="rounded-sm border border-primary/40 bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
-											{vod.rankTier}
-										</span>
-									</div>
-
-									<h2 className="line-clamp-2 text-xl font-semibold text-card-foreground">
-										{vod.title}
-									</h2>
-
-									<div className="flex items-center justify-between gap-2 border-t border-border pt-3 font-mono text-xs text-muted-foreground">
-										<span>Duration: {formatDuration(vod.durationSeconds)}</span>
-										<span>{vod.scenarios.length} Scenarios</span>
-									</div>
-								</div>
-
-								<div className="mt-6">
-									<Link
-										className="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card active:bg-primary/80 motion-reduce:transition-none"
-										params={{ id: vod.id }}
-										to="/vods/$id"
-									>
-										Start Training
-									</Link>
-								</div>
-							</div>
-						))}
-					</div>
+					<VodsGrid vods={vods} />
 				)}
 			</div>
 		</AppLayout>
+	);
+}
+
+function VodsHeader() {
+	return (
+		<header className="space-y-3 border-b border-border pb-6">
+			<h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+				VOD Training Catalog
+			</h1>
+			<p className="max-w-2xl text-base text-muted-foreground">
+				Select a match to practice decision making, cooldown management, and
+				tactical positioning.
+			</p>
+		</header>
+	);
+}
+
+function VodsFilterBar({
+	hasActiveFilters,
+	onClearFilters,
+	onFilterChange,
+	searchParams,
+	vods,
+}: {
+	hasActiveFilters: boolean;
+	onClearFilters: () => void;
+	onFilterChange?: (newParams: VodsSearchParams) => void;
+	searchParams?: VodsSearchParams;
+	vods: PublishedVodItem[];
+}) {
+	return (
+		<div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-4">
+			<VodsFilterInputs
+				onFilterChange={onFilterChange}
+				searchParams={searchParams}
+				vods={vods}
+			/>
+
+			{hasActiveFilters ? (
+				<div className="flex items-center justify-end border-t border-border pt-3">
+					<Button
+						aria-label="Clear all filters"
+						onClick={onClearFilters}
+						size="sm"
+						variant="outline"
+					>
+						Clear Filters
+					</Button>
+				</div>
+			) : null}
+		</div>
+	);
+}
+
+function VodsFilterInputs({
+	onFilterChange,
+	searchParams,
+	vods,
+}: {
+	onFilterChange?: (newParams: VodsSearchParams) => void;
+	searchParams?: VodsSearchParams;
+	vods: PublishedVodItem[];
+}) {
+	const handleMapChange = useCallback(
+		(e: ChangeEvent<HTMLSelectElement>) =>
+			onFilterChange?.({ ...searchParams, map: e.target.value || undefined }),
+		[onFilterChange, searchParams],
+	);
+
+	const handleHeroChange = useCallback(
+		(e: ChangeEvent<HTMLSelectElement>) =>
+			onFilterChange?.({ ...searchParams, hero: e.target.value || undefined }),
+		[onFilterChange, searchParams],
+	);
+
+	const handleLevelOfPlayChange = useCallback(
+		(e: ChangeEvent<HTMLSelectElement>) =>
+			onFilterChange?.({
+				...searchParams,
+				levelOfPlay: e.target.value || undefined,
+			}),
+		[onFilterChange, searchParams],
+	);
+
+	const handlePlayerChange = useCallback(
+		(e: ChangeEvent<HTMLInputElement>) =>
+			onFilterChange?.({
+				...searchParams,
+				player: e.target.value || undefined,
+			}),
+		[onFilterChange, searchParams],
+	);
+
+	const availableMaps = Array.from(
+		new Set(
+			[...vods.map((v) => v.mapName), searchParams?.map].filter(
+				Boolean,
+			) as string[],
+		),
+	).sort();
+
+	const availableHeroes = Array.from(
+		new Set(
+			[...vods.map((v) => v.heroName), searchParams?.hero].filter(
+				Boolean,
+			) as string[],
+		),
+	).sort();
+
+	const availableLevels = Array.from(
+		new Set(
+			[
+				...DEFAULT_LEVELS_OF_PLAY,
+				...vods.map((v) => v.rankTier),
+				searchParams?.levelOfPlay,
+			].filter(Boolean) as string[],
+		),
+	);
+
+	return (
+		<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+			<select
+				aria-label="Filter by Map"
+				className="h-9 rounded-md border border-input bg-background px-3 py-1 text-xs text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+				onChange={handleMapChange}
+				value={searchParams?.map ?? ""}
+			>
+				<option value="">All Maps</option>
+				{availableMaps.map((map) => (
+					<option key={map} value={map}>
+						{map}
+					</option>
+				))}
+			</select>
+
+			<select
+				aria-label="Filter by Hero"
+				className="h-9 rounded-md border border-input bg-background px-3 py-1 text-xs text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+				onChange={handleHeroChange}
+				value={searchParams?.hero ?? ""}
+			>
+				<option value="">All Heroes</option>
+				{availableHeroes.map((hero) => (
+					<option key={hero} value={hero}>
+						{hero}
+					</option>
+				))}
+			</select>
+
+			<select
+				aria-label="Filter by Level of Play"
+				className="h-9 rounded-md border border-input bg-background px-3 py-1 text-xs text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+				onChange={handleLevelOfPlayChange}
+				value={searchParams?.levelOfPlay ?? ""}
+			>
+				<option value="">All Levels</option>
+				{availableLevels.map((lvl) => (
+					<option key={lvl} value={lvl}>
+						{lvl}
+					</option>
+				))}
+			</select>
+
+			<input
+				aria-label="Filter by Player"
+				className="h-9 rounded-md border border-input bg-background px-3 py-1 text-xs text-foreground shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+				onChange={handlePlayerChange}
+				placeholder="Filter by player…"
+				type="text"
+				value={searchParams?.player ?? ""}
+			/>
+		</div>
+	);
+}
+
+function VodsEmptyState({
+	hasActiveFilters,
+	onClearFilters,
+}: {
+	hasActiveFilters: boolean;
+	onClearFilters: () => void;
+}) {
+	return (
+		<div className="rounded-lg border border-dashed border-border bg-muted/50 p-8 text-center sm:p-12">
+			<p className="text-lg font-medium text-muted-foreground">
+				{hasActiveFilters
+					? "No training VODs match the selected filters."
+					: "No training VODs currently available."}
+			</p>
+			<p className="mt-1 text-sm text-muted-foreground/80">
+				{hasActiveFilters
+					? "Try adjusting or clearing your filters to see more sessions."
+					: "Check back soon for new Grandmaster and Top 500 session uploads."}
+			</p>
+			{hasActiveFilters ? (
+				<div className="mt-4">
+					<Button onClick={onClearFilters} size="sm" variant="outline">
+						Clear Filters
+					</Button>
+				</div>
+			) : null}
+		</div>
+	);
+}
+
+function VodsGrid({ vods }: { vods: PublishedVodItem[] }) {
+	return (
+		<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+			{vods.map((vod) => (
+				<div
+					className="flex flex-col justify-between rounded-lg border border-border bg-card p-5 text-card-foreground shadow-sm transition-[border-color,box-shadow] duration-200 hover:border-primary/60 hover:shadow-md motion-reduce:transition-none"
+					key={vod.id}
+				>
+					<div className="space-y-4">
+						<div className="flex items-center justify-between gap-2 flex-wrap">
+							<div className="flex items-center gap-1.5 flex-wrap">
+								<span className="rounded-sm border border-accent bg-accent px-2 py-0.5 text-xs font-semibold text-accent-foreground">
+									{vod.mapName}
+								</span>
+								<span className="rounded-sm border border-secondary bg-secondary px-2 py-0.5 text-xs font-semibold text-secondary-foreground">
+									{vod.heroName}
+								</span>
+							</div>
+							<span className="rounded-sm border border-primary/40 bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
+								{vod.rankTier}
+							</span>
+						</div>
+
+						<h2 className="line-clamp-2 text-xl font-semibold text-card-foreground">
+							{vod.title}
+						</h2>
+
+						<div className="flex items-center justify-between gap-2 border-t border-border pt-3 font-mono text-xs text-muted-foreground">
+							<span>Duration: {formatDuration(vod.durationSeconds)}</span>
+							<span>{vod.scenarios.length} Scenarios</span>
+						</div>
+					</div>
+
+					<div className="mt-6">
+						<Link
+							className="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card active:bg-primary/80 motion-reduce:transition-none"
+							params={{ id: vod.id }}
+							to="/vods/$id"
+						>
+							Start Training
+						</Link>
+					</div>
+				</div>
+			))}
+		</div>
 	);
 }

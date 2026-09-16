@@ -7,6 +7,7 @@
 import { redirect } from "@tanstack/react-router";
 import { getPublishedVods } from "@/entities/vod";
 import { getRegistrationStatus, getSessionUser } from "@/shared/lib/auth";
+import type { VodsSearchParams } from "../model/search-params";
 
 export async function vodsBeforeLoad() {
 	const user = await getSessionUser().catch(() => null);
@@ -16,10 +17,10 @@ export async function vodsBeforeLoad() {
 	return { user };
 }
 
-export async function loadVodsPage() {
+export async function loadVodsPage({ deps }: { deps?: VodsSearchParams } = {}) {
 	const [vods, registrationEnabled] = await Promise.all([
-		getPublishedVods(),
+		getPublishedVods({ data: deps ?? {} }),
 		getRegistrationStatus(),
 	]);
-	return { registrationEnabled, vods };
+	return { registrationEnabled, vods: vods ?? [] };
 }

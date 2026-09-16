@@ -11,11 +11,15 @@ import { getHistoryRule } from "../model/get-history";
 import type { GetHistoryResult } from "../model/types";
 
 export const GetPlayerHistorySchema = z.object({
+	hero: z.string().optional(),
+	levelOfPlay: z.string().optional(),
+	map: z.string().optional(),
 	modules: z
 		.array(z.enum(["STRATEGY", "TACTICS", "TRACKING", "SPATIAL"]))
 		.optional(),
 	page: z.number().int().positive().optional(),
 	pageSize: z.number().int().positive().optional(),
+	player: z.string().optional(),
 	vodId: z.string().optional(),
 });
 

@@ -28,9 +28,13 @@ export const historyQueryOptions = (deps?: HistorySearchParams) =>
 		queryFn: () =>
 			getPlayerHistory({
 				data: {
+					hero: deps?.hero,
+					levelOfPlay: deps?.levelOfPlay,
+					map: deps?.map,
 					modules: deps?.modules ? [...deps.modules] : undefined,
 					page: deps?.page,
 					pageSize: deps?.pageSize,
+					player: deps?.player,
 					vodId: deps?.vodId,
 				},
 			}),
@@ -43,9 +47,13 @@ export const historyQueryOptions = (deps?: HistorySearchParams) =>
 export async function loadPlayerHistory(deps?: HistorySearchParams) {
 	const historyResult = (await getPlayerHistory({
 		data: {
+			hero: deps?.hero,
+			levelOfPlay: deps?.levelOfPlay,
+			map: deps?.map,
 			modules: deps?.modules ? [...deps.modules] : undefined,
 			page: deps?.page,
 			pageSize: deps?.pageSize,
+			player: deps?.player,
 			vodId: deps?.vodId,
 		},
 	})) as unknown as import("../model/types").GetHistoryResult;

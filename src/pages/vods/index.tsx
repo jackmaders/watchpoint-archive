@@ -7,5 +7,10 @@
 export { loadVodsPage, vodsBeforeLoad } from "./api/loaders";
 export { getPublishedVods } from "./api/server-fns";
 export { vodsRouteOptions } from "./model/route-options";
+export {
+	type VodsSearchParams,
+	validateVodsSearch,
+	vodsSearchSchema,
+} from "./model/search-params";
 export { VodsPage } from "./ui/vods-page";
 export { VodsRouteComponent } from "./ui/vods-route";

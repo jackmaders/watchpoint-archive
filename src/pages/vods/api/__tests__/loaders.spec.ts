@@ -56,7 +56,7 @@ describe("vods loaders", () => {
 	});
 
 	describe("loadVodsPage", () => {
-		it("loads published vods and registration state", async () => {
+		it("loads published vods and registration state without filter deps", async () => {
 			// Arrange
 			const mockVods = [{ id: "vod_1" }] as never;
 			vi.mocked(getPublishedVods).mockResolvedValueOnce(mockVods);
@@ -66,11 +66,49 @@ describe("vods loaders", () => {
 			const result = await loadVodsPage();
 
 			// Assert
-			expect(getPublishedVods).toHaveBeenCalled();
+			expect(getPublishedVods).toHaveBeenCalledWith({ data: {} });
 			expect(getRegistrationStatus).toHaveBeenCalled();
 			expect(result).toEqual({
 				registrationEnabled: true,
 				vods: mockVods,
+			});
+		});
+
+		it("loads published vods with search filter deps", async () => {
+			// Arrange
+			const mockVods = [{ id: "vod_1", mapName: "King's Row" }] as never;
+			vi.mocked(getPublishedVods).mockResolvedValueOnce(mockVods);
+			vi.mocked(getRegistrationStatus).mockResolvedValueOnce(true);
+
+			// Act
+			const deps = {
+				hero: "Ana",
+				levelOfPlay: "Grandmaster",
+				map: "King's Row",
+				player: "Viol2t",
+			};
+			const result = await loadVodsPage({ deps });
+
+			// Assert
+			expect(getPublishedVods).toHaveBeenCalledWith({ data: deps });
+			expect(result).toEqual({
+				registrationEnabled: true,
+				vods: mockVods,
+			});
+		});
+
+		it("falls back to empty array when getPublishedVods returns undefined", async () => {
+			// Arrange
+			vi.mocked(getPublishedVods).mockResolvedValueOnce(undefined as never);
+			vi.mocked(getRegistrationStatus).mockResolvedValueOnce(false);
+
+			// Act
+			const result = await loadVodsPage();
+
+			// Assert
+			expect(result).toEqual({
+				registrationEnabled: false,
+				vods: [],
 			});
 		});
 	});

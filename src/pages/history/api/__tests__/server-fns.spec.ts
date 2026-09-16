@@ -1,7 +1,8 @@
 /**
  * Tests server functions and validation for player history retrieval.
  *
- * Verifies payload parsing, invalid payload rejections, and handler execution delegating to getHistoryRule.
+ * Verifies payload parsing with advanced filter dimensions, invalid payload rejections,
+ * and handler execution delegating to getHistoryRule.
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -17,7 +18,7 @@ describe("history server-fns", () => {
 		vi.clearAllMocks();
 	});
 
-	it("executes getPlayerHistory handler with data", async () => {
+	it("executes getPlayerHistory handler with data including advanced filters", async () => {
 		// Arrange
 		const mockResult = {
 			data: { items: [], page: 1, pageSize: 10, total: 0, totalPages: 0 },
@@ -28,12 +29,32 @@ describe("history server-fns", () => {
 		// Act
 		const result = await (
 			getPlayerHistory as unknown as (ctx: {
-				data: { page: number };
+				data: {
+					hero: string;
+					levelOfPlay: string;
+					map: string;
+					page: number;
+					player: string;
+				};
 			}) => Promise<unknown>
-		)({ data: { page: 1 } });
+		)({
+			data: {
+				hero: "Ana",
+				levelOfPlay: "Grandmaster",
+				map: "King's Row",
+				page: 1,
+				player: "Proper",
+			},
+		});
 
 		// Assert
-		expect(getHistoryRule).toHaveBeenCalledWith({ page: 1 });
+		expect(getHistoryRule).toHaveBeenCalledWith({
+			hero: "Ana",
+			levelOfPlay: "Grandmaster",
+			map: "King's Row",
+			page: 1,
+			player: "Proper",
+		});
 		expect(result).toBe(mockResult);
 	});
 

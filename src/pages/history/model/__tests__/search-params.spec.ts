@@ -2,12 +2,16 @@ import { describe, expect, it } from "vitest";
 import { validateHistorySearch } from "../search-params";
 
 describe("validateHistorySearch", () => {
-	it("parses valid search parameters", () => {
+	it("parses valid search parameters including advanced filters", () => {
 		// Arrange
 		const raw = {
+			hero: "Tracer",
+			levelOfPlay: "GM Ranked",
+			map: "King's Row",
 			modules: ["STRATEGY", "TACTICS"],
 			page: "2",
 			pageSize: "20",
+			player: "Proper",
 			vodId: "vod_123",
 		};
 
@@ -16,9 +20,13 @@ describe("validateHistorySearch", () => {
 
 		// Assert
 		expect(result).toEqual({
+			hero: "Tracer",
+			levelOfPlay: "GM Ranked",
+			map: "King's Row",
 			modules: ["STRATEGY", "TACTICS"],
 			page: 2,
 			pageSize: 20,
+			player: "Proper",
 			vodId: "vod_123",
 		});
 	});
