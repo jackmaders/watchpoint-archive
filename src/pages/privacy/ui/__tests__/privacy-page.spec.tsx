@@ -14,12 +14,10 @@ describe("PrivacyPage component", () => {
 		expect(
 			screen.getByRole("heading", { name: "Privacy Statement" }),
 		).toBeDefined();
-		expect(
-			screen.getByText("Watchpoint / Security & Compliance"),
-		).toBeDefined();
+		expect(screen.getByText("Watchpoint / Legal & Compliance")).toBeDefined();
 		expect(
 			screen.getByText(
-				/transparent overview of our data collection practices/i,
+				/transparency and data protection are fundamental to our platform/i,
 			),
 		).toBeDefined();
 	});
@@ -33,36 +31,46 @@ describe("PrivacyPage component", () => {
 			screen.getByRole("heading", { name: "Zero Ad Tracking" }),
 		).toBeDefined();
 		expect(
-			screen.getByRole("heading", { name: "Edge-Native Isolation" }),
+			screen.getByRole("heading", { name: "Edge-Native Security" }),
 		).toBeDefined();
 		expect(
-			screen.getByRole("heading", { name: "Player Control" }),
+			screen.getByRole("heading", { name: "Player Data Rights" }),
 		).toBeDefined();
 	});
 
-	it("renders all four core privacy sections", () => {
+	it("renders all six core privacy sections", () => {
 		// Arrange & Act
 		render(<PrivacyPage />);
 
 		// Assert
 		expect(
 			screen.getByRole("heading", {
-				name: /1\. Account Identity & Authentication/i,
+				name: /1\. Who We Are and Scope/i,
 			}),
 		).toBeDefined();
 		expect(
 			screen.getByRole("heading", {
-				name: /2\. Training Attempt & Decision Telemetry/i,
+				name: /2\. Information We Collect/i,
 			}),
 		).toBeDefined();
 		expect(
 			screen.getByRole("heading", {
-				name: /3\. Session State & Local Storage/i,
+				name: /3\. How and Why We Use Your Information/i,
 			}),
 		).toBeDefined();
 		expect(
 			screen.getByRole("heading", {
-				name: /4\. Data Retention & Player Rights/i,
+				name: /4\. Data Sharing and Third Parties/i,
+			}),
+		).toBeDefined();
+		expect(
+			screen.getByRole("heading", {
+				name: /5\. Data Retention Policies/i,
+			}),
+		).toBeDefined();
+		expect(
+			screen.getByRole("heading", {
+				name: /6\. Your Data Protection Rights/i,
 			}),
 		).toBeDefined();
 	});
