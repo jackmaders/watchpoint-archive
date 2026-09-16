@@ -47,6 +47,7 @@ describe("Route Inventory Manifest", () => {
 		// Arrange
 		const fullPaths = [
 			"/",
+			"/privacy",
 			"/admin",
 			"/admin/audit",
 			"/admin/content",

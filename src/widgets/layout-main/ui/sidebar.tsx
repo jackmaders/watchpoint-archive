@@ -14,6 +14,7 @@ import {
 	PanelLeft,
 	PanelLeftClose,
 	Shield,
+	ShieldCheck,
 } from "lucide-react";
 import { useCallback, useState } from "react";
 import { authClient } from "@/shared/lib/auth-client";
@@ -45,6 +46,11 @@ const NAV_ITEMS: NavItem[] = [
 		href: "/history",
 		icon: History,
 		label: "Training History",
+	},
+	{
+		href: "/privacy",
+		icon: ShieldCheck,
+		label: "Privacy Statement",
 	},
 	{
 		href: "/admin",
