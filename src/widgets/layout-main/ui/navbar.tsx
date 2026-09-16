@@ -8,14 +8,12 @@
  */
 
 import { Link, useLocation } from "@tanstack/react-router";
-import { ChevronRight, Menu, PanelLeft, PanelLeftClose, X } from "lucide-react";
+import { ChevronRight, Menu, X } from "lucide-react";
 import { AccountControls } from "@/shared/ui/auth-modal";
 import { Button } from "@/shared/ui/button";
 
 export interface NavbarProps {
-	isDesktopSidebarCollapsed?: boolean;
 	isMobileSidebarOpen?: boolean;
-	onToggleDesktopSidebar?: () => void;
 	onToggleMobileSidebar?: () => void;
 	registrationEnabled?: boolean;
 }
@@ -29,7 +27,7 @@ interface RouteSectionMapping {
 const SECTION_MAPPINGS: readonly RouteSectionMapping[] = [
 	{
 		match: (path) => path === "/",
-		section: "Overview",
+		section: "Home",
 	},
 	{
 		match: (path) => path === "/vods",
@@ -87,9 +85,7 @@ function getSectionName(pathname: string): {
 }
 
 export function Navbar({
-	isDesktopSidebarCollapsed = false,
 	isMobileSidebarOpen = false,
-	onToggleDesktopSidebar,
 	onToggleMobileSidebar,
 	registrationEnabled = true,
 }: NavbarProps) {
@@ -116,23 +112,6 @@ export function Navbar({
 						<X className="h-5 w-5" />
 					) : (
 						<Menu className="h-5 w-5" />
-					)}
-				</Button>
-
-				<Button
-					aria-label={
-						isDesktopSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"
-					}
-					className="hidden md:inline-flex"
-					onClick={onToggleDesktopSidebar}
-					size="icon"
-					type="button"
-					variant="ghost"
-				>
-					{isDesktopSidebarCollapsed ? (
-						<PanelLeft className="h-5 w-5" />
-					) : (
-						<PanelLeftClose className="h-5 w-5" />
 					)}
 				</Button>
 

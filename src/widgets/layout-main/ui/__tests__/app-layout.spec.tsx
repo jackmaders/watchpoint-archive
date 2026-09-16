@@ -22,7 +22,7 @@ describe("AppLayout", () => {
 		expect(screen.getByText("VOD Catalog")).toBeDefined();
 	});
 
-	it("toggles desktop sidebar collapsed state when navbar desktop button is clicked", () => {
+	it("toggles desktop sidebar collapsed state when sidebar desktop toggle button is clicked", () => {
 		// Arrange
 		render(
 			<AppLayout>

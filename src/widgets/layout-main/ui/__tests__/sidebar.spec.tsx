@@ -42,7 +42,7 @@ describe("Sidebar", () => {
 		expect(screen.getByText("Admin Panel")).toBeDefined();
 	});
 
-	it("renders in collapsed mode without text labels on desktop", () => {
+	it("renders in collapsed mode without text labels on desktop when defaultCollapsed is true", () => {
 		// Arrange
 		vi.mocked(authClient.useSession).mockReturnValue({
 			data: null,
@@ -50,7 +50,7 @@ describe("Sidebar", () => {
 		} as never);
 
 		// Act
-		render(<Sidebar isCollapsed={true} />);
+		render(<Sidebar defaultCollapsed={true} />);
 
 		// Assert
 		const catalogLink = screen.getByRole("link", { name: "VOD Catalog" });
@@ -73,5 +73,49 @@ describe("Sidebar", () => {
 
 		// Assert
 		expect(onNavClick).toHaveBeenCalledTimes(1);
+	});
+
+	it("renders collapse toggle button in header and toggles collapse state internally", () => {
+		// Arrange
+		vi.mocked(authClient.useSession).mockReturnValue({
+			data: null,
+			isPending: false,
+		} as never);
+		render(<Sidebar />);
+
+		// Act - Collapse
+		const collapseBtn = screen.getByRole("button", {
+			name: "Collapse sidebar",
+		});
+		fireEvent.click(collapseBtn);
+
+		// Assert - Collapsed
+		const expandBtn = screen.getByRole("button", { name: "Expand sidebar" });
+		expect(expandBtn).toBeDefined();
+
+		// Act - Expand
+		fireEvent.click(expandBtn);
+
+		// Assert - Expanded again
+		expect(
+			screen.getByRole("button", { name: "Collapse sidebar" }),
+		).toBeDefined();
+	});
+
+	it("hides collapse toggle button when showCollapseToggle is false", () => {
+		// Arrange
+		vi.mocked(authClient.useSession).mockReturnValue({
+			data: null,
+			isPending: false,
+		} as never);
+
+		// Act
+		render(<Sidebar showCollapseToggle={false} />);
+
+		// Assert
+		expect(
+			screen.queryByRole("button", { name: "Collapse sidebar" }),
+		).toBeNull();
+		expect(screen.queryByRole("button", { name: "Expand sidebar" })).toBeNull();
 	});
 });

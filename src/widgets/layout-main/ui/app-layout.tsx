@@ -25,7 +25,6 @@ export function AppLayout({
 	registrationEnabled = true,
 }: AppLayoutProps) {
 	const [isMobileOpen, setIsMobileOpen] = useState(false);
-	const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
 
 	const toggleMobileSidebar = useCallback(() => {
 		setIsMobileOpen((prev) => !prev);
@@ -35,16 +34,10 @@ export function AppLayout({
 		setIsMobileOpen(false);
 	}, []);
 
-	const toggleDesktopSidebar = useCallback(() => {
-		setIsDesktopCollapsed((prev) => !prev);
-	}, []);
-
 	return (
 		<div className="min-h-screen bg-background text-foreground flex flex-col">
 			<Navbar
-				isDesktopSidebarCollapsed={isDesktopCollapsed}
 				isMobileSidebarOpen={isMobileOpen}
-				onToggleDesktopSidebar={toggleDesktopSidebar}
 				onToggleMobileSidebar={toggleMobileSidebar}
 				registrationEnabled={registrationEnabled}
 			/>
@@ -73,13 +66,14 @@ export function AppLayout({
 					<Sidebar
 						className="h-[calc(100%-4rem)] w-full border-r-0 bg-transparent"
 						onNavClick={closeMobileSidebar}
+						showCollapseToggle={false}
 					/>
 				</DialogContent>
 			</Dialog>
 
 			<div className="flex flex-1">
 				{/* Desktop Sidebar */}
-				<Sidebar className="hidden md:flex" isCollapsed={isDesktopCollapsed} />
+				<Sidebar className="hidden md:flex" />
 
 				{/* Page Content */}
 				<main className="flex-1 w-full p-4 sm:p-6 lg:p-8">{children}</main>
