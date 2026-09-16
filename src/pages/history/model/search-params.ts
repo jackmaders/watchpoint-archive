@@ -6,13 +6,7 @@
  */
 import { z } from "zod";
 
-const moduleEnumSchema = z.enum([
-	"STRATEGY",
-	"TACTICS",
-	"ULTIMATE",
-	"COOLDOWN",
-	"SPATIAL",
-]);
+const moduleEnumSchema = z.enum(["STRATEGY", "TACTICS", "TRACKING", "SPATIAL"]);
 
 export const historySearchSchema = z.object({
 	modules: z

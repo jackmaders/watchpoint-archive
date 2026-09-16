@@ -23,7 +23,7 @@ describe("ScenarioTimeline", () => {
 			imageUrl: null,
 			inputConfig: { target: 3 },
 			inputType: "TIME_SLIDER",
-			moduleType: "COOLDOWN",
+			moduleType: "TRACKING",
 			promptText: "Cooldown check",
 			timeLimitSeconds: null,
 			timestampSeconds: 120,
@@ -35,7 +35,7 @@ describe("ScenarioTimeline", () => {
 			imageUrl: null,
 			inputConfig: { target: 80 },
 			inputType: "PERCENT_SLIDER",
-			moduleType: "ULTIMATE",
+			moduleType: "TRACKING",
 			promptText: "Zarya ult prediction",
 			timeLimitSeconds: null,
 			timestampSeconds: 180,
@@ -93,8 +93,7 @@ describe("ScenarioTimeline", () => {
 		expect(screen.getByText("Target selection")).toBeDefined();
 		expect(screen.getByText("Sightline identification")).toBeDefined();
 		expect(screen.getByText("STRATEGY")).toBeDefined();
-		expect(screen.getByText("COOLDOWN")).toBeDefined();
-		expect(screen.getByText("ULTIMATE")).toBeDefined();
+		expect(screen.getAllByText("TRACKING")).toHaveLength(2);
 		expect(screen.getByText("TACTICS")).toBeDefined();
 		expect(screen.getByText("SPATIAL")).toBeDefined();
 		expect(screen.getByText("2D Map Pin")).toBeDefined();

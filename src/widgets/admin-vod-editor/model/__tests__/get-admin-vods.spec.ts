@@ -26,7 +26,7 @@ describe("get-admin-vods rules", () => {
 		imageUrl: null,
 		inputConfig: {},
 		inputType: "MULTIPLE_CHOICE" as const,
-		moduleType: "COOLDOWN" as const,
+		moduleType: "TRACKING" as const,
 		promptText: "Prompt",
 		timeLimitSeconds: null,
 		timestampSeconds: 10,

@@ -164,7 +164,7 @@ describe("HistoryIdPage component", () => {
 			createdAt: new Date("2026-01-20T10:00:00.000Z"),
 			id: "run_in_prog",
 			medianLatencyMs: null,
-			moduleSelections: [{ moduleType: "COOLDOWN" }],
+			moduleSelections: [{ moduleType: "TRACKING" }],
 			scenarioSnapshots: [
 				{
 					explanationText: "Timed out before responding",
@@ -172,7 +172,7 @@ describe("HistoryIdPage component", () => {
 					imageUrl: null,
 					inputConfig: {},
 					inputType: "MULTIPLE_CHOICE",
-					moduleType: "COOLDOWN",
+					moduleType: "TRACKING",
 					position: 0,
 					promptText: "Is Suzu ready?",
 					scenarioId: "scen_10",
@@ -185,7 +185,7 @@ describe("HistoryIdPage component", () => {
 					imageUrl: null,
 					inputConfig: {},
 					inputType: "MULTIPLE_CHOICE",
-					moduleType: "COOLDOWN",
+					moduleType: "TRACKING",
 					position: 1,
 					promptText: "Is immortality ready?",
 					scenarioId: "scen_11",

@@ -1,8 +1,8 @@
 /**
- * Canonical module definitions, visual styling tokens, and descriptors for the 5 interactive game sense learning modules.
+ * Canonical module definitions, visual styling tokens, and descriptors for the 4 interactive game sense learning modules.
  *
  * Defines `DEFAULT_MODULE_TYPES`, `MODULE_DEFINITIONS`, and `MODULE_MAP` mapping `STRATEGY`, `TACTICS`,
- * `ULTIMATE`, `COOLDOWN`, and `SPATIAL` modules to their respective badge classes, theme colors, and user-facing labels.
+ * `TRACKING`, and `SPATIAL` modules to their respective badge classes, theme colors, and user-facing labels.
  */
 import type { ModuleType } from "@/shared/db";
 
@@ -20,8 +20,7 @@ export interface ModuleDefinition {
 export const DEFAULT_MODULE_TYPES: readonly ModuleType[] = [
 	"STRATEGY",
 	"TACTICS",
-	"ULTIMATE",
-	"COOLDOWN",
+	"TRACKING",
 	"SPATIAL",
 ] as const;
 
@@ -29,42 +28,34 @@ export const MODULE_DEFINITIONS: readonly ModuleDefinition[] = [
 	{
 		badge: "bg-primary/10 text-primary border-primary/40",
 		color: "bg-primary/10 text-primary border-primary/40",
-		description: "Pre-fight positioning & composition win conditions",
+		description: "Pre-fight positioning, win-conditions, and lose-conditions",
 		key: "STRATEGY",
 		label: "Strategy",
-		tooltip: "Pre-fight positioning & composition win conditions",
+		tooltip: "Pre-fight positioning, win-conditions, and lose-conditions",
 	},
 	{
 		badge: "bg-accent text-accent-foreground border-border",
 		color: "bg-accent text-accent-foreground border-border",
-		description: "Mid-fight execution & 3s rapid target selection",
+		description: "Mid-fight opportunities and cooldown usage",
 		key: "TACTICS",
 		label: "Tactics",
-		tooltip: "Mid-fight execution & 3s rapid target selection",
+		tooltip: "Mid-fight opportunities and cooldown usage",
 	},
 	{
 		badge: "bg-secondary text-secondary-foreground border-border",
 		color: "bg-secondary text-secondary-foreground border-border",
-		description: "Enemy ultimate charge range estimation",
-		key: "ULTIMATE",
-		label: "Ultimate Tracking",
-		tooltip: "Enemy ultimate charge range estimation",
-	},
-	{
-		badge: "bg-muted text-muted-foreground border-border",
-		color: "bg-muted text-muted-foreground border-border",
-		description: "Ability availability & cooldown window tracking",
-		key: "COOLDOWN",
-		label: "Cooldown Tracking",
-		tooltip: "Ability availability & cooldown window tracking",
+		description: "Ultimate and ability tracking",
+		key: "TRACKING",
+		label: "Tracking",
+		tooltip: "Ultimate and ability tracking",
 	},
 	{
 		badge: "bg-card text-card-foreground border-border",
 		color: "bg-card text-card-foreground border-border",
-		description: "Flank recognition & situational location assessment",
+		description: "Spatial awareness and positional tracking",
 		key: "SPATIAL",
-		label: "Spatial Awareness",
-		tooltip: "Flank recognition & situational location assessment",
+		label: "Awareness",
+		tooltip: "Spatial awareness and positional tracking",
 	},
 ] as const;
 

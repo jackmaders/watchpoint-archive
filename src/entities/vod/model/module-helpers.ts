@@ -2,7 +2,7 @@
  * Pure helper functions for inspecting, counting, and filtering learning module types.
  *
  * Implements lookup routines (`getModuleDefinition`, `getModuleLabel`, `getModuleBadge`, `getModuleDescription`),
- * scenario counting (`calculateModuleCounts`), and scenario list filtering (`filterScenariosByModules`) across all 5 learning modules.
+ * scenario counting (`calculateModuleCounts`), and scenario list filtering (`filterScenariosByModules`) across all 4 learning modules.
  */
 import type { ModuleType } from "@/shared/db";
 import type { ModuleDefinition } from "./modules";
@@ -42,11 +42,10 @@ export function calculateModuleCounts(
 	scenarios: readonly { moduleType: ModuleType }[],
 ): Record<ModuleType, number> {
 	const counts: Record<ModuleType, number> = {
-		COOLDOWN: 0,
 		SPATIAL: 0,
 		STRATEGY: 0,
 		TACTICS: 0,
-		ULTIMATE: 0,
+		TRACKING: 0,
 	};
 
 	for (const scenario of scenarios) {

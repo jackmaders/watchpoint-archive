@@ -12,18 +12,16 @@ import type {
 } from "../model/types";
 
 export const MODULE_LABEL_MAP: Record<ModuleType, string> = {
-	COOLDOWN: "Cooldown",
 	SPATIAL: "Spatial",
 	STRATEGY: "Strategy",
 	TACTICS: "Tactics",
-	ULTIMATE: "Ultimate",
+	TRACKING: "Tracking",
 };
 
 export const ALL_MODULES: { key: ModuleType; label: string }[] = [
 	{ key: "STRATEGY", label: MODULE_LABEL_MAP.STRATEGY },
 	{ key: "TACTICS", label: MODULE_LABEL_MAP.TACTICS },
-	{ key: "ULTIMATE", label: MODULE_LABEL_MAP.ULTIMATE },
-	{ key: "COOLDOWN", label: MODULE_LABEL_MAP.COOLDOWN },
+	{ key: "TRACKING", label: MODULE_LABEL_MAP.TRACKING },
 	{ key: "SPATIAL", label: MODULE_LABEL_MAP.SPATIAL },
 ];
 

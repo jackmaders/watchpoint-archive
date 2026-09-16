@@ -26,13 +26,7 @@ describe("calculateSessionSummary", () => {
 			correct: 0,
 			total: 0,
 		});
-		expect(summary.moduleBreakdown.ULTIMATE).toEqual({
-			accuracyPercentage: 0,
-			averageLatencyMs: 0,
-			correct: 0,
-			total: 0,
-		});
-		expect(summary.moduleBreakdown.COOLDOWN).toEqual({
+		expect(summary.moduleBreakdown.TRACKING).toEqual({
 			accuracyPercentage: 0,
 			averageLatencyMs: 0,
 			correct: 0,
@@ -170,7 +164,7 @@ describe("calculateSessionSummary", () => {
 			},
 			{
 				isCorrect: true,
-				moduleType: "ULTIMATE",
+				moduleType: "TRACKING",
 				responseTimeMs: 1500,
 				scenarioId: "sc_3",
 			},
@@ -195,8 +189,8 @@ describe("calculateSessionSummary", () => {
 			total: 2,
 		});
 
-		// ULTIMATE: 1/1 correct (100%), avg latency 1500ms
-		expect(summary.moduleBreakdown.ULTIMATE).toEqual({
+		// TRACKING: 1/1 correct (100%), avg latency 1500ms
+		expect(summary.moduleBreakdown.TRACKING).toEqual({
 			accuracyPercentage: 100,
 			averageLatencyMs: 1500,
 			correct: 1,

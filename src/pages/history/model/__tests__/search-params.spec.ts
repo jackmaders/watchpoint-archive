@@ -28,14 +28,14 @@ describe("validateHistorySearch", () => {
 	it("parses comma-separated modules string", () => {
 		// Arrange
 		const raw = {
-			modules: "STRATEGY,ULTIMATE",
+			modules: "STRATEGY,TRACKING",
 		};
 
 		// Act
 		const result = validateHistorySearch(raw);
 
 		// Assert
-		expect(result.modules).toEqual(["STRATEGY", "ULTIMATE"]);
+		expect(result.modules).toEqual(["STRATEGY", "TRACKING"]);
 	});
 
 	it("returns empty object when search input is invalid", () => {

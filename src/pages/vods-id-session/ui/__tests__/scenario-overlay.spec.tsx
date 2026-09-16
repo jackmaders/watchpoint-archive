@@ -7,13 +7,7 @@ import type {
 import { normalizeScenarioInput } from "../../model/session-contract";
 import { ScenarioOverlay } from "../scenario-overlay";
 
-const moduleTypes = [
-	"STRATEGY",
-	"TACTICS",
-	"ULTIMATE",
-	"COOLDOWN",
-	"SPATIAL",
-] as const;
+const moduleTypes = ["STRATEGY", "TACTICS", "TRACKING", "SPATIAL"] as const;
 
 const shortcutCases = moduleTypes.flatMap((moduleType) =>
 	(
