@@ -73,6 +73,7 @@
 		"check:perf-budgets": "bun scripts/check-perf-budgets.ts",
 		"check:routes": "bun scripts/check-routes.ts",
 		"check:seed": "bun scripts/seed.ts",
+		"check:sync": "bun run check:drizzle-sync && bun run check:cf-sync && bun run check:routes",
 		"check:types": "tsc --noEmit",
 		"db:generate": "drizzle-kit generate",
 		"db:migrate:local": "wrangler d1 migrations apply DB --local",
@@ -95,7 +96,7 @@
 		"test:e2e": "playwright test",
 		"test:routes": "vitest run src/app/routes",
 		"test:unit": "vitest run",
-		"validate": "bun run check:types && bun run check:all && bun run check:architecture && bun run test:coverage && bun run build:quiet && bun run deploy --dry-run",
+		"validate": "bun run check:sync && bun run check:types && bun run check:all && bun run check:architecture && bun run test:coverage && bun run build:quiet && bun run deploy --dry-run",
 		"validate:fast": "bun run check:types && bun run check:all && bun run check:architecture && bun run test:unit"
 	},
 	"trustedDependencies": [

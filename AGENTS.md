@@ -17,6 +17,7 @@ Always execute workflows using `bun run <script>` and manage packages with `bun 
 | **Lint & Format Verification** | `bun run check:all` |
 | **Type Verification** | `bun run check:types` |
 | **Architecture Verification** (Steiger) | `bun run check:architecture` |
+| **Schema & Environment Sync Verification** | `bun run check:sync` |
 | **Targeted Unit Testing** (single slice/file) | `bun run test:unit <path>` |
 | **Full Unit Testing** | `bun run test:unit` |
 | **Test Coverage** | `bun run test:coverage` |
