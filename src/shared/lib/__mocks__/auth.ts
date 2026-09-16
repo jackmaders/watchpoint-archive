@@ -11,9 +11,7 @@ export const getAuthConfig = vi.fn();
 export const getAuth = vi.fn();
 export const getCurrentUser = vi.fn().mockResolvedValue(null);
 export const isRegistrationOpen = vi.fn().mockResolvedValue(true);
-export const getRegistrationStatus = vi
-	.fn()
-	.mockResolvedValue({ registrationEnabled: true });
+export const getRegistrationStatus = vi.fn().mockResolvedValue(true);
 export const handleAuthRequest = vi.fn();
 export const authApiRouteOptions = {
 	server: {

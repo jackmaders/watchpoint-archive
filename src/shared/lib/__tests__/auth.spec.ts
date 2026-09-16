@@ -423,37 +423,33 @@ describe("auth", () => {
 		expect(open).toBe(false);
 	});
 
-	it("getRegistrationStatus returns registrationEnabled true when open", async () => {
+	it("getRegistrationStatus returns true when open", async () => {
 		// Arrange
 		vi.mocked(queryUsers).mockResolvedValueOnce([]);
 
 		// Act
 		const result = await (
-			getRegistrationStatus as unknown as () => Promise<{
-				registrationEnabled: boolean;
-			}>
+			getRegistrationStatus as unknown as () => Promise<boolean>
 		)();
 
 		// Assert
-		expect(result).toEqual({ registrationEnabled: true });
+		expect(result).toBe(true);
 	});
 
-	it("getRegistrationStatus returns registrationEnabled false when users exist", async () => {
+	it("getRegistrationStatus returns false when users exist", async () => {
 		// Arrange
 		vi.mocked(queryUsers).mockResolvedValueOnce([{ id: "usr_1" } as never]);
 
 		// Act
 		const result = await (
-			getRegistrationStatus as unknown as () => Promise<{
-				registrationEnabled: boolean;
-			}>
+			getRegistrationStatus as unknown as () => Promise<boolean>
 		)();
 
 		// Assert
-		expect(result).toEqual({ registrationEnabled: false });
+		expect(result).toBe(false);
 	});
 
-	it("getRegistrationStatus returns registrationEnabled false when database query throws", async () => {
+	it("getRegistrationStatus returns false when database query throws", async () => {
 		// Arrange
 		vi.mocked(queryUsers).mockRejectedValueOnce(
 			new Error("D1 connection failure"),
@@ -461,13 +457,11 @@ describe("auth", () => {
 
 		// Act
 		const result = await (
-			getRegistrationStatus as unknown as () => Promise<{
-				registrationEnabled: boolean;
-			}>
+			getRegistrationStatus as unknown as () => Promise<boolean>
 		)();
 
 		// Assert
-		expect(result).toEqual({ registrationEnabled: false });
+		expect(result).toBe(false);
 	});
 
 	it("handleAuthRequest delegates request to auth instance handler", async () => {

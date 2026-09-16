@@ -62,16 +62,16 @@ export async function loadHistoryIndexPage({
 		});
 	}
 
-	const [vods, registrationStatus, historyResult] = await Promise.all([
+	const [vods, registrationEnabled, historyResult] = await Promise.all([
 		getPublishedVods(),
-		getRegistrationStatus().catch(() => ({ registrationEnabled: false })),
+		getRegistrationStatus(),
 		loadPlayerHistory(deps),
 	]);
 
 	return {
 		data: historyResult.data,
 		error: historyResult.error,
-		registrationEnabled: registrationStatus.registrationEnabled,
+		registrationEnabled,
 		vods: vods ?? [],
 	};
 }

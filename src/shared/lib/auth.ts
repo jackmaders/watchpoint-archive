@@ -188,9 +188,8 @@ export async function isRegistrationOpen(
 }
 
 export const getRegistrationStatus = createServerFn({ method: "GET" }).handler(
-	async (): Promise<{ registrationEnabled: boolean }> => {
-		const registrationEnabled = await isRegistrationOpen();
-		return { registrationEnabled };
+	async (): Promise<boolean> => {
+		return isRegistrationOpen();
 	},
 );
 

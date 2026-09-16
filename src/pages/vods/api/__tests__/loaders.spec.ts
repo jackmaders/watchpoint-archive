@@ -23,9 +23,7 @@ describe("loadVodsPage", () => {
 		// Arrange
 		const mockVods = [{ id: "vod_1" }] as never;
 		vi.mocked(getPublishedVods).mockResolvedValueOnce(mockVods);
-		vi.mocked(getRegistrationStatus).mockResolvedValueOnce({
-			registrationEnabled: true,
-		});
+		vi.mocked(getRegistrationStatus).mockResolvedValueOnce(true);
 
 		// Act
 		const result = await loadVodsPage();
@@ -35,24 +33,6 @@ describe("loadVodsPage", () => {
 		expect(getRegistrationStatus).toHaveBeenCalled();
 		expect(result).toEqual({
 			registrationEnabled: true,
-			vods: mockVods,
-		});
-	});
-
-	it("falls back to registrationEnabled false when getRegistrationStatus rejects", async () => {
-		// Arrange
-		const mockVods = [{ id: "vod_1" }] as never;
-		vi.mocked(getPublishedVods).mockResolvedValueOnce(mockVods);
-		vi.mocked(getRegistrationStatus).mockRejectedValueOnce(
-			new Error("Server error"),
-		);
-
-		// Act
-		const result = await loadVodsPage();
-
-		// Assert
-		expect(result).toEqual({
-			registrationEnabled: false,
 			vods: mockVods,
 		});
 	});

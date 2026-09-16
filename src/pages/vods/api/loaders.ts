@@ -7,12 +7,9 @@ import { getPublishedVods } from "@/entities/vod";
 import { getRegistrationStatus } from "@/shared/lib/auth";
 
 export async function loadVodsPage() {
-	const [vods, registrationStatus] = await Promise.all([
+	const [vods, registrationEnabled] = await Promise.all([
 		getPublishedVods(),
-		getRegistrationStatus().catch(() => ({ registrationEnabled: false })),
+		getRegistrationStatus(),
 	]);
-	return {
-		registrationEnabled: registrationStatus.registrationEnabled,
-		vods,
-	};
+	return { registrationEnabled, vods };
 }
