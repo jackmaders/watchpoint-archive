@@ -95,29 +95,6 @@ const mockCompletedPlaythrough: PlayerHistoryItem = {
 	vodId: "vod_1",
 };
 
-const mockInProgressPlaythrough: PlayerHistoryItem = {
-	accuracy: 50,
-	attempts: [],
-	completedAt: null,
-	completion: null,
-	createdAt: new Date("2026-01-16T10:00:00.000Z"),
-	id: "playthrough_in_prog_1",
-	medianLatencyMs: null,
-	moduleSelections: [{ moduleType: "TRACKING" }],
-	scenarioSnapshots: [],
-	status: "IN_PROGRESS",
-	userId: "player_1",
-	vod: {
-		durationSeconds: 900,
-		id: "vod_2",
-		mapName: "Ilios",
-		rankTier: "Master",
-		title: "Master Kiriko Play",
-		youtubeVideoId: "yt456",
-	},
-	vodId: "vod_2",
-};
-
 describe("HistoryPage component", () => {
 	it("renders heading, navigation header, and account controls", () => {
 		// Arrange & Act
@@ -165,10 +142,15 @@ describe("HistoryPage component", () => {
 		expect(screen.getByRole("link", { name: /review details/i })).toBeDefined();
 	});
 
-	it("renders in-progress playthroughs with re-enter action", () => {
+	it("renders completed playthrough falling back to createdAt when completedAt is null", () => {
 		// Arrange
+		const itemWithoutCompletedAt: PlayerHistoryItem = {
+			...mockCompletedPlaythrough,
+			completedAt: null,
+			createdAt: new Date("2026-02-01T12:00:00.000Z"),
+		};
 		const data: PlayerHistoryResult = {
-			items: [mockInProgressPlaythrough],
+			items: [itemWithoutCompletedAt],
 			page: 1,
 			pageSize: 10,
 			total: 1,
@@ -176,19 +158,13 @@ describe("HistoryPage component", () => {
 		};
 
 		// Act
-		render(
-			<HistoryPage
-				data={data}
-				searchParams={{ status: "IN_PROGRESS" }}
-				vods={[mockVod]}
-			/>,
-		);
+		render(<HistoryPage data={data} vods={[mockVod]} />);
 
 		// Assert
-		expect(screen.getByText("Master Kiriko Play")).toBeDefined();
-		expect(screen.getByText("Ilios")).toBeDefined();
 		expect(
-			screen.getByRole("link", { name: /continue training/i }),
+			screen.getByText(
+				`Completed: ${new Date("2026-02-01T12:00:00.000Z").toLocaleDateString()}`,
+			),
 		).toBeDefined();
 	});
 
@@ -214,30 +190,7 @@ describe("HistoryPage component", () => {
 		).toBeDefined();
 	});
 
-	it("renders empty state for in-progress tab when none exist", () => {
-		// Arrange
-		const data: PlayerHistoryResult = {
-			items: [],
-			page: 1,
-			pageSize: 10,
-			total: 0,
-			totalPages: 1,
-		};
-
-		// Act
-		render(
-			<HistoryPage
-				data={data}
-				searchParams={{ status: "IN_PROGRESS" }}
-				vods={[]}
-			/>,
-		);
-
-		// Assert
-		expect(screen.getByText(/no in-progress training sessions/i)).toBeDefined();
-	});
-
-	it("triggers filter changes when status tab, vod, or module chip is clicked", () => {
+	it("triggers filter changes when vod or module chip is clicked", () => {
 		// Arrange
 		const onFilterChange = vi.fn();
 		const data: PlayerHistoryResult = {
@@ -255,18 +208,6 @@ describe("HistoryPage component", () => {
 				onFilterChange={onFilterChange}
 				vods={[mockVod]}
 			/>,
-		);
-
-		// Click In Progress Tab
-		fireEvent.click(screen.getByRole("tab", { name: /in progress/i }));
-		expect(onFilterChange).toHaveBeenCalledWith(
-			expect.objectContaining({ page: 1, status: "IN_PROGRESS" }),
-		);
-
-		// Click Completed Tab
-		fireEvent.click(screen.getByRole("tab", { name: /^completed$/i }));
-		expect(onFilterChange).toHaveBeenCalledWith(
-			expect.objectContaining({ page: 1, status: "COMPLETED" }),
 		);
 
 		// Select VOD Filter

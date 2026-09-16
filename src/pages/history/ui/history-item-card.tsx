@@ -1,5 +1,5 @@
 /**
- * Summary card component displaying a single playthrough record with accuracy, latency, and module badges.
+ * Summary card component displaying a single completed playthrough record with accuracy, latency, and module badges.
  *
  * Implements `HistoryItemCard` linking to `/history/$id` and rendering completion timestamps, accuracy ratings,
  * median active-response latency, and map/rank badges.
@@ -20,11 +20,6 @@ export function HistoryItemCard({ item }: { item: PlayerHistoryItem }) {
 					<span className="rounded-sm border border-primary/40 bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
 						{item.vod?.rankTier ?? "Rank"}
 					</span>
-					{item.status === "IN_PROGRESS" ? (
-						<span className="rounded-sm border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs font-semibold text-amber-500">
-							In Progress
-						</span>
-					) : null}
 				</div>
 
 				<h2 className="text-lg font-semibold text-foreground">
@@ -33,9 +28,8 @@ export function HistoryItemCard({ item }: { item: PlayerHistoryItem }) {
 
 				<div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground font-mono">
 					<span>
-						{item.completedAt
-							? `Completed: ${new Date(item.completedAt).toLocaleDateString()}`
-							: `Started: ${new Date(item.createdAt).toLocaleDateString()}`}
+						Completed:{" "}
+						{new Date(item.completedAt ?? item.createdAt).toLocaleDateString()}
 					</span>
 					<span>&bull;</span>
 					<span>
@@ -66,25 +60,14 @@ export function HistoryItemCard({ item }: { item: PlayerHistoryItem }) {
 			</div>
 
 			<div className="shrink-0">
-				{item.status === "COMPLETED" ? (
-					<Link
-						aria-label="Review details for completed session"
-						className="inline-flex items-center justify-center rounded-md bg-secondary px-4 py-2 text-xs font-semibold text-secondary-foreground shadow-sm hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-						params={{ playthroughId: item.id } as Record<string, string>}
-						to={"/history/$playthroughId" as string}
-					>
-						Review Details
-					</Link>
-				) : (
-					<Link
-						aria-label="Continue training session"
-						className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-						params={{ id: item.vodId }}
-						to="/vods/$id/session"
-					>
-						Continue Training &rarr;
-					</Link>
-				)}
+				<Link
+					aria-label="Review details for completed session"
+					className="inline-flex items-center justify-center rounded-md bg-secondary px-4 py-2 text-xs font-semibold text-secondary-foreground shadow-sm hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+					params={{ playthroughId: item.id } as Record<string, string>}
+					to={"/history/$playthroughId" as string}
+				>
+					Review Details
+				</Link>
 			</div>
 		</div>
 	);
