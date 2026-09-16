@@ -256,7 +256,7 @@ describe("AdminContentPage", () => {
 				screen.getByText(/Cannot publish a VOD with zero scenarios/i),
 			).toBeDefined();
 		});
-	});
+	}, 2500);
 
 	it("opens confirmation dialog before deleting a single VOD, shows scenario count, and deletes on confirm", async () => {
 		// Arrange
@@ -530,7 +530,7 @@ describe("AdminContentPage", () => {
 
 		// Assert
 		expect(screen.getByText("GM Rein Guide")).toBeDefined();
-	});
+	}, 2500);
 
 	it("closes delete confirmation dialog when cancel is clicked", () => {
 		// Arrange

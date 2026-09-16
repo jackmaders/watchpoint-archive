@@ -65,7 +65,7 @@ export interface FileRoutesByFullPath {
 
 		// Assert
 		expect(errors).toContain(
-			"Failed to extract FileRoutesByFullPath from app/routeTree.gen.ts",
+			"Failed to extract FileRoutesByFullPath from src/app/routeTree.gen.ts",
 		);
 	});
 });

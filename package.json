@@ -92,7 +92,7 @@
 		"storybook:check:completeness": "bun scripts/check-storybook-completeness.ts",
 		"test:coverage": "vitest run --coverage",
 		"test:e2e": "playwright test",
-		"test:routes": "vitest run app/routes",
+		"test:routes": "vitest run src/app/routes",
 		"test:unit": "vitest run",
 		"validate": "bun run check:types && bun run check:all && bun run check:architecture && bun run test:coverage && bun run build && bun run deploy --dry-run"
 	},
