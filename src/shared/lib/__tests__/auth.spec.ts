@@ -424,4 +424,15 @@ describe("auth", () => {
 		expect(response).toBeDefined();
 		expect(handlerSpy).toHaveBeenCalledWith(mockRequest);
 	});
+
+	it("creates local credential issuer matching seeded account structure", async () => {
+		// Arrange
+		const { createLocalAccountIssuer } = await import("better-auth");
+
+		// Act
+		const issuer = createLocalAccountIssuer("credential");
+
+		// Assert
+		expect(issuer).toBe("local:credential");
+	});
 });

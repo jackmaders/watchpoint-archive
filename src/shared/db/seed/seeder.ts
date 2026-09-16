@@ -7,6 +7,7 @@
  * and inserts reproducible player/admin accounts and synthetic VOD training data into Cloudflare D1 via Drizzle.
  */
 
+import { createLocalAccountIssuer } from "better-auth";
 import { hashPassword } from "better-auth/crypto";
 import type { createDbClient } from "../client";
 import { accounts } from "../schema/account";
@@ -72,6 +73,7 @@ export async function executeSeed(db: ReturnType<typeof createDbClient>) {
 			accountId: FIXTURE_IDS.playerUser,
 			createdAt: now,
 			id: "account_local_player",
+			issuer: createLocalAccountIssuer("credential"),
 			password: await hashPassword(credentials.playerPassword),
 			providerId: "credential",
 			updatedAt: now,
@@ -81,6 +83,7 @@ export async function executeSeed(db: ReturnType<typeof createDbClient>) {
 			accountId: FIXTURE_IDS.adminUser,
 			createdAt: now,
 			id: "account_local_admin",
+			issuer: createLocalAccountIssuer("credential"),
 			password: await hashPassword(credentials.adminPassword),
 			providerId: "credential",
 			updatedAt: now,
