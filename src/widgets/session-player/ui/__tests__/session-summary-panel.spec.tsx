@@ -1,5 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+
+vi.mock("@tanstack/react-router");
+
 import type { SessionSummaryReport } from "../../model/summary";
 import { SessionSummaryPanel } from "../session-summary-panel";
 

@@ -442,6 +442,7 @@ describe("useSessionPlayer", () => {
 				useSessionPlayer({
 					autoplay: true,
 					initialManifest: mockManifest,
+					playthroughId: "playthrough_1",
 					vodId: "vod_gm_ana",
 				}),
 			{ wrapper: createWrapper() },
@@ -497,6 +498,7 @@ describe("useSessionPlayer", () => {
 				useSessionPlayer({
 					autoplay: true,
 					initialManifest: mockManifest,
+					playthroughId: "playthrough_1",
 					vodId: "vod_gm_ana",
 				}),
 			{ wrapper: createWrapper() },
@@ -751,6 +753,7 @@ describe("useSessionPlayer", () => {
 				useSessionPlayer({
 					autoplay: true,
 					initialManifest: tacticsManifest,
+					playthroughId: "playthrough_1",
 					vodId: "vod_gm_ana",
 				}),
 			{ wrapper: createWrapper() },
@@ -802,8 +805,10 @@ describe("useSessionPlayer", () => {
 				idempotencyKey: expect.any(String),
 				isCorrect: false,
 				isTimedOut: true,
+				playthroughId: "playthrough_1",
 				responseTimeMs: 3000,
 				scenarioId: "sc_2",
+				scenarioSnapshotId: undefined,
 				selectedOptionId: null,
 			},
 		});
@@ -1748,5 +1753,37 @@ describe("useSessionPlayer", () => {
 
 		// Assert
 		expect(onExit).toHaveBeenCalledTimes(1);
+
+		// Arrange default exit without custom callback
+		const originalLocation = window.location;
+		const mockLocation = { href: "" } as Location;
+		Object.defineProperty(window, "location", {
+			configurable: true,
+			value: mockLocation,
+			writable: true,
+		});
+
+		const { result: demoDefaultExit } = renderHook(
+			() =>
+				useSessionPlayer({
+					initialManifest: mockManifest,
+					isDemo: true,
+					vodId: "vod_gm_ana",
+				}),
+			{ wrapper: createWrapper() },
+		);
+
+		// Act
+		act(() => {
+			demoDefaultExit.current.exitSession();
+		});
+
+		// Assert
+		expect(window.location.href).toBe("/");
+
+		Object.defineProperty(window, "location", {
+			configurable: true,
+			value: originalLocation,
+		});
 	});
 });

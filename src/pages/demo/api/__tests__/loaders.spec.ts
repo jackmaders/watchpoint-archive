@@ -67,5 +67,22 @@ describe("demo loaders", () => {
 				vod: DEMO_VOD_MANIFEST,
 			});
 		});
+
+		it("falls back to registrationEnabled: true in queryFn when getRegistrationStatus fails", async () => {
+			// Arrange
+			vi.mocked(getRegistrationStatus).mockRejectedValueOnce(
+				new Error("Network error"),
+			);
+			const options = demoPageQueryOptions();
+
+			// Act
+			const result = await options.queryFn?.({} as never);
+
+			// Assert
+			expect(result).toEqual({
+				registrationEnabled: true,
+				vod: DEMO_VOD_MANIFEST,
+			});
+		});
 	});
 });

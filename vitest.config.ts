@@ -23,7 +23,7 @@ export default defineConfig({
 				"src/**/index.client.ts",
 				"src/**/index.server.ts",
 				"src/app/**",
-				"src/pages/vods-id-session/ui/session-player-media-recovery-prototype.tsx",
+				"src/widgets/session-player/ui/session-player-media-recovery-prototype.tsx",
 				"src/shared/db/**/schema.ts",
 				"src/shared/db/schema/**",
 				"src/**/types.ts",
