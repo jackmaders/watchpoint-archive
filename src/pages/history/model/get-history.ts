@@ -1,7 +1,7 @@
 /**
  * Domain rule logic for retrieving a player's interactive training playthrough history.
  *
- * Implements `getHistoryRule` enforcing authentication guards and querying playthrough
+ * Implements `getHistoryRule` enforcing authentication guards and querying completed playthrough
  * telemetry through D1 query functions without throwing runtime exceptions.
  */
 
@@ -70,10 +70,10 @@ function buildHistoryFilter(
 	userId: string,
 	options: GetHistoryInput,
 ): Record<string, unknown> {
-	const filter: Record<string, unknown> = { userId: { eq: userId } };
-	if (options.status) {
-		filter.status = { eq: options.status };
-	}
+	const filter: Record<string, unknown> = {
+		status: { eq: "COMPLETED" },
+		userId: { eq: userId },
+	};
 	if (options.vodId) {
 		filter.vodId = { eq: options.vodId };
 	}

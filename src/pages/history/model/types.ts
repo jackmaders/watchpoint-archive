@@ -1,7 +1,7 @@
 /**
  * Type definitions and domain contracts for the training match history page slice.
  *
- * Exposes playthrough history payloads, pagination structures, module filters,
+ * Exposes completed playthrough history payloads, pagination structures, module filters,
  * and rule outcome types for match history presentation.
  */
 
@@ -25,7 +25,6 @@ export interface GetPlayerHistoryOptions {
 	page?: number;
 	pageSize?: number;
 	player?: string;
-	status?: PlaythroughStatus;
 	vodId?: string;
 }
 

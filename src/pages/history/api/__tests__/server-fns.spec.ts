@@ -80,7 +80,7 @@ describe("history server-fns", () => {
 
 	it("throws error when payload validation fails", async () => {
 		// Arrange
-		const invalidPayload = { status: "INVALID_STATUS" };
+		const invalidPayload = { modules: ["INVALID_MODULE"] };
 
 		// Act & Assert
 		await expect(

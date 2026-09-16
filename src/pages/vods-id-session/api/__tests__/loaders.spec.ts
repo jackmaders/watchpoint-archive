@@ -146,12 +146,19 @@ describe("vods-id-session loaders", () => {
 
 			// Act
 			const result = await loadVodsIdSessionPage({
-				deps: { modules: "STRATEGY", playthroughId: "pt_1" },
+				deps: { modules: "STRATEGY" },
 				params: { id: "vod_1" },
 			});
 
 			// Assert
-			expect(startPlaythroughAction).toHaveBeenCalled();
+			expect(startPlaythroughAction).toHaveBeenCalledWith(
+				expect.objectContaining({
+					id: expect.stringMatching(
+						/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+					),
+					modules: ["STRATEGY"],
+				}),
+			);
 			expect(result).toEqual({
 				playthroughId: "pt_1",
 				scenarioSnapshotIds: ["snap_1"],

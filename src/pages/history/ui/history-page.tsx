@@ -11,7 +11,6 @@ import type { HistorySearchParams } from "../model/search-params";
 import type {
 	ModuleType,
 	PlayerHistoryResult,
-	PlaythroughStatus,
 	PublishedVodItem,
 } from "../model/types";
 import { HistoryEmptyState } from "./history-empty-state";
@@ -55,12 +54,6 @@ function useHistoryFilterHandlers(
 	searchParams?: HistorySearchParams,
 	onFilterChange?: (newParams: HistorySearchParams) => void,
 ) {
-	const handleStatusChange = useCallback(
-		(status: PlaythroughStatus) =>
-			onFilterChange?.({ ...searchParams, page: 1, status }),
-		[onFilterChange, searchParams],
-	);
-
 	const handleVodChange = useCallback(
 		(vodId: string | undefined) =>
 			onFilterChange?.({ ...searchParams, page: 1, vodId: vodId || undefined }),
@@ -122,7 +115,6 @@ function useHistoryFilterHandlers(
 		handleMapChange,
 		handleModuleToggle,
 		handlePlayerChange,
-		handleStatusChange,
 		handleVodChange,
 	};
 }
@@ -133,7 +125,6 @@ function HistoryFilteredList({
 	searchParams,
 	vods,
 }: HistoryPageProps) {
-	const currentStatus = searchParams?.status ?? "COMPLETED";
 	const handlers = useHistoryFilterHandlers(searchParams, onFilterChange);
 
 	const handlePageChange = useCallback(
@@ -149,13 +140,11 @@ function HistoryFilteredList({
 	return (
 		<div className="space-y-6">
 			<HistoryFilterBar
-				currentStatus={currentStatus}
 				onHeroChange={handlers.handleHeroChange}
 				onLevelOfPlayChange={handlers.handleLevelOfPlayChange}
 				onMapChange={handlers.handleMapChange}
 				onModuleToggle={handlers.handleModuleToggle}
 				onPlayerChange={handlers.handlePlayerChange}
-				onStatusChange={handlers.handleStatusChange}
 				onVodChange={handlers.handleVodChange}
 				selectedHero={searchParams?.hero}
 				selectedLevelOfPlay={searchParams?.levelOfPlay}
@@ -166,27 +155,21 @@ function HistoryFilteredList({
 				vods={vods ?? []}
 			/>
 
-			<HistoryResultsList
-				currentStatus={currentStatus}
-				data={data}
-				onPageChange={handlePageChange}
-			/>
+			<HistoryResultsList data={data} onPageChange={handlePageChange} />
 		</div>
 	);
 }
 
 function HistoryResultsList({
-	currentStatus,
 	data,
 	onPageChange,
 }: {
-	currentStatus: PlaythroughStatus;
 	data?: PlayerHistoryResult;
 	onPageChange: (page: number) => void;
 }) {
 	const items = data?.items ?? [];
 	if (items.length === 0) {
-		return <HistoryEmptyState currentStatus={currentStatus} />;
+		return <HistoryEmptyState />;
 	}
 
 	return (

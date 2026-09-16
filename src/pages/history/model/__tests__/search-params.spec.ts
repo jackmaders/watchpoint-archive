@@ -12,7 +12,6 @@ describe("validateHistorySearch", () => {
 			page: "2",
 			pageSize: "20",
 			player: "Proper",
-			status: "IN_PROGRESS",
 			vodId: "vod_123",
 		};
 
@@ -28,7 +27,6 @@ describe("validateHistorySearch", () => {
 			page: 2,
 			pageSize: 20,
 			player: "Proper",
-			status: "IN_PROGRESS",
 			vodId: "vod_123",
 		});
 	});
@@ -51,7 +49,6 @@ describe("validateHistorySearch", () => {
 		const raw = {
 			page: "-5",
 			pageSize: "1000",
-			status: "INVALID_STATUS",
 		};
 
 		// Act

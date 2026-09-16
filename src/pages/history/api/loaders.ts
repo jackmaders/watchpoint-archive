@@ -35,7 +35,6 @@ export const historyQueryOptions = (deps?: HistorySearchParams) =>
 					page: deps?.page,
 					pageSize: deps?.pageSize,
 					player: deps?.player,
-					status: deps?.status,
 					vodId: deps?.vodId,
 				},
 			}),
@@ -55,7 +54,6 @@ export async function loadPlayerHistory(deps?: HistorySearchParams) {
 			page: deps?.page,
 			pageSize: deps?.pageSize,
 			player: deps?.player,
-			status: deps?.status,
 			vodId: deps?.vodId,
 		},
 	})) as unknown as import("../model/types").GetHistoryResult;

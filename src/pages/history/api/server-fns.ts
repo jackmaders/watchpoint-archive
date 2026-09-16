@@ -20,7 +20,6 @@ export const GetPlayerHistorySchema = z.object({
 	page: z.number().int().positive().optional(),
 	pageSize: z.number().int().positive().optional(),
 	player: z.string().optional(),
-	status: z.enum(["IN_PROGRESS", "COMPLETED"]).optional(),
 	vodId: z.string().optional(),
 });
 

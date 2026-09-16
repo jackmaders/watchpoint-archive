@@ -73,7 +73,6 @@ describe("history loaders", () => {
 				page: 2,
 				pageSize: 20,
 				player: "Proper",
-				status: "COMPLETED" as const,
 			};
 
 			// Act
@@ -108,7 +107,6 @@ describe("history loaders", () => {
 				page: 1,
 				pageSize: 10,
 				player: "Proper",
-				status: "COMPLETED",
 				vodId: "vod_1",
 			});
 
@@ -125,7 +123,6 @@ describe("history loaders", () => {
 					page: 1,
 					pageSize: 10,
 					player: "Proper",
-					status: "COMPLETED",
 					vodId: "vod_1",
 				},
 			});
@@ -156,7 +153,6 @@ describe("history loaders", () => {
 					page: undefined,
 					pageSize: undefined,
 					player: undefined,
-					status: undefined,
 					vodId: undefined,
 				},
 			});
@@ -188,7 +184,6 @@ describe("history loaders", () => {
 				page: 2,
 				pageSize: 20,
 				player: "Proper",
-				status: "COMPLETED",
 				vodId: "vod_1",
 			});
 
@@ -202,7 +197,6 @@ describe("history loaders", () => {
 					page: 2,
 					pageSize: 20,
 					player: "Proper",
-					status: "COMPLETED",
 					vodId: "vod_1",
 				},
 			});

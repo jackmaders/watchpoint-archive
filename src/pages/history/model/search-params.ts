@@ -2,7 +2,7 @@
  * Search schema and validation logic for the player history filtering state.
  *
  * Implements `historySearchSchema` and `validateHistorySearch` to parse active module filters,
- * pagination parameters (`page`, `pageSize`), playthrough status (`COMPLETED`, `IN_PROGRESS`), and VOD IDs.
+ * pagination parameters (`page`, `pageSize`), and VOD IDs for completed playthroughs.
  */
 import { z } from "zod";
 
@@ -27,7 +27,6 @@ export const historySearchSchema = z.object({
 	page: z.coerce.number().int().positive().optional(),
 	pageSize: z.coerce.number().int().positive().max(50).optional(),
 	player: z.string().min(1).optional(),
-	status: z.enum(["COMPLETED", "IN_PROGRESS"]).optional(),
 	vodId: z.string().min(1).optional(),
 });
 

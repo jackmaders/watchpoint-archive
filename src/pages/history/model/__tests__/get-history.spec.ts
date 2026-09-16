@@ -107,11 +107,21 @@ describe("getHistoryRule", () => {
 			modules: ["STRATEGY"],
 			page: 1,
 			pageSize: 10,
-			status: "COMPLETED",
 			vodId: "vod_1",
 		});
 
 		// Assert
+		expect(queryPlaythroughs).toHaveBeenCalledWith(
+			{
+				filter: {
+					status: { eq: "COMPLETED" },
+					userId: { eq: "player_123" },
+					vodId: { eq: "vod_1" },
+				},
+				order: { createdAt: "desc" },
+			},
+			expect.anything(),
+		);
 		expect(result.status).toBe("success");
 		if (result.status === "success") {
 			expect(result.data.total).toBe(1);
@@ -334,18 +344,18 @@ describe("getHistoryRule", () => {
 		} as never);
 		vi.mocked(queryPlaythroughs).mockResolvedValueOnce([
 			{
-				completedAt: null,
+				completedAt: new Date("2026-01-01T00:05:00Z"),
 				createdAt,
 				id: "run_mismatch",
-				status: "IN_PROGRESS",
+				status: "COMPLETED",
 				userId: "player_456",
 				vodId: "vod_1",
 			},
 			{
-				completedAt: null,
+				completedAt: new Date("2026-01-01T00:05:00Z"),
 				createdAt,
 				id: "run_match",
-				status: "IN_PROGRESS",
+				status: "COMPLETED",
 				userId: "player_456",
 				vodId: "vod_1",
 			},
@@ -365,6 +375,16 @@ describe("getHistoryRule", () => {
 		});
 
 		// Assert
+		expect(queryPlaythroughs).toHaveBeenCalledWith(
+			{
+				filter: {
+					status: { eq: "COMPLETED" },
+					userId: { eq: "player_456" },
+				},
+				order: { createdAt: "desc" },
+			},
+			expect.anything(),
+		);
 		expect(result.status).toBe("success");
 		if (result.status === "success") {
 			expect(result.data.items).toHaveLength(1);
@@ -383,10 +403,10 @@ describe("getHistoryRule", () => {
 		} as never);
 		vi.mocked(queryPlaythroughs).mockResolvedValueOnce([
 			{
-				completedAt: null,
+				completedAt: new Date("2026-01-01T00:05:00Z"),
 				createdAt,
 				id: "run_all",
-				status: "IN_PROGRESS",
+				status: "COMPLETED",
 				userId: "player_456",
 				vodId: "vod_1",
 			},

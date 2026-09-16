@@ -6,9 +6,22 @@ This repository enforces strict technical, architectural, and quality standards 
 
 ## Core System Rules
 
-### 1. Runtime & Package Scripts
-- **Package Manager**: Use `bun` exclusively for package management and task execution (`bun run <script>`, `bun add <pkg>`). Do not use `npm`, `pnpm`, or `yarn`.
-- **Scripts First**: Prefer defined `package.json` scripts (`bun run test:unit`, `bun run check:all`, `bun run validate`) over raw tool invocations.
+### 1. Runtime & Canonical Package Scripts
+Always execute workflows using `bun run <script>` and manage packages with `bun add <pkg>`. Consult the canonical script reference below before running tasks:
+
+| Goal / Workflow | Canonical Script |
+| :--- | :--- |
+| **Fast Iteration** (types + lint + arch + unit) | `bun run validate:fast` |
+| **Pre-PR Quality Gate** (full check + test + build + deploy dry-run) | `bun run validate` |
+| **Auto-fix Formatting & Imports** | `bun run fix:all` |
+| **Lint & Format Verification** | `bun run check:all` |
+| **Type Verification** | `bun run check:types` |
+| **Architecture Verification** (Steiger) | `bun run check:architecture` |
+| **Schema & Environment Sync Verification** | `bun run check:sync` |
+| **Targeted Unit Testing** (single slice/file) | `bun run test:unit <path>` |
+| **Full Unit Testing** | `bun run test:unit` |
+| **Test Coverage** | `bun run test:coverage` |
+| **Database Migration Generation** | `bun run db:generate` |
 
 ### 2. Conventional Commits & Branches
 - **Branch from Latest Main**: Always sync `main` (`git checkout main && git pull origin main`) and branch from latest `main` before starting new work. Never branch off unmerged feature branches unless managing a stacked PR.
@@ -24,9 +37,10 @@ This repository enforces strict technical, architectural, and quality standards 
 - Auto-generated database migration scripts inside `drizzle/` MUST NOT be manually edited. Generate new migrations via `bun run db:generate`.
 
 ### 5. Token Efficiency & Output Hygiene
-- **Fast Iterative Validation**: Prefer `bun run validate:fast` (`check:types`, `check:all`, `check:architecture`, `test:unit`) for intermediate development iterations. Run full `bun run validate` for final pre-PR gatekeeping.
-- **Format Before Check**: Prefer `bun run fix:all` before `bun run check:all` to automatically resolve formatting and avoid ingesting massive diff rejection logs into context.
-- **Concise Git Invocations**: Use `git status -s` (short status) and `git log -n 5 --oneline` to avoid dumping large branch and status tables.
+- **Fast Iterative Validation**: Run `bun run validate:fast` (`check:types`, `check:all`, `check:architecture`, `test:unit`) for intermediate development loops. Reserve `bun run validate` for final pre-PR verification.
+- **Targeted Test Execution**: Pass specific file or directory paths to `bun run test:unit <path>` during active development (e.g. `bun run test:unit src/pages/vods/`) to keep test cycles fast and token usage minimal.
+- **Format Before Check**: Run `bun run fix:all` before `bun run check:all` to resolve formatting and import sorting automatically.
+- **Concise Git Invocations**: Use `git status -s` (short status) and `git log -n 5 --oneline` to inspect git state concisely.
 
 ---
 
