@@ -136,7 +136,7 @@ describe("Navbar", () => {
 		expect(screen.getByText("Admin Dashboard")).toBeDefined();
 	});
 
-	it("renders default overview title on root path", () => {
+	it("renders default home title on root path", () => {
 		// Arrange
 		vi.mocked(useLocation).mockReturnValue({ pathname: "/" } as never);
 
@@ -144,7 +144,7 @@ describe("Navbar", () => {
 		render(<Navbar />);
 
 		// Assert
-		expect(screen.getByText("Overview")).toBeDefined();
+		expect(screen.getByText("Home")).toBeDefined();
 	});
 
 	it("renders fallback title on unknown path", () => {
@@ -192,38 +192,5 @@ describe("Navbar", () => {
 		// Assert
 		expect(toggleButton).toBeDefined();
 		expect(toggleButton.getAttribute("aria-expanded")).toBe("true");
-	});
-
-	it("triggers desktop sidebar collapse toggle when desktop toggle button is clicked", () => {
-		// Arrange
-		const onToggleDesktopSidebar = vi.fn();
-		render(
-			<Navbar
-				isDesktopSidebarCollapsed={false}
-				onToggleDesktopSidebar={onToggleDesktopSidebar}
-			/>,
-		);
-
-		// Act
-		const desktopToggle = screen.getByRole("button", {
-			name: "Collapse sidebar",
-		});
-		fireEvent.click(desktopToggle);
-
-		// Assert
-		expect(onToggleDesktopSidebar).toHaveBeenCalledTimes(1);
-	});
-
-	it("renders expand label when desktop sidebar is collapsed", () => {
-		// Arrange
-		render(<Navbar isDesktopSidebarCollapsed={true} />);
-
-		// Act
-		const desktopToggle = screen.getByRole("button", {
-			name: "Expand sidebar",
-		});
-
-		// Assert
-		expect(desktopToggle).toBeDefined();
 	});
 });

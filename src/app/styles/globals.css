@@ -6,6 +6,9 @@
 	font-weight: 400;
 	font-display: swap;
 	src: url("/fonts/oxanium-400.ttf") format("truetype");
+	ascent-override: 95%;
+	descent-override: 25%;
+	line-gap-override: 0%;
 }
 
 @font-face {
@@ -14,6 +17,9 @@
 	font-weight: 500;
 	font-display: swap;
 	src: url("/fonts/oxanium-500.ttf") format("truetype");
+	ascent-override: 95%;
+	descent-override: 25%;
+	line-gap-override: 0%;
 }
 
 @font-face {
@@ -22,6 +28,9 @@
 	font-weight: 600;
 	font-display: swap;
 	src: url("/fonts/oxanium-600.ttf") format("truetype");
+	ascent-override: 95%;
+	descent-override: 25%;
+	line-gap-override: 0%;
 }
 
 @font-face {
@@ -30,6 +39,9 @@
 	font-weight: 700;
 	font-display: swap;
 	src: url("/fonts/oxanium-700.ttf") format("truetype");
+	ascent-override: 95%;
+	descent-override: 25%;
+	line-gap-override: 0%;
 }
 
 @font-face {

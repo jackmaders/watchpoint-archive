@@ -74,4 +74,38 @@ describe("Sidebar", () => {
 		// Assert
 		expect(onNavClick).toHaveBeenCalledTimes(1);
 	});
+
+	it("renders collapse toggle button in header and triggers callback", () => {
+		// Arrange
+		vi.mocked(authClient.useSession).mockReturnValue({
+			data: null,
+			isPending: false,
+		} as never);
+		const onToggleCollapse = vi.fn();
+		render(<Sidebar isCollapsed={false} onToggleCollapse={onToggleCollapse} />);
+
+		// Act
+		const collapseBtn = screen.getByRole("button", {
+			name: "Collapse sidebar",
+		});
+		fireEvent.click(collapseBtn);
+
+		// Assert
+		expect(collapseBtn).toBeDefined();
+		expect(onToggleCollapse).toHaveBeenCalledTimes(1);
+	});
+
+	it("renders expand toggle button in header when collapsed", () => {
+		// Arrange
+		vi.mocked(authClient.useSession).mockReturnValue({
+			data: null,
+			isPending: false,
+		} as never);
+		const onToggleCollapse = vi.fn();
+		render(<Sidebar isCollapsed={true} onToggleCollapse={onToggleCollapse} />);
+
+		// Act & Assert
+		const expandBtn = screen.getByRole("button", { name: "Expand sidebar" });
+		expect(expandBtn).toBeDefined();
+	});
 });

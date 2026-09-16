@@ -8,15 +8,23 @@
  */
 
 import { Link } from "@tanstack/react-router";
-import { Compass, History, Shield } from "lucide-react";
+import {
+	Compass,
+	History,
+	PanelLeft,
+	PanelLeftClose,
+	Shield,
+} from "lucide-react";
 import { authClient } from "@/shared/lib/auth-client";
 import { hasPermission, PERMISSIONS } from "@/shared/lib/permissions";
 import { cn } from "@/shared/lib/utils";
+import { Button } from "@/shared/ui/button";
 
 export interface SidebarProps {
 	className?: string;
 	isCollapsed?: boolean;
 	onNavClick?: () => void;
+	onToggleCollapse?: () => void;
 }
 
 interface NavItem {
@@ -49,6 +57,7 @@ export function Sidebar({
 	className,
 	isCollapsed = false,
 	onNavClick,
+	onToggleCollapse,
 }: SidebarProps) {
 	const session = authClient.useSession();
 	const user = session.data?.user as { role?: string } | undefined;
@@ -68,6 +77,35 @@ export function Sidebar({
 				className,
 			)}
 		>
+			{onToggleCollapse ? (
+				<div
+					className={cn(
+						"flex h-12 items-center border-b border-border/60 px-3",
+						isCollapsed ? "justify-center px-0" : "justify-between",
+					)}
+				>
+					{!isCollapsed ? (
+						<span className="font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+							Navigation
+						</span>
+					) : null}
+					<Button
+						aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+						className="h-8 w-8 text-muted-foreground hover:text-foreground"
+						onClick={onToggleCollapse}
+						size="icon"
+						type="button"
+						variant="ghost"
+					>
+						{isCollapsed ? (
+							<PanelLeft className="h-4 w-4" />
+						) : (
+							<PanelLeftClose className="h-4 w-4" />
+						)}
+					</Button>
+				</div>
+			) : null}
+
 			<nav className="flex-1 space-y-1.5 p-3">
 				{visibleItems.map((item) => {
 					const Icon = item.icon;

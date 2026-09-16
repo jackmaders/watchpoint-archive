@@ -42,9 +42,7 @@ export function AppLayout({
 	return (
 		<div className="min-h-screen bg-background text-foreground flex flex-col">
 			<Navbar
-				isDesktopSidebarCollapsed={isDesktopCollapsed}
 				isMobileSidebarOpen={isMobileOpen}
-				onToggleDesktopSidebar={toggleDesktopSidebar}
 				onToggleMobileSidebar={toggleMobileSidebar}
 				registrationEnabled={registrationEnabled}
 			/>
@@ -79,7 +77,11 @@ export function AppLayout({
 
 			<div className="flex flex-1">
 				{/* Desktop Sidebar */}
-				<Sidebar className="hidden md:flex" isCollapsed={isDesktopCollapsed} />
+				<Sidebar
+					className="hidden md:flex"
+					isCollapsed={isDesktopCollapsed}
+					onToggleCollapse={toggleDesktopSidebar}
+				/>
 
 				{/* Page Content */}
 				<main className="flex-1 w-full p-4 sm:p-6 lg:p-8">{children}</main>

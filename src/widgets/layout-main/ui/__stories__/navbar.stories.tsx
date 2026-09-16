@@ -44,9 +44,3 @@ export const MobileDrawerOpen: Story = {
 		isMobileSidebarOpen: true,
 	},
 };
-
-export const DesktopSidebarCollapsed: Story = {
-	args: {
-		isDesktopSidebarCollapsed: true,
-	},
-};
