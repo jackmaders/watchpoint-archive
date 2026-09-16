@@ -46,6 +46,12 @@ describe("AuthModal", () => {
 
 		// Assert
 		expect(screen.getByRole("dialog")).toBeDefined();
+		expect(screen.getByText("Watchpoint / Account")).toBeDefined();
+		expect(
+			screen.queryByText(
+				"Own your attempts and continue training where you left off.",
+			),
+		).toBeNull();
 		expect(screen.getByLabelText("Email").getAttribute("type")).toBe("email");
 		expect(
 			screen.getByText("Your session expired. Sign in again to continue."),
@@ -67,7 +73,7 @@ describe("AuthModal", () => {
 		expect(screen.getByText("Use at least 8 characters.")).toBeDefined();
 	});
 
-	it("explains why registration is unavailable", () => {
+	it("explains why registration is unavailable via tooltip", async () => {
 		// Arrange & Act
 		render(
 			<AuthModal
@@ -78,13 +84,19 @@ describe("AuthModal", () => {
 		);
 
 		// Assert
+		const registerTab = screen.getByRole("tab", { name: "Register" });
+		expect((registerTab as HTMLButtonElement).disabled).toBe(true);
+		expect(screen.queryByRole("status")).toBeNull();
+
+		// Act - focus or hover over trigger
+		fireEvent.focus(registerTab);
+
+		// Assert
 		expect(
-			(screen.getByRole("tab", { name: "Register" }) as HTMLButtonElement)
-				.disabled,
-		).toBe(true);
-		expect(screen.getByRole("status").textContent).toContain(
-			"Registration is currently unavailable",
-		);
+			await screen.findByText(
+				"Registration is currently unavailable. Existing players can still sign in.",
+			),
+		).toBeDefined();
 	});
 
 	it("reports a generic failure for invalid credentials", async () => {
