@@ -39,6 +39,33 @@ function matchesModuleFilter(
 	return requiredModules.every((m) => selectedTypes.has(m));
 }
 
+function matchesTextFilter(
+	source: string | undefined,
+	filter: string | undefined,
+): boolean {
+	if (!filter) return true;
+	if (!source) return false;
+	return source.toLowerCase().includes(filter.toLowerCase().trim());
+}
+
+function matchesVODFilters(
+	vod: PlayerHistoryItem["vod"],
+	options: GetHistoryInput,
+): boolean {
+	const hasVodFilters = Boolean(
+		options.map || options.hero || options.levelOfPlay || options.player,
+	);
+	if (!hasVodFilters) return true;
+	if (!vod) return false;
+
+	return (
+		matchesTextFilter(vod.mapName, options.map) &&
+		matchesTextFilter(vod.heroName, options.hero) &&
+		matchesTextFilter(vod.rankTier, options.levelOfPlay) &&
+		matchesTextFilter(vod.title, options.player)
+	);
+}
+
 function buildHistoryFilter(
 	userId: string,
 	options: GetHistoryInput,
@@ -127,6 +154,7 @@ async function loadHistoryRunItem(
 		vod: vod
 			? {
 					durationSeconds: vod.durationSeconds,
+					heroName: vod.heroName,
 					id: vod.id,
 					mapName: vod.mapName,
 					rankTier: vod.rankTier,
@@ -148,7 +176,7 @@ async function resolveHistoryUserId(
 
 async function filterAndLoadHistoryRuns(
 	runs: Awaited<ReturnType<typeof queryPlaythroughs>>,
-	modules: readonly ModuleType[] | undefined,
+	options: GetHistoryInput,
 	db = createDbClient(),
 ): Promise<PlayerHistoryItem[]> {
 	const items: PlayerHistoryItem[] = [];
@@ -157,8 +185,11 @@ async function filterAndLoadHistoryRuns(
 			{ filter: { playthroughId: { eq: run.id } } },
 			db,
 		);
-		if (matchesModuleFilter(moduleSelections, modules)) {
-			items.push(await loadHistoryRunItem(run, moduleSelections, db));
+		if (matchesModuleFilter(moduleSelections, options.modules)) {
+			const item = await loadHistoryRunItem(run, moduleSelections, db);
+			if (matchesVODFilters(item.vod, options)) {
+				items.push(item);
+			}
 		}
 	}
 	return items;
@@ -188,7 +219,7 @@ export async function getHistoryRule(
 		{ filter, order: { createdAt: "desc" } },
 		db,
 	);
-	const items = await filterAndLoadHistoryRuns(runs, options.modules, db);
+	const items = await filterAndLoadHistoryRuns(runs, options, db);
 
 	const page = options.page ?? 1;
 	const pageSize = options.pageSize ?? 10;

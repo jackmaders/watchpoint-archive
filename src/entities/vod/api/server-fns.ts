@@ -32,16 +32,36 @@ import {
 
 export type GetSessionManifestPayload = SessionManifestTransportQuery;
 
-export const getPublishedVods = createServerFn({ method: "GET" }).handler(
-	async (): Promise<PublishedVodItem[]> => {
+export const getPublishedVods = createServerFn({ method: "GET" })
+	.validator((data: unknown) => {
+		if (!data || typeof data !== "object") return {};
+		return data as {
+			hero?: string;
+			levelOfPlay?: string;
+			map?: string;
+			player?: string;
+		};
+	})
+	.handler(async ({ data }): Promise<PublishedVodItem[]> => {
 		const db = createDbClient();
-		const vodList = await queryVods(
+		const filter: Record<string, unknown> = { isPublished: { eq: true } };
+		if (data?.map) filter.mapName = { eq: data.map };
+		if (data?.hero) filter.heroName = { eq: data.hero };
+		if (data?.levelOfPlay) filter.rankTier = { eq: data.levelOfPlay };
+
+		let vodList = await queryVods(
 			{
-				filter: { isPublished: { eq: true } },
+				filter,
 				order: { createdAt: "desc" },
 			},
 			db,
 		);
+		if (data?.player) {
+			const playerQuery = data.player.toLowerCase().trim();
+			vodList = vodList.filter((vod) =>
+				vod.title.toLowerCase().includes(playerQuery),
+			);
+		}
 		if (vodList.length === 0) {
 			return [];
 		}
@@ -63,8 +83,7 @@ export const getPublishedVods = createServerFn({ method: "GET" }).handler(
 			...vod,
 			scenarios: scenariosByVodId.get(vod.id) ?? [],
 		}));
-	},
-);
+	});
 
 export const getVodById = createServerFn({ method: "GET" })
 	.validator((data: { id: string }) => data)

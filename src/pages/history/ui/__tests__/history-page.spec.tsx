@@ -157,7 +157,7 @@ describe("HistoryPage component", () => {
 
 		// Assert
 		expect(screen.getByText("GM Ana Gameplay")).toBeDefined();
-		expect(screen.getByText("King's Row")).toBeDefined();
+		expect(screen.getAllByText("King's Row").length).toBeGreaterThanOrEqual(1);
 		expect(screen.getByText("75%")).toBeDefined();
 		expect(screen.getByText("1,400 ms")).toBeDefined();
 		expect(screen.getAllByText("Strategy").length).toBeGreaterThanOrEqual(1);
@@ -276,6 +276,40 @@ describe("HistoryPage component", () => {
 			expect.objectContaining({ page: 1, vodId: "vod_1" }),
 		);
 
+		// Select Map Filter
+		const mapSelect = screen.getByRole("combobox", { name: /filter by map/i });
+		fireEvent.change(mapSelect, { target: { value: "King's Row" } });
+		expect(onFilterChange).toHaveBeenCalledWith(
+			expect.objectContaining({ map: "King's Row", page: 1 }),
+		);
+
+		// Select Hero Filter
+		const heroSelect = screen.getByRole("combobox", {
+			name: /filter by hero/i,
+		});
+		fireEvent.change(heroSelect, { target: { value: "Ana" } });
+		expect(onFilterChange).toHaveBeenCalledWith(
+			expect.objectContaining({ hero: "Ana", page: 1 }),
+		);
+
+		// Select Level of Play Filter
+		const levelSelect = screen.getByRole("combobox", {
+			name: /filter by level of play/i,
+		});
+		fireEvent.change(levelSelect, { target: { value: "Grandmaster" } });
+		expect(onFilterChange).toHaveBeenCalledWith(
+			expect.objectContaining({ levelOfPlay: "Grandmaster", page: 1 }),
+		);
+
+		// Player Input Filter
+		const playerInput = screen.getByRole("textbox", {
+			name: /filter by player/i,
+		});
+		fireEvent.change(playerInput, { target: { value: "Proper" } });
+		expect(onFilterChange).toHaveBeenCalledWith(
+			expect.objectContaining({ page: 1, player: "Proper" }),
+		);
+
 		// Toggle Module Chip (Select)
 		fireEvent.click(screen.getByRole("button", { name: /toggle strategy/i }));
 		expect(onFilterChange).toHaveBeenCalledWith(
@@ -332,6 +366,67 @@ describe("HistoryPage component", () => {
 		fireEvent.change(select, { target: { value: "" } });
 		expect(onFilterChange).toHaveBeenCalledWith(
 			expect.objectContaining({ page: 1, vodId: undefined }),
+		);
+	});
+
+	it("handles clearing Map, Hero, Level of Play, and Player filters", () => {
+		// Arrange
+		const onFilterChange = vi.fn();
+		const data: PlayerHistoryResult = {
+			items: [],
+			page: 1,
+			pageSize: 10,
+			total: 0,
+			totalPages: 1,
+		};
+
+		// Act
+		render(
+			<HistoryPage
+				data={data}
+				onFilterChange={onFilterChange}
+				searchParams={{
+					hero: "Ana",
+					levelOfPlay: "Grandmaster",
+					map: "King's Row",
+					player: "Proper",
+				}}
+				vods={[mockVod]}
+			/>,
+		);
+
+		// Clear Map
+		const mapSelect = screen.getByRole("combobox", { name: /filter by map/i });
+		fireEvent.change(mapSelect, { target: { value: "" } });
+		expect(onFilterChange).toHaveBeenCalledWith(
+			expect.objectContaining({ map: undefined, page: 1 }),
+		);
+
+		// Clear Hero
+		const heroSelect = screen.getByRole("combobox", {
+			name: /filter by hero/i,
+		});
+		fireEvent.change(heroSelect, { target: { value: "" } });
+		expect(onFilterChange).toHaveBeenCalledWith(
+			expect.objectContaining({ hero: undefined, page: 1 }),
+		);
+
+		// Clear Level of Play
+		const levelSelect = screen.getByRole("combobox", {
+			name: /filter by level of play/i,
+		});
+		fireEvent.change(levelSelect, { target: { value: "" } });
+		expect(onFilterChange).toHaveBeenCalledWith(
+			expect.objectContaining({ levelOfPlay: undefined, page: 1 }),
+		);
+
+		// Clear Player
+		const playerInput = screen.getByRole("textbox", {
+			name: /filter by player/i,
+		});
+		fireEvent.change(playerInput, { target: { value: "" } });
+		expect(onFilterChange).toHaveBeenCalledWith(
+			expect.objectContaining({ page: 1, player: undefined }),
 		);
 	});
 

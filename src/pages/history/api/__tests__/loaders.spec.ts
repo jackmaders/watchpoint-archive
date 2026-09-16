@@ -2,7 +2,7 @@
  * Tests loaders and query options for match history retrieval and page preparation.
  *
  * Verifies cache warming with staleTime static, concurrent fetching of VODs and registration state,
- * queryFn execution, and result formatting from server function responses.
+ * queryFn execution with advanced filter parameters, and result formatting from server function responses.
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -66,7 +66,15 @@ describe("history loaders", () => {
 	describe("historyQueryOptions", () => {
 		it("creates query options with parameters and key", () => {
 			// Arrange
-			const deps = { page: 2, pageSize: 20, status: "COMPLETED" as const };
+			const deps = {
+				hero: "Ana",
+				levelOfPlay: "Grandmaster",
+				map: "King's Row",
+				page: 2,
+				pageSize: 20,
+				player: "Proper",
+				status: "COMPLETED" as const,
+			};
 
 			// Act
 			const options = historyQueryOptions(deps);
@@ -93,9 +101,13 @@ describe("history loaders", () => {
 				mockHistoryResult as never,
 			);
 			const options = historyQueryOptions({
+				hero: "Ana",
+				levelOfPlay: "Grandmaster",
+				map: "King's Row",
 				modules: ["STRATEGY"],
 				page: 1,
 				pageSize: 10,
+				player: "Proper",
 				status: "COMPLETED",
 				vodId: "vod_1",
 			});
@@ -106,9 +118,13 @@ describe("history loaders", () => {
 			// Assert
 			expect(getPlayerHistory).toHaveBeenCalledWith({
 				data: {
+					hero: "Ana",
+					levelOfPlay: "Grandmaster",
+					map: "King's Row",
 					modules: ["STRATEGY"],
 					page: 1,
 					pageSize: 10,
+					player: "Proper",
 					status: "COMPLETED",
 					vodId: "vod_1",
 				},
@@ -133,9 +149,13 @@ describe("history loaders", () => {
 			// Assert
 			expect(getPlayerHistory).toHaveBeenCalledWith({
 				data: {
+					hero: undefined,
+					levelOfPlay: undefined,
+					map: undefined,
 					modules: undefined,
 					page: undefined,
 					pageSize: undefined,
+					player: undefined,
 					status: undefined,
 					vodId: undefined,
 				},
@@ -161,9 +181,13 @@ describe("history loaders", () => {
 
 			// Act
 			const result = await loadPlayerHistory({
+				hero: "Ana",
+				levelOfPlay: "Grandmaster",
+				map: "King's Row",
 				modules: ["STRATEGY"],
 				page: 2,
 				pageSize: 20,
+				player: "Proper",
 				status: "COMPLETED",
 				vodId: "vod_1",
 			});
@@ -171,9 +195,13 @@ describe("history loaders", () => {
 			// Assert
 			expect(getPlayerHistory).toHaveBeenCalledWith({
 				data: {
+					hero: "Ana",
+					levelOfPlay: "Grandmaster",
+					map: "King's Row",
 					modules: ["STRATEGY"],
 					page: 2,
 					pageSize: 20,
+					player: "Proper",
 					status: "COMPLETED",
 					vodId: "vod_1",
 				},

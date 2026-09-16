@@ -44,7 +44,9 @@ describe("entities/vod server-fns", () => {
 
 		// Act
 		const result = await (
-			getPublishedVods as unknown as () => Promise<unknown>
+			getPublishedVods as unknown as (ctx?: {
+				data?: unknown;
+			}) => Promise<unknown>
 		)();
 
 		// Assert
@@ -71,6 +73,70 @@ describe("entities/vod server-fns", () => {
 				id: "vod_2",
 				isPublished: true,
 				scenarios: [],
+			},
+		]);
+	});
+
+	it("filters published VODs by map, hero, levelOfPlay, and player", async () => {
+		// Arrange
+		const mockVods = [
+			{
+				heroName: "Ana",
+				id: "vod_1",
+				isPublished: true,
+				mapName: "King's Row",
+				rankTier: "Grandmaster",
+				title: "Proper Ana King's Row Gameplay",
+			},
+			{
+				heroName: "Ana",
+				id: "vod_2",
+				isPublished: true,
+				mapName: "King's Row",
+				rankTier: "Grandmaster",
+				title: "Viol2t Ana King's Row Gameplay",
+			},
+		] as never;
+		const mockScenarios = [{ id: "sc_1", vodId: "vod_1" }] as never;
+		vi.mocked(queryVods).mockResolvedValueOnce(mockVods);
+		vi.mocked(queryScenarios).mockResolvedValueOnce(mockScenarios);
+
+		// Act
+		const result = await (
+			getPublishedVods as unknown as (ctx: {
+				data: unknown;
+			}) => Promise<unknown>
+		)({
+			data: {
+				hero: "Ana",
+				levelOfPlay: "Grandmaster",
+				map: "King's Row",
+				player: "Proper",
+			},
+		});
+
+		// Assert
+		expect(queryVods).toHaveBeenCalledWith(
+			{
+				filter: {
+					heroName: { eq: "Ana" },
+					isPublished: { eq: true },
+					mapName: { eq: "King's Row" },
+					rankTier: { eq: "Grandmaster" },
+				},
+				order: { createdAt: "desc" },
+			},
+			expect.anything(),
+		);
+		expect(result).toEqual([
+			{
+				heroName: "Ana",
+				id: "vod_1",
+				isPublished: true,
+				mapName: "King's Row",
+				rankTier: "Grandmaster",
+				scenarios: [{ id: "sc_1" }],
+				title: "Proper Ana King's Row Gameplay",
 			},
 		]);
 	});

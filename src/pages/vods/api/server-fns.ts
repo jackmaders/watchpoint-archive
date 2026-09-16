@@ -5,18 +5,34 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { createDbClient, queryVods, type vods } from "@/shared/db";
+import { vodsSearchSchema } from "../model/search-params";
 
 export type PublishedVodItem = typeof vods.$inferSelect;
 
-export const getPublishedVods = createServerFn({ method: "GET" }).handler(
-	async (): Promise<PublishedVodItem[]> => {
+export const getPublishedVods = createServerFn({ method: "GET" })
+	.validator((data: unknown) => {
+		const parsed = vodsSearchSchema.safeParse(data ?? {});
+		return parsed.success ? parsed.data : {};
+	})
+	.handler(async ({ data }): Promise<PublishedVodItem[]> => {
 		const db = createDbClient();
-		return queryVods(
+		const filter: Record<string, unknown> = { isPublished: { eq: true } };
+		if (data?.map) filter.mapName = { eq: data.map };
+		if (data?.hero) filter.heroName = { eq: data.hero };
+		if (data?.levelOfPlay) filter.rankTier = { eq: data.levelOfPlay };
+
+		let vodList = await queryVods(
 			{
-				filter: { isPublished: { eq: true } },
+				filter,
 				order: { createdAt: "desc" },
 			},
 			db,
 		);
-	},
-);
+		if (data?.player) {
+			const playerQuery = data.player.toLowerCase().trim();
+			vodList = vodList.filter((vod) =>
+				vod.title.toLowerCase().includes(playerQuery),
+			);
+		}
+		return vodList;
+	});

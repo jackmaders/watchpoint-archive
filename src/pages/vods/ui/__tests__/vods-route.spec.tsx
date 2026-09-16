@@ -16,14 +16,17 @@ describe("VodsRouteComponent", () => {
 		);
 	});
 
-	it("renders VodsPage with loader data from route api", () => {
+	it("renders VodsPage with loader data, search params, and wires filter navigation callback", () => {
 		// Arrange
+		const mockNavigate = vi.fn();
 		const mockLoaderData = {
 			registrationEnabled: true,
 			vods: [{ id: "vod_1" }],
 		};
 		const routeApi = getRouteApi("/vods/");
 		vi.mocked(routeApi.useLoaderData).mockReturnValue(mockLoaderData);
+		vi.mocked(routeApi.useSearch).mockReturnValue({ map: "King's Row" });
+		vi.mocked(routeApi.useNavigate).mockReturnValue(mockNavigate);
 
 		// Act
 		render(<VodsRouteComponent />);
@@ -31,11 +34,24 @@ describe("VodsRouteComponent", () => {
 		// Assert
 		expect(screen.getByTestId("mock-vods-page")).toBeDefined();
 		expect(VodsPage).toHaveBeenCalledWith(
-			{
+			expect.objectContaining({
 				registrationEnabled: true,
+				searchParams: { map: "King's Row" },
 				vods: mockLoaderData.vods,
-			},
+			}),
 			undefined,
 		);
+
+		// Act: trigger onFilterChange
+		const lastCallProps = vi.mocked(VodsPage).mock.calls[0]?.[0];
+		lastCallProps?.onFilterChange?.({ hero: "Ana" });
+
+		// Assert
+		expect(mockNavigate).toHaveBeenCalled();
+		const navigateArg = mockNavigate.mock.calls[0]?.[0];
+		if (typeof navigateArg?.search === "function") {
+			const merged = navigateArg.search({ map: "King's Row" });
+			expect(merged).toEqual({ hero: "Ana", map: "King's Row" });
+		}
 	});
 });

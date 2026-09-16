@@ -51,34 +51,51 @@ function HistoryMainContent(props: HistoryPageProps) {
 	return <HistoryFilteredList {...props} />;
 }
 
-function HistoryFilteredList({
-	data,
-	onFilterChange,
-	searchParams,
-	vods,
-}: HistoryPageProps) {
-	const items = data?.items ?? [];
-	const currentStatus = searchParams?.status ?? "COMPLETED";
-
+function useHistoryFilterHandlers(
+	searchParams?: HistorySearchParams,
+	onFilterChange?: (newParams: HistorySearchParams) => void,
+) {
 	const handleStatusChange = useCallback(
-		(status: PlaythroughStatus) => {
-			onFilterChange?.({
-				...searchParams,
-				page: 1,
-				status,
-			});
-		},
+		(status: PlaythroughStatus) =>
+			onFilterChange?.({ ...searchParams, page: 1, status }),
 		[onFilterChange, searchParams],
 	);
 
 	const handleVodChange = useCallback(
-		(vodId: string | undefined) => {
+		(vodId: string | undefined) =>
+			onFilterChange?.({ ...searchParams, page: 1, vodId: vodId || undefined }),
+		[onFilterChange, searchParams],
+	);
+
+	const handleMapChange = useCallback(
+		(map: string) =>
+			onFilterChange?.({ ...searchParams, map: map || undefined, page: 1 }),
+		[onFilterChange, searchParams],
+	);
+
+	const handleHeroChange = useCallback(
+		(hero: string) =>
+			onFilterChange?.({ ...searchParams, hero: hero || undefined, page: 1 }),
+		[onFilterChange, searchParams],
+	);
+
+	const handleLevelOfPlayChange = useCallback(
+		(levelOfPlay: string) =>
+			onFilterChange?.({
+				...searchParams,
+				levelOfPlay: levelOfPlay || undefined,
+				page: 1,
+			}),
+		[onFilterChange, searchParams],
+	);
+
+	const handlePlayerChange = useCallback(
+		(player: string) =>
 			onFilterChange?.({
 				...searchParams,
 				page: 1,
-				vodId: vodId || undefined,
-			});
-		},
+				player: player || undefined,
+			}),
 		[onFilterChange, searchParams],
 	);
 
@@ -99,6 +116,26 @@ function HistoryFilteredList({
 		[onFilterChange, searchParams],
 	);
 
+	return {
+		handleHeroChange,
+		handleLevelOfPlayChange,
+		handleMapChange,
+		handleModuleToggle,
+		handlePlayerChange,
+		handleStatusChange,
+		handleVodChange,
+	};
+}
+
+function HistoryFilteredList({
+	data,
+	onFilterChange,
+	searchParams,
+	vods,
+}: HistoryPageProps) {
+	const currentStatus = searchParams?.status ?? "COMPLETED";
+	const handlers = useHistoryFilterHandlers(searchParams, onFilterChange);
+
 	const handlePageChange = useCallback(
 		(page: number) => {
 			onFilterChange?.({
@@ -113,29 +150,56 @@ function HistoryFilteredList({
 		<div className="space-y-6">
 			<HistoryFilterBar
 				currentStatus={currentStatus}
-				onModuleToggle={handleModuleToggle}
-				onStatusChange={handleStatusChange}
-				onVodChange={handleVodChange}
+				onHeroChange={handlers.handleHeroChange}
+				onLevelOfPlayChange={handlers.handleLevelOfPlayChange}
+				onMapChange={handlers.handleMapChange}
+				onModuleToggle={handlers.handleModuleToggle}
+				onPlayerChange={handlers.handlePlayerChange}
+				onStatusChange={handlers.handleStatusChange}
+				onVodChange={handlers.handleVodChange}
+				selectedHero={searchParams?.hero}
+				selectedLevelOfPlay={searchParams?.levelOfPlay}
+				selectedMap={searchParams?.map}
 				selectedModules={searchParams?.modules ?? []}
+				selectedPlayer={searchParams?.player}
 				selectedVodId={searchParams?.vodId ?? ""}
 				vods={vods ?? []}
 			/>
 
-			{items.length === 0 ? (
-				<HistoryEmptyState currentStatus={currentStatus} />
-			) : (
-				<div className="space-y-4">
-					<div className="grid grid-cols-1 gap-4">
-						{items.map((item) => (
-							<HistoryItemCard item={item} key={item.id} />
-						))}
-					</div>
+			<HistoryResultsList
+				currentStatus={currentStatus}
+				data={data}
+				onPageChange={handlePageChange}
+			/>
+		</div>
+	);
+}
 
-					{data && data.totalPages > 1 ? (
-						<HistoryPaginationBar data={data} onPageChange={handlePageChange} />
-					) : null}
-				</div>
-			)}
+function HistoryResultsList({
+	currentStatus,
+	data,
+	onPageChange,
+}: {
+	currentStatus: PlaythroughStatus;
+	data?: PlayerHistoryResult;
+	onPageChange: (page: number) => void;
+}) {
+	const items = data?.items ?? [];
+	if (items.length === 0) {
+		return <HistoryEmptyState currentStatus={currentStatus} />;
+	}
+
+	return (
+		<div className="space-y-4">
+			<div className="grid grid-cols-1 gap-4">
+				{items.map((item) => (
+					<HistoryItemCard item={item} key={item.id} />
+				))}
+			</div>
+
+			{data && data.totalPages > 1 ? (
+				<HistoryPaginationBar data={data} onPageChange={onPageChange} />
+			) : null}
 		</div>
 	);
 }

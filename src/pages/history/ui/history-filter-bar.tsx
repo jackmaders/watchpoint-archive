@@ -1,7 +1,7 @@
 /**
- * Filter controls bar for narrowing match history by VOD title, playthrough status, and learning module types.
+ * Filter controls bar for narrowing match history by VOD title, playthrough status, learning module types, and advanced dimensions.
  *
- * Implements `HistoryFilterBar` with status tabs (`COMPLETED`, `IN_PROGRESS`), a VOD selector dropdown,
+ * Implements `HistoryFilterBar` with status tabs (`COMPLETED`, `IN_PROGRESS`), advanced filter dropdowns (Map, Hero, Level of Play, Player),
  * and individual module toggle buttons.
  */
 import { type ChangeEvent, useCallback } from "react";
@@ -27,23 +27,58 @@ export const ALL_MODULES: { key: ModuleType; label: string }[] = [
 
 export interface HistoryFilterBarProps {
 	currentStatus: PlaythroughStatus;
+	onHeroChange?: (hero: string) => void;
+	onLevelOfPlayChange?: (levelOfPlay: string) => void;
+	onMapChange?: (map: string) => void;
 	onModuleToggle: (module: ModuleType) => void;
+	onPlayerChange?: (player: string) => void;
 	onStatusChange: (status: PlaythroughStatus) => void;
 	onVodChange: (vodId: string) => void;
+	selectedHero?: string;
+	selectedLevelOfPlay?: string;
+	selectedMap?: string;
 	selectedModules: readonly ModuleType[];
+	selectedPlayer?: string;
 	selectedVodId: string;
 	vods: readonly PublishedVodItem[];
 }
 
-export function HistoryFilterBar({
+const DEFAULT_LEVELS_OF_PLAY = [
+	"Grandmaster",
+	"Champion",
+	"GM Ranked",
+	"FACEIT",
+	"OWCS",
+	"Top 500",
+	"Master",
+	"Diamond",
+];
+
+export function HistoryFilterBar(props: HistoryFilterBarProps) {
+	return (
+		<div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-4">
+			<HistoryHeaderControls
+				currentStatus={props.currentStatus}
+				onModuleToggle={props.onModuleToggle}
+				onStatusChange={props.onStatusChange}
+				selectedModules={props.selectedModules}
+			/>
+			<HistoryAdvancedInputs {...props} />
+		</div>
+	);
+}
+
+function HistoryHeaderControls({
 	currentStatus,
 	onModuleToggle,
 	onStatusChange,
-	onVodChange,
 	selectedModules,
-	selectedVodId,
-	vods,
-}: HistoryFilterBarProps) {
+}: {
+	currentStatus: PlaythroughStatus;
+	onModuleToggle: (module: ModuleType) => void;
+	onStatusChange: (status: PlaythroughStatus) => void;
+	selectedModules: readonly ModuleType[];
+}) {
 	const handleCompleted = useCallback(
 		() => onStatusChange("COMPLETED"),
 		[onStatusChange],
@@ -52,13 +87,9 @@ export function HistoryFilterBar({
 		() => onStatusChange("IN_PROGRESS"),
 		[onStatusChange],
 	);
-	const handleSelectChange = useCallback(
-		(e: ChangeEvent<HTMLSelectElement>) => onVodChange(e.target.value),
-		[onVodChange],
-	);
 
 	return (
-		<div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
+		<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 			<div
 				aria-label="Playthrough status"
 				className="flex items-center gap-1 rounded-md border border-border bg-muted/50 p-1"
@@ -92,32 +123,145 @@ export function HistoryFilterBar({
 				</button>
 			</div>
 
-			<div className="flex flex-wrap items-center gap-3">
-				<select
-					aria-label="Filter by VOD"
-					className="h-9 rounded-md border border-input bg-background px-3 py-1 text-xs text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-					onChange={handleSelectChange}
-					value={selectedVodId}
-				>
-					<option value="">All VODs</option>
-					{vods.map((vod) => (
-						<option key={vod.id} value={vod.id}>
-							{vod.title} ({vod.mapName})
-						</option>
-					))}
-				</select>
-
-				<div className="flex flex-wrap items-center gap-1.5">
-					{ALL_MODULES.map((m) => (
-						<ModuleFilterButton
-							active={selectedModules.includes(m.key)}
-							definition={m}
-							key={m.key}
-							onToggle={onModuleToggle}
-						/>
-					))}
-				</div>
+			<div className="flex flex-wrap items-center gap-1.5">
+				{ALL_MODULES.map((m) => (
+					<ModuleFilterButton
+						active={selectedModules.includes(m.key)}
+						definition={m}
+						key={m.key}
+						onToggle={onModuleToggle}
+					/>
+				))}
 			</div>
+		</div>
+	);
+}
+
+function HistoryAdvancedInputs({
+	onHeroChange,
+	onLevelOfPlayChange,
+	onMapChange,
+	onPlayerChange,
+	onVodChange,
+	selectedHero = "",
+	selectedLevelOfPlay = "",
+	selectedMap = "",
+	selectedPlayer = "",
+	selectedVodId,
+	vods,
+}: HistoryFilterBarProps) {
+	const handleSelectChange = useCallback(
+		(e: ChangeEvent<HTMLSelectElement>) => onVodChange(e.target.value),
+		[onVodChange],
+	);
+	const handleMapSelect = useCallback(
+		(e: ChangeEvent<HTMLSelectElement>) => onMapChange?.(e.target.value),
+		[onMapChange],
+	);
+	const handleHeroSelect = useCallback(
+		(e: ChangeEvent<HTMLSelectElement>) => onHeroChange?.(e.target.value),
+		[onHeroChange],
+	);
+	const handleLevelSelect = useCallback(
+		(e: ChangeEvent<HTMLSelectElement>) =>
+			onLevelOfPlayChange?.(e.target.value),
+		[onLevelOfPlayChange],
+	);
+	const handlePlayerInput = useCallback(
+		(e: ChangeEvent<HTMLInputElement>) => onPlayerChange?.(e.target.value),
+		[onPlayerChange],
+	);
+
+	const availableMaps = Array.from(
+		new Set(
+			[...vods.map((v) => v.mapName), selectedMap].filter(Boolean) as string[],
+		),
+	).sort();
+
+	const availableHeroes = Array.from(
+		new Set(
+			[...vods.map((v) => v.heroName), selectedHero].filter(
+				Boolean,
+			) as string[],
+		),
+	).sort();
+
+	const availableLevels = Array.from(
+		new Set(
+			[
+				...DEFAULT_LEVELS_OF_PLAY,
+				...vods.map((v) => v.rankTier),
+				selectedLevelOfPlay,
+			].filter(Boolean) as string[],
+		),
+	);
+
+	return (
+		<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5 border-t border-border pt-4">
+			<select
+				aria-label="Filter by Map"
+				className="h-9 rounded-md border border-input bg-background px-3 py-1 text-xs text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+				onChange={handleMapSelect}
+				value={selectedMap}
+			>
+				<option value="">All Maps</option>
+				{availableMaps.map((map) => (
+					<option key={map} value={map}>
+						{map}
+					</option>
+				))}
+			</select>
+
+			<select
+				aria-label="Filter by Hero"
+				className="h-9 rounded-md border border-input bg-background px-3 py-1 text-xs text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+				onChange={handleHeroSelect}
+				value={selectedHero}
+			>
+				<option value="">All Heroes</option>
+				{availableHeroes.map((hero) => (
+					<option key={hero} value={hero}>
+						{hero}
+					</option>
+				))}
+			</select>
+
+			<select
+				aria-label="Filter by Level of Play"
+				className="h-9 rounded-md border border-input bg-background px-3 py-1 text-xs text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+				onChange={handleLevelSelect}
+				value={selectedLevelOfPlay}
+			>
+				<option value="">All Levels</option>
+				{availableLevels.map((lvl) => (
+					<option key={lvl} value={lvl}>
+						{lvl}
+					</option>
+				))}
+			</select>
+
+			<input
+				aria-label="Filter by Player"
+				className="h-9 rounded-md border border-input bg-background px-3 py-1 text-xs text-foreground shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+				onChange={handlePlayerInput}
+				placeholder="Filter by player…"
+				type="text"
+				value={selectedPlayer}
+			/>
+
+			<select
+				aria-label="Filter by VOD"
+				className="h-9 rounded-md border border-input bg-background px-3 py-1 text-xs text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+				onChange={handleSelectChange}
+				value={selectedVodId}
+			>
+				<option value="">All VODs</option>
+				{vods.map((vod) => (
+					<option key={vod.id} value={vod.id}>
+						{vod.title} ({vod.mapName})
+					</option>
+				))}
+			</select>
 		</div>
 	);
 }

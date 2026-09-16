@@ -9,6 +9,9 @@ import { z } from "zod";
 const moduleEnumSchema = z.enum(["STRATEGY", "TACTICS", "TRACKING", "SPATIAL"]);
 
 export const historySearchSchema = z.object({
+	hero: z.string().min(1).optional(),
+	levelOfPlay: z.string().min(1).optional(),
+	map: z.string().min(1).optional(),
 	modules: z
 		.union([
 			z.array(moduleEnumSchema),
@@ -23,6 +26,7 @@ export const historySearchSchema = z.object({
 		.optional(),
 	page: z.coerce.number().int().positive().optional(),
 	pageSize: z.coerce.number().int().positive().max(50).optional(),
+	player: z.string().min(1).optional(),
 	status: z.enum(["COMPLETED", "IN_PROGRESS"]).optional(),
 	vodId: z.string().min(1).optional(),
 });
