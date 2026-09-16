@@ -2,14 +2,14 @@
  * Renders interactive authentication dialogs and header account controls for player sign-in, registration, and session management.
  *
  * Implements `AuthModal`, `AccountControls`, and `resolveAuthResult` using Radix UI `Dialog`, `Tabs`, and `Tooltip` primitives,
- * styled with Tailwind CSS, wired to `authClient` for authentication actions, and supporting registration toggle states.
+ * styled with Tailwind CSS, wired to `authClient` for authentication actions, and supporting registration toggle states and initial mode selection.
  */
 
 "use client";
 
 import { Link } from "@tanstack/react-router";
 import type { FormEvent } from "react";
-import { useCallback, useId, useState } from "react";
+import { useCallback, useEffect, useId, useState } from "react";
 import { authClient } from "@/shared/lib/auth-client";
 import { Alert, AlertDescription } from "@/shared/ui/alert";
 import { Button } from "@/shared/ui/button";
@@ -32,22 +32,34 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/ui/tooltip";
 type AuthMode = "sign-in" | "register";
 
 export function AuthModal({
+	defaultMode = "sign-in",
 	expired = false,
+	initialMode,
 	onOpenChange,
 	onSuccess,
 	open,
 	registrationEnabled = true,
 }: {
+	defaultMode?: AuthMode;
 	expired?: boolean;
+	initialMode?: AuthMode;
 	onOpenChange: (open: boolean) => void;
 	onSuccess?: () => void;
 	open: boolean;
 	registrationEnabled?: boolean;
 }) {
-	const [mode, setMode] = useState<AuthMode>("sign-in");
+	const initialSelection = initialMode ?? defaultMode;
+	const [mode, setMode] = useState<AuthMode>(initialSelection);
 	const [error, setError] = useState<string | null>(null);
 	const [busy, setBusy] = useState(false);
 	const ids = useId();
+
+	useEffect(() => {
+		if (open) {
+			setMode(initialSelection);
+			setError(null);
+		}
+	}, [open, initialSelection]);
 	const changeMode = useCallback(
 		(value: string) => setMode(value as AuthMode),
 		[],
@@ -178,8 +190,20 @@ export function AccountControls({
 } = {}) {
 	const session = authClient.useSession();
 	const [open, setOpen] = useState(false);
-	const openModal = useCallback(() => setOpen(true), []);
+	const [authMode, setAuthMode] = useState<AuthMode>("sign-in");
+
+	const openSignIn = useCallback(() => {
+		setAuthMode("sign-in");
+		setOpen(true);
+	}, []);
+
+	const openSignUp = useCallback(() => {
+		setAuthMode("register");
+		setOpen(true);
+	}, []);
+
 	const signOut = useCallback(() => authClient.signOut(), []);
+
 	if (session.data?.user) {
 		const isAdmin = (session.data.user as { role?: string }).role === "ADMIN";
 		return (
@@ -202,16 +226,20 @@ export function AccountControls({
 		);
 	}
 	return (
-		<>
-			<Button onClick={openModal} size="sm">
-				Sign in
+		<div className="flex items-center gap-2">
+			<Button onClick={openSignIn} size="sm" variant="ghost">
+				Log In
+			</Button>
+			<Button onClick={openSignUp} size="sm">
+				Sign Up
 			</Button>
 			<AuthModal
+				defaultMode={authMode}
 				onOpenChange={setOpen}
 				open={open}
 				registrationEnabled={registrationEnabled}
 			/>
-		</>
+		</div>
 	);
 }
 

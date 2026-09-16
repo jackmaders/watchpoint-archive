@@ -206,4 +206,17 @@ describe("Navbar", () => {
 		expect(toggleButton).toBeDefined();
 		expect(toggleButton.getAttribute("aria-expanded")).toBe("true");
 	});
+
+	it("hides mobile menu toggle when showSidebarToggle is false", () => {
+		// Arrange & Act
+		render(<Navbar showSidebarToggle={false} />);
+
+		// Assert
+		expect(
+			screen.queryByRole("button", { name: "Open navigation menu" }),
+		).toBeNull();
+		expect(
+			screen.queryByRole("button", { name: "Close navigation menu" }),
+		).toBeNull();
+	});
 });

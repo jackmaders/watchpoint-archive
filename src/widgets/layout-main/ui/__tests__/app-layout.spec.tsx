@@ -1,14 +1,55 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@tanstack/react-router");
 vi.mock("@/shared/lib/auth-client");
 vi.mock("@/shared/ui/auth-modal");
 
+import { authClient } from "@/shared/lib/auth-client";
 import { AppLayout } from "../app-layout";
 
 describe("AppLayout", () => {
-	it("renders navbar, persistent sidebar, and child content", () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it("renders clean layout without sidebar or mobile toggle for unauthenticated visitors", () => {
+		// Arrange
+		vi.mocked(authClient.useSession).mockReturnValue({
+			data: null,
+			isPending: false,
+		} as never);
+
+		// Act
+		render(
+			<AppLayout>
+				<div data-testid="test-content">Homepage Content</div>
+			</AppLayout>,
+		);
+
+		// Assert
+		expect(screen.getByRole("banner")).toBeDefined();
+		expect(screen.getByTestId("test-content")).toBeDefined();
+		expect(screen.queryByLabelText("Sidebar Navigation")).toBeNull();
+		expect(
+			screen.queryByRole("button", { name: "Open navigation menu" }),
+		).toBeNull();
+		expect(screen.getByRole("contentinfo")).toBeDefined();
+		expect(
+			screen.getAllByRole("link", { name: "Privacy Statement" }),
+		).toHaveLength(1);
+	});
+
+	it("renders navbar, persistent desktop sidebar, and child content for authenticated users", () => {
+		// Arrange
+		vi.mocked(authClient.useSession).mockReturnValue({
+			data: {
+				session: { id: "s1" },
+				user: { id: "u1", name: "Player One" },
+			},
+			isPending: false,
+		} as never);
+
 		// Act
 		render(
 			<AppLayout>
@@ -19,6 +60,7 @@ describe("AppLayout", () => {
 		// Assert
 		expect(screen.getByRole("banner")).toBeDefined();
 		expect(screen.getByTestId("test-content")).toBeDefined();
+		expect(screen.getByLabelText("Sidebar Navigation")).toBeDefined();
 		expect(screen.getByText("VOD Catalog")).toBeDefined();
 		expect(screen.getByRole("contentinfo")).toBeDefined();
 		expect(
@@ -26,8 +68,15 @@ describe("AppLayout", () => {
 		).toHaveLength(2);
 	});
 
-	it("toggles desktop sidebar collapsed state when sidebar desktop toggle button is clicked", () => {
+	it("toggles desktop sidebar collapsed state when sidebar desktop toggle button is clicked for authenticated user", () => {
 		// Arrange
+		vi.mocked(authClient.useSession).mockReturnValue({
+			data: {
+				session: { id: "s1" },
+				user: { id: "u1", name: "Player One" },
+			},
+			isPending: false,
+		} as never);
 		render(
 			<AppLayout>
 				<div>Content</div>
@@ -45,8 +94,15 @@ describe("AppLayout", () => {
 		expect(expandBtn).toBeDefined();
 	});
 
-	it("opens and closes mobile drawer when mobile hamburger toggle is clicked", () => {
+	it("opens and closes mobile drawer when mobile hamburger toggle is clicked for authenticated user", () => {
 		// Arrange
+		vi.mocked(authClient.useSession).mockReturnValue({
+			data: {
+				session: { id: "s1" },
+				user: { id: "u1", name: "Player One" },
+			},
+			isPending: false,
+		} as never);
 		render(
 			<AppLayout>
 				<div>Content</div>
@@ -72,8 +128,15 @@ describe("AppLayout", () => {
 		expect(screen.queryByRole("dialog")).toBeNull();
 	});
 
-	it("closes mobile drawer when a navigation link inside mobile drawer is clicked", () => {
+	it("closes mobile drawer when a navigation link inside mobile drawer is clicked for authenticated user", () => {
 		// Arrange
+		vi.mocked(authClient.useSession).mockReturnValue({
+			data: {
+				session: { id: "s1" },
+				user: { id: "u1", name: "Player One" },
+			},
+			isPending: false,
+		} as never);
 		render(
 			<AppLayout>
 				<div>Content</div>
@@ -96,7 +159,13 @@ describe("AppLayout", () => {
 	});
 
 	it("passes registrationEnabled to Navbar", () => {
-		// Arrange & Act
+		// Arrange
+		vi.mocked(authClient.useSession).mockReturnValue({
+			data: null,
+			isPending: false,
+		} as never);
+
+		// Act
 		render(
 			<AppLayout registrationEnabled={false}>
 				<div>Content</div>
