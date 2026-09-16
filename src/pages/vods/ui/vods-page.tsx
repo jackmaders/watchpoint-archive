@@ -22,15 +22,12 @@ export function VodsPage(props?: {
 		<AppLayout registrationEnabled={props?.registrationEnabled}>
 			<div className="mx-auto max-w-6xl space-y-8">
 				<header className="space-y-3 border-b border-border pb-6">
-					<div className="inline-flex rounded-sm border border-primary/40 bg-primary/10 px-3 py-1 font-mono text-xs font-semibold uppercase tracking-[0.14em] text-primary">
-						Interactive Training Engine
-					</div>
 					<h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
 						VOD Training Catalog
 					</h1>
 					<p className="max-w-2xl text-base text-muted-foreground">
-						Select a high-level Overwatch 2 ranked VOD to practice real-time
-						scenario decision making, ultimate tracking, and tactical execution.
+						Select a match to practice decision making, cooldown management, and
+						tactical positioning.
 					</p>
 				</header>
 
@@ -52,9 +49,14 @@ export function VodsPage(props?: {
 							>
 								<div className="space-y-4">
 									<div className="flex items-center justify-between gap-2 flex-wrap">
-										<span className="rounded-sm border border-accent bg-accent px-2 py-0.5 text-xs font-semibold text-accent-foreground">
-											{vod.mapName}
-										</span>
+										<div className="flex items-center gap-1.5 flex-wrap">
+											<span className="rounded-sm border border-accent bg-accent px-2 py-0.5 text-xs font-semibold text-accent-foreground">
+												{vod.mapName}
+											</span>
+											<span className="rounded-sm border border-secondary bg-secondary px-2 py-0.5 text-xs font-semibold text-secondary-foreground">
+												{vod.heroName}
+											</span>
+										</div>
 										<span className="rounded-sm border border-primary/40 bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
 											{vod.rankTier}
 										</span>

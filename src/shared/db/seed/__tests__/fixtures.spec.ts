@@ -24,7 +24,11 @@ describe("seed fixtures", () => {
 		// Assert
 		expect(vod.id).toBe(FIXTURE_IDS.vod);
 		expect(vod.title).toBe(FIXTURE_VOD.title);
+		expect(vod.heroName).toBe("Ana");
+		expect(vod.mapName).toBe("King's Row");
+		expect(vod.rankTier).toBe("Grandmaster");
 		expect(vod.role).toBe("SUPPORT");
+		expect(vod.durationSeconds).toBe(960);
 		expect(vod.isPublished).toBe(true);
 		expect(vod.createdAt).toBeInstanceOf(Date);
 	});

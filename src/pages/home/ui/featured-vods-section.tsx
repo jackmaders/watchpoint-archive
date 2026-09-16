@@ -62,9 +62,14 @@ export function FeaturedVodsSection(props: { vods: PublishedVodItem[] }) {
 						>
 							<div className="space-y-3">
 								<div className="flex flex-wrap items-center justify-between gap-2">
-									<span className="rounded-sm border border-accent bg-accent px-2 py-0.5 text-xs font-semibold text-accent-foreground">
-										{vod.mapName}
-									</span>
+									<div className="flex flex-wrap items-center gap-1.5">
+										<span className="rounded-sm border border-accent bg-accent px-2 py-0.5 text-xs font-semibold text-accent-foreground">
+											{vod.mapName}
+										</span>
+										<span className="rounded-sm border border-secondary bg-secondary px-2 py-0.5 text-xs font-semibold text-secondary-foreground">
+											{vod.heroName}
+										</span>
+									</div>
 									<span className="rounded-sm border border-primary/30 bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
 										{vod.rankTier}
 									</span>

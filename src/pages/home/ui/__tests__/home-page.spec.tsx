@@ -73,6 +73,7 @@ describe("HomePage component", () => {
 		// Assert
 		expect(screen.getByText("Grandmaster Ana VOD")).toBeDefined();
 		expect(screen.getByText("King's Row")).toBeDefined();
+		expect(screen.getByText("Ana")).toBeDefined();
 		expect(screen.getByText("Grandmaster")).toBeDefined();
 		expect(screen.getByText(/5 scenarios/i)).toBeDefined();
 	});

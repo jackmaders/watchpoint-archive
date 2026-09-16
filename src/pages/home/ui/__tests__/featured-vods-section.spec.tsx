@@ -45,6 +45,7 @@ describe("FeaturedVodsSection", () => {
 		// Assert
 		expect(screen.getByText("Grandmaster Ana Support Mastery")).toBeDefined();
 		expect(screen.getByText("King's Row")).toBeDefined();
+		expect(screen.getByText("Ana")).toBeDefined();
 		expect(screen.getByText("Grandmaster")).toBeDefined();
 		expect(screen.getByText(/2m 34s/i)).toBeDefined();
 		expect(screen.getByText(/2 scenarios/i)).toBeDefined();
