@@ -110,9 +110,15 @@ export function AuthModal({
 						{!registrationEnabled ? (
 							<Tooltip>
 								<TooltipTrigger asChild>
-									<TabsTrigger disabled value="register">
-										Register
-									</TabsTrigger>
+									<span className="inline-flex">
+										<TabsTrigger
+											className="disabled:pointer-events-auto"
+											disabled
+											value="register"
+										>
+											Register
+										</TabsTrigger>
+									</span>
 								</TooltipTrigger>
 								<TooltipContent>
 									Registration is currently unavailable. Existing players can
