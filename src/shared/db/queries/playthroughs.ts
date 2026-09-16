@@ -84,6 +84,14 @@ export function deletePlaythrough(
 		.get();
 }
 
+export function deleteOrphanInProgressPlaythroughs(db = createDbClient()) {
+	return db
+		.delete(playthroughs)
+		.where(eq(playthroughs.status, "IN_PROGRESS"))
+		.returning()
+		.all();
+}
+
 export function createPlaythroughCompletion(
 	values: PlaythroughCompletionValues,
 	db = createDbClient(),

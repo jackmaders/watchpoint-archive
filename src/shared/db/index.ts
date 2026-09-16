@@ -24,6 +24,7 @@ export {
 	createPlaythroughCompletion,
 	createPlaythroughModuleSelections,
 	createScenarioSnapshots,
+	deleteOrphanInProgressPlaythroughs,
 	deletePlaythrough,
 	getPlaythroughById,
 	queryPlaythroughCompletions,

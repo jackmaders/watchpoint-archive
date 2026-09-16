@@ -11,6 +11,7 @@ import {
 	createPlaythroughCompletion,
 	createPlaythroughModuleSelections,
 	createScenarioSnapshots,
+	deleteOrphanInProgressPlaythroughs,
 	deletePlaythrough,
 	getPlaythroughById,
 	queryPlaythroughCompletions,
@@ -142,6 +143,29 @@ describe("playthroughs domain queries", () => {
 
 		// Assert
 		expect(result).toEqual({ id: "playthrough-1" });
+	});
+
+	it("executes deleteOrphanInProgressPlaythroughs and returns all deleted records", async () => {
+		// Arrange
+		const deletedRecords = [
+			{ id: "pt-orphan-1", status: "IN_PROGRESS" },
+			{ id: "pt-orphan-2", status: "IN_PROGRESS" },
+		];
+		const mockDb = {
+			delete: () => ({
+				where: () => ({
+					returning: () => ({
+						all: () => Promise.resolve(deletedRecords),
+					}),
+				}),
+			}),
+		} as unknown as Parameters<typeof deleteOrphanInProgressPlaythroughs>[0];
+
+		// Act
+		const result = await deleteOrphanInProgressPlaythroughs(mockDb);
+
+		// Assert
+		expect(result).toEqual(deletedRecords);
 	});
 
 	it("executes createPlaythroughCompletion and returns inserted record", async () => {
