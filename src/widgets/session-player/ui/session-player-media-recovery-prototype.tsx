@@ -31,7 +31,7 @@ const stateLabels: Record<RecoveryState, string> = {
 	stalled: "Taking longer",
 };
 
-interface PrototypeProps {
+export interface SessionPlayerMediaRecoveryPrototypeProps {
 	variant: MediaRecoveryPrototypeVariant;
 	onExit: () => void;
 	onVariantChange: (variant: MediaRecoveryPrototypeVariant) => void;
@@ -180,7 +180,7 @@ function PrototypeSwitcher({
 	onChange,
 }: {
 	variant: MediaRecoveryPrototypeVariant;
-	onChange: PrototypeProps["onVariantChange"];
+	onChange: SessionPlayerMediaRecoveryPrototypeProps["onVariantChange"];
 }) {
 	const keys = Object.keys(variants) as MediaRecoveryPrototypeVariant[];
 	const move = useCallback(
@@ -243,7 +243,7 @@ export function SessionPlayerMediaRecoveryPrototype({
 	variant,
 	onVariantChange,
 	onExit,
-}: PrototypeProps) {
+}: SessionPlayerMediaRecoveryPrototypeProps) {
 	const [state, setState] = useState<RecoveryState>("buffering");
 	const titleId = useId();
 	const announce =

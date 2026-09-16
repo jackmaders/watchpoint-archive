@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as DemoRouteImport } from './routes/demo'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminAuditRouteImport } from './routes/admin/audit'
@@ -35,6 +36,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoRoute = DemoRouteImport.update({
+  id: '/demo',
+  path: '/demo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -116,6 +122,7 @@ const ApiVodsIdManifestRoute = ApiVodsIdManifestRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/demo': typeof DemoRoute
   '/privacy': typeof PrivacyRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRouteWithChildren
@@ -134,6 +141,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/demo': typeof DemoRoute
   '/privacy': typeof PrivacyRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRouteWithChildren
@@ -154,6 +162,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/demo': typeof DemoRoute
   '/privacy': typeof PrivacyRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/content': typeof AdminContentRouteWithChildren
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/demo'
     | '/privacy'
     | '/admin/audit'
     | '/admin/content'
@@ -193,6 +203,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/demo'
     | '/privacy'
     | '/admin/audit'
     | '/admin/content'
@@ -212,6 +223,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/demo'
     | '/privacy'
     | '/admin/audit'
     | '/admin/content'
@@ -232,6 +244,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  DemoRoute: typeof DemoRoute
   PrivacyRoute: typeof PrivacyRoute
   HistoryIdRoute: typeof HistoryIdRoute
   VodsIdRoute: typeof VodsIdRouteWithChildren
@@ -256,6 +269,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo': {
+      id: '/demo'
+      path: '/demo'
+      fullPath: '/demo'
+      preLoaderRoute: typeof DemoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -410,6 +430,7 @@ const VodsIdRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  DemoRoute: DemoRoute,
   PrivacyRoute: PrivacyRoute,
   HistoryIdRoute: HistoryIdRoute,
   VodsIdRoute: VodsIdRouteWithChildren,

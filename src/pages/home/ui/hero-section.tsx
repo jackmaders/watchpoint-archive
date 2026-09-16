@@ -37,9 +37,9 @@ export function HeroSection() {
 					</Link>
 					<Link
 						className="inline-flex h-12 w-full items-center justify-center rounded-md border border-border bg-card px-8 text-base font-semibold text-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:w-auto"
-						to="/vods"
+						to="/demo"
 					>
-						Explore VODs
+						Try It Now
 					</Link>
 				</div>
 

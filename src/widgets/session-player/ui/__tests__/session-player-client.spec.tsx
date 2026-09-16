@@ -272,4 +272,20 @@ describe("SessionPlayerClient", () => {
 			"Playback resumed",
 		);
 	});
+
+	it("renders demo mode badge and back to home link in demo mode", async () => {
+		// Arrange
+		const youtube = createYouTubeMock(300);
+		setYouTubeNamespace(youtube.namespace);
+
+		// Act
+		renderWithClient(<SessionPlayerClient isDemo vod={mockVod} />);
+		await act(async () => {
+			await Promise.resolve();
+		});
+
+		// Assert
+		expect(screen.getByText("Interactive Demo")).toBeDefined();
+		expect(screen.getByRole("link", { name: /← back to home/i })).toBeDefined();
+	});
 });

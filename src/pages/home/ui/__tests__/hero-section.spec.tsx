@@ -16,14 +16,14 @@ describe("HeroSection", () => {
 		const startTrainingLink = screen.getByRole("link", {
 			name: /start training/i,
 		});
-		const exploreVodsLink = screen.getByRole("link", {
-			name: /explore vods/i,
+		const tryItNowLink = screen.getByRole("link", {
+			name: /try it now/i,
 		});
 
 		// Assert
 		expect(heading).toBeDefined();
 		expect(startTrainingLink).toBeDefined();
-		expect(exploreVodsLink).toBeDefined();
+		expect(tryItNowLink).toBeDefined();
 		expect(screen.getByText(/authentic top 500 vods/i)).toBeDefined();
 		expect(screen.getByText(/real-time decision drills/i)).toBeDefined();
 		expect(screen.getByText(/instant tactical feedback/i)).toBeDefined();

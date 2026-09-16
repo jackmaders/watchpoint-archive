@@ -16,9 +16,13 @@ describe("CtaSection", () => {
 		const catalogLink = screen.getByRole("link", {
 			name: /explore training catalog/i,
 		});
+		const demoLink = screen.getByRole("link", {
+			name: /try interactive demo/i,
+		});
 
 		// Assert
 		expect(heading).toBeDefined();
 		expect(catalogLink).toBeDefined();
+		expect(demoLink).toBeDefined();
 	});
 });

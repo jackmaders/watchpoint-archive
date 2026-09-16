@@ -1679,4 +1679,74 @@ describe("useSessionPlayer", () => {
 		// Assert - state is still PLAYING
 		expect(result.current.state).toBe("PLAYING");
 	});
+
+	it("does not trigger recordAttempt mutation when playthroughId is not provided", async () => {
+		// Arrange
+		const frameController = installMockFrames();
+		const youtube = createYouTubeMock(600);
+		setYouTubeNamespace(youtube.namespace);
+		const container = document.createElement("div");
+
+		const { result } = renderHook(
+			() =>
+				useSessionPlayer({
+					initialManifest: mockManifest,
+					isDemo: true,
+					vodId: "vod_gm_ana",
+				}),
+			{ wrapper: createWrapper() },
+		);
+
+		act(() => {
+			result.current.containerRef(container);
+		});
+		await act(async () => {
+			await Promise.resolve();
+		});
+
+		const player = youtube.players[0];
+		act(() => {
+			player.triggerReady();
+			player.triggerStateChange(YouTubePlayerState.PLAYING);
+		});
+
+		// Move time into scenario 1
+		player.getCurrentTime = vi.fn(() => 30.5);
+		act(() => {
+			frameController.flush();
+		});
+		expect(result.current.state).toBe("SCENARIO_ACTIVE");
+
+		// Act - select option in guest demo mode
+		act(() => {
+			result.current.selectOption("opt_1a");
+		});
+
+		// Assert - attempt stored locally, recordAttempt server function not called
+		expect(result.current.state).toBe("FEEDBACK");
+		expect(serverFns.recordAttempt).not.toHaveBeenCalled();
+	});
+
+	it("executes custom onExit callback or defaults to root in demo mode", async () => {
+		// Arrange
+		const onExit = vi.fn();
+		const { result: demoWithCustomExit } = renderHook(
+			() =>
+				useSessionPlayer({
+					initialManifest: mockManifest,
+					isDemo: true,
+					onExit,
+					vodId: "vod_gm_ana",
+				}),
+			{ wrapper: createWrapper() },
+		);
+
+		// Act
+		act(() => {
+			demoWithCustomExit.current.exitSession();
+		});
+
+		// Assert
+		expect(onExit).toHaveBeenCalledTimes(1);
+	});
 });

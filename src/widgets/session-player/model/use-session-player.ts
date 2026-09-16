@@ -54,6 +54,8 @@ export type ScenarioItem = NormalizedScenario<ManifestVod["scenarios"][number]>;
 export interface UseSessionPlayerOptions {
 	autoplay?: boolean;
 	initialManifest?: ManifestVod | null;
+	isDemo?: boolean;
+	onExit?: () => void;
 	onSessionComplete?: (summary: SessionSummaryReport) => void;
 	onMediaDiagnostics?: (
 		diagnostic: import("@/shared/media").MediaDiagnostic,
@@ -219,7 +221,9 @@ function executeSessionEffect(
 			media.execute({ autoplay: effect.autoplay, type: "RESTART" });
 			return;
 		case "RECORD_ATTEMPT":
-			recordAttempt.mutate({ ...effect.outcome, playthroughId });
+			if (playthroughId) {
+				recordAttempt.mutate({ ...effect.outcome, playthroughId });
+			}
 			return;
 		case "SESSION_COMPLETED":
 			onSessionCompleteRef.current?.(effect.summary);
@@ -317,6 +321,8 @@ function useSessionPlayerActions(
 	dispatch: React.Dispatch<SessionPlaythroughAction>,
 	coordinatorRef: React.RefObject<SessionPlaythroughState>,
 	vodId: string,
+	onExit?: () => void,
+	isDemo?: boolean,
 ) {
 	const pause = useCallback(() => {
 		dispatch({
@@ -382,8 +388,16 @@ function useSessionPlayerActions(
 	}, [coordinatorRef, dispatch]);
 
 	const exitSession = useCallback(() => {
+		if (onExit) {
+			onExit();
+			return;
+		}
+		if (isDemo) {
+			window.location.href = "/";
+			return;
+		}
 		window.location.href = `/vods/${vodId}`;
-	}, [vodId]);
+	}, [isDemo, onExit, vodId]);
 
 	return {
 		exitSession,
@@ -491,6 +505,8 @@ function useSessionPlayerRuntime({
 export function useSessionPlayer({
 	autoplay = true,
 	initialManifest,
+	isDemo = false,
+	onExit,
 	onSessionComplete,
 	onMediaDiagnostics,
 	vodId,
@@ -513,6 +529,8 @@ export function useSessionPlayer({
 		runtime.dispatch,
 		coordinatorRef,
 		vodId,
+		onExit,
+		isDemo,
 	);
 
 	return {

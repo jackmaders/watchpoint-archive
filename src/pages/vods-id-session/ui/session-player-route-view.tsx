@@ -4,11 +4,13 @@
  * Implements `SessionPlayerRouteView` switching views based on URL search params (`search.prototype === "media-recovery"`).
  */
 import { useCallback } from "react";
+import {
+	type ManifestVod,
+	type MediaRecoveryPrototypeVariant,
+	SessionPlayerMediaRecoveryPrototype,
+	SessionPlayerPage,
+} from "@/widgets/session-player";
 import type { SessionSearch } from "../model/session-search";
-import type { ManifestVod } from "../model/use-session-player";
-import type { MediaRecoveryPrototypeVariant } from "./session-player-media-recovery-prototype";
-import { SessionPlayerMediaRecoveryPrototype } from "./session-player-media-recovery-prototype";
-import { SessionPlayerPage } from "./session-player-page";
 
 export interface SessionPlayerRouteViewProps {
 	onNavigateSearch: (

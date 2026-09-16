@@ -1,11 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("../session-player-media-recovery-prototype");
-vi.mock("../session-player-page");
+vi.mock("@/widgets/session-player");
 
-import { SessionPlayerMediaRecoveryPrototype } from "../session-player-media-recovery-prototype";
-import { SessionPlayerPage } from "../session-player-page";
+import {
+	SessionPlayerMediaRecoveryPrototype,
+	SessionPlayerPage,
+} from "@/widgets/session-player";
 import { SessionPlayerRouteView } from "../session-player-route-view";
 
 describe("SessionPlayerRouteView", () => {

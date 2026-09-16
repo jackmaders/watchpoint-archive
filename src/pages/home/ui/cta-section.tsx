@@ -25,13 +25,19 @@ export function CtaSection() {
 						tactical instincts with authentic match scenarios today.
 					</p>
 
-					<div className="pt-2">
+					<div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
 						<Link
-							className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-primary px-8 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+							className="inline-flex h-12 w-full sm:w-auto items-center justify-center gap-2 rounded-md bg-primary px-8 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 							to="/vods"
 						>
 							<span>Explore Training Catalog</span>
 							<ArrowRight className="h-4 w-4" />
+						</Link>
+						<Link
+							className="inline-flex h-12 w-full sm:w-auto items-center justify-center rounded-md border border-border bg-card px-8 text-base font-semibold text-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+							to="/demo"
+						>
+							Try Interactive Demo
 						</Link>
 					</div>
 				</div>

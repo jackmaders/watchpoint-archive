@@ -253,4 +253,49 @@ describe("SessionSummaryPanel", () => {
 		// Assert
 		expect(screen.getByText("Platinum")).toBeDefined();
 	});
+
+	it("renders demo completion hook, cta card, and modal trigger in demo mode", () => {
+		// Arrange
+		const handleRetry = vi.fn();
+		const handleExit = vi.fn();
+
+		// Act
+		render(
+			<SessionSummaryPanel
+				isDemo
+				onExit={handleExit}
+				onRetry={handleRetry}
+				registrationEnabled={true}
+				summary={mockSummary}
+			/>,
+		);
+
+		// Assert
+		expect(screen.getByText("Demo Complete")).toBeDefined();
+		expect(screen.getByText("Interactive Demo Summary")).toBeDefined();
+		expect(
+			screen.getByText("Save Your Scores & Access Full Training"),
+		).toBeDefined();
+
+		const authBtn = screen.getByRole("button", {
+			name: /sign in \/ create account/i,
+		});
+		expect(authBtn).toBeDefined();
+
+		const exitBtn = screen.getByRole("button", { name: /exit demo/i });
+		expect(exitBtn).toBeDefined();
+		fireEvent.click(exitBtn);
+		expect(handleExit).toHaveBeenCalledTimes(1);
+
+		const retryBtn = screen.getByRole("button", {
+			name: /retry demo scenario/i,
+		});
+		expect(retryBtn).toBeDefined();
+		fireEvent.click(retryBtn);
+		expect(handleRetry).toHaveBeenCalledTimes(1);
+
+		// Click auth button to open modal
+		fireEvent.click(authBtn);
+		expect(screen.getByRole("dialog")).toBeDefined();
+	});
 });
