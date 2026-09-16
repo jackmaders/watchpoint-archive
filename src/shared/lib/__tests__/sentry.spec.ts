@@ -6,7 +6,7 @@
  */
 
 import { describe, expect, it, vi } from "vitest";
-import { captureException, captureMessage } from "./sentry";
+import { captureException, captureMessage } from "../sentry";
 
 vi.mock("@sentry/react");
 

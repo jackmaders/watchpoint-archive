@@ -5,7 +5,7 @@ const registrationEnabled =
 const fixtureVodId = "vod_local_fixture";
 async function openAuthModal(page: Page) {
 	await page.waitForLoadState("networkidle");
-	await page.getByRole("button", { exact: true, name: "Sign in" }).click();
+	await page.getByRole("button", { exact: true, name: "Log In" }).click();
 	const dialog = page.getByRole("dialog");
 	await expect(dialog).toBeVisible();
 	return dialog;
@@ -89,7 +89,10 @@ test("completes the player account lifecycle across protected training", async (
 	).toBeVisible();
 	await page.getByRole("button", { name: "Sign out" }).click();
 	await expect(
-		page.getByRole("button", { exact: true, name: "Sign in" }),
+		page.getByRole("button", { exact: true, name: "Log In" }),
+	).toBeVisible();
+	await expect(
+		page.getByRole("button", { exact: true, name: "Sign Up" }),
 	).toBeVisible();
 
 	await page.goto(`/vods/${fixtureVodId}`);

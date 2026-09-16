@@ -30,7 +30,8 @@ describe("HomePage component", () => {
 				name: /ready to level up your game sense\?/i,
 			}),
 		).toBeDefined();
-		expect(screen.getByRole("button", { name: "Sign in" })).toBeDefined();
+		expect(screen.getByRole("button", { name: "Log In" })).toBeDefined();
+		expect(screen.getByRole("button", { name: "Sign Up" })).toBeDefined();
 	});
 
 	it("renders empty preview state when no VODs are passed", () => {
@@ -83,7 +84,7 @@ describe("HomePage component", () => {
 		render(<HomePage />);
 
 		// Act
-		fireEvent.click(screen.getByRole("button", { name: "Sign in" }));
+		fireEvent.click(screen.getByRole("button", { name: "Log In" }));
 
 		// Assert
 		expect(screen.getByRole("dialog")).toBeDefined();

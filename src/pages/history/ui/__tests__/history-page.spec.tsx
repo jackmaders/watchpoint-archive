@@ -138,7 +138,8 @@ describe("HistoryPage component", () => {
 		expect(
 			screen.getByRole("heading", { name: "Training History" }),
 		).toBeDefined();
-		expect(screen.getByRole("button", { name: "Sign in" })).toBeDefined();
+		expect(screen.getByRole("button", { name: "Log In" })).toBeDefined();
+		expect(screen.getByRole("button", { name: "Sign Up" })).toBeDefined();
 	});
 
 	it("renders populated completed playthrough items with metrics and review link", () => {

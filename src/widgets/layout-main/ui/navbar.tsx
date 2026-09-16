@@ -16,6 +16,7 @@ export interface NavbarProps {
 	isMobileSidebarOpen?: boolean;
 	onToggleMobileSidebar?: () => void;
 	registrationEnabled?: boolean;
+	showSidebarToggle?: boolean;
 }
 
 interface RouteSectionMapping {
@@ -92,6 +93,7 @@ export function Navbar({
 	isMobileSidebarOpen = false,
 	onToggleMobileSidebar,
 	registrationEnabled = true,
+	showSidebarToggle = true,
 }: NavbarProps) {
 	const location = useLocation();
 	const { parent, section } = getSectionName(location.pathname);
@@ -99,25 +101,27 @@ export function Navbar({
 	return (
 		<header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-border bg-card/90 px-4 backdrop-blur sm:px-6 lg:px-8">
 			<div className="flex items-center gap-3 sm:gap-4">
-				<Button
-					aria-expanded={isMobileSidebarOpen}
-					aria-label={
-						isMobileSidebarOpen
-							? "Close navigation menu"
-							: "Open navigation menu"
-					}
-					className="md:hidden"
-					onClick={onToggleMobileSidebar}
-					size="icon"
-					type="button"
-					variant="ghost"
-				>
-					{isMobileSidebarOpen ? (
-						<X className="h-5 w-5" />
-					) : (
-						<Menu className="h-5 w-5" />
-					)}
-				</Button>
+				{showSidebarToggle ? (
+					<Button
+						aria-expanded={isMobileSidebarOpen}
+						aria-label={
+							isMobileSidebarOpen
+								? "Close navigation menu"
+								: "Open navigation menu"
+						}
+						className="md:hidden"
+						onClick={onToggleMobileSidebar}
+						size="icon"
+						type="button"
+						variant="ghost"
+					>
+						{isMobileSidebarOpen ? (
+							<X className="h-5 w-5" />
+						) : (
+							<Menu className="h-5 w-5" />
+						)}
+					</Button>
+				) : null}
 
 				<Link
 					className="flex items-center gap-2 font-mono text-sm font-bold uppercase tracking-wider text-primary transition-opacity hover:opacity-90"

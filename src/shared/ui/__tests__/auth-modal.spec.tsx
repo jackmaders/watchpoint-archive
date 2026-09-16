@@ -228,6 +228,66 @@ describe("AuthModal", () => {
 		});
 	});
 
+	it("renders unauthenticated account controls with separate Log In and Sign Up buttons", () => {
+		// Arrange
+		vi.mocked(useSession).mockReturnValue({
+			data: null,
+		} as never);
+
+		// Act
+		render(<AccountControls />);
+
+		// Assert
+		expect(screen.getByRole("button", { name: "Log In" })).toBeDefined();
+		expect(screen.getByRole("button", { name: "Sign Up" })).toBeDefined();
+	});
+
+	it("opens AuthModal in sign-in mode when Log In button is clicked", () => {
+		// Arrange
+		vi.mocked(useSession).mockReturnValue({
+			data: null,
+		} as never);
+		render(<AccountControls />);
+
+		// Act
+		fireEvent.click(screen.getByRole("button", { name: "Log In" }));
+
+		// Assert
+		expect(screen.getByRole("dialog")).toBeDefined();
+		expect(
+			screen.getByRole("heading", { name: "Welcome back, player" }),
+		).toBeDefined();
+	});
+
+	it("opens AuthModal in register mode when Sign Up button is clicked", () => {
+		// Arrange
+		vi.mocked(useSession).mockReturnValue({
+			data: null,
+		} as never);
+		render(<AccountControls />);
+
+		// Act
+		fireEvent.click(screen.getByRole("button", { name: "Sign Up" }));
+
+		// Assert
+		expect(screen.getByRole("dialog")).toBeDefined();
+		expect(
+			screen.getByRole("heading", { name: "Create your player identity" }),
+		).toBeDefined();
+	});
+
+	it("renders AuthModal in register mode when defaultMode or initialMode is register", () => {
+		// Arrange & Act
+		render(
+			<AuthModal defaultMode="register" onOpenChange={onOpenChange} open />,
+		);
+
+		// Assert
+		expect(
+			screen.getByRole("heading", { name: "Create your player identity" }),
+		).toBeDefined();
+	});
+
 	it("renders signed-in account controls without Admin link for ordinary player", () => {
 		// Arrange
 		vi.mocked(useSession).mockReturnValue({
