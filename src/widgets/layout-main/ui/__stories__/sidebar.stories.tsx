@@ -46,7 +46,7 @@ export const Default: Story = {};
 export const Collapsed: Story = {
 	render: () => {
 		const rootRoute = createRootRoute({
-			component: () => <Sidebar isCollapsed={true} />,
+			component: () => <Sidebar defaultCollapsed={true} />,
 		});
 		const history = createMemoryHistory({ initialEntries: ["/vods"] });
 		const router = createRouter({ history, routeTree: rootRoute });

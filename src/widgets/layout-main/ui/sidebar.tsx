@@ -15,6 +15,7 @@ import {
 	PanelLeftClose,
 	Shield,
 } from "lucide-react";
+import { useCallback, useState } from "react";
 import { authClient } from "@/shared/lib/auth-client";
 import { hasPermission, PERMISSIONS } from "@/shared/lib/permissions";
 import { cn } from "@/shared/lib/utils";
@@ -22,9 +23,9 @@ import { Button } from "@/shared/ui/button";
 
 export interface SidebarProps {
 	className?: string;
-	isCollapsed?: boolean;
+	defaultCollapsed?: boolean;
 	onNavClick?: () => void;
-	onToggleCollapse?: () => void;
+	showCollapseToggle?: boolean;
 }
 
 interface NavItem {
@@ -55,10 +56,16 @@ const NAV_ITEMS: NavItem[] = [
 
 export function Sidebar({
 	className,
-	isCollapsed = false,
+	defaultCollapsed = false,
 	onNavClick,
-	onToggleCollapse,
+	showCollapseToggle = true,
 }: SidebarProps) {
+	const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
+
+	const toggleCollapse = useCallback(() => {
+		setIsCollapsed((prev) => !prev);
+	}, []);
+
 	const session = authClient.useSession();
 	const user = session.data?.user as { role?: string } | undefined;
 	const userRole = user?.role;
@@ -77,7 +84,7 @@ export function Sidebar({
 				className,
 			)}
 		>
-			{onToggleCollapse ? (
+			{showCollapseToggle ? (
 				<div
 					className={cn(
 						"flex h-12 items-center border-b border-border/60 px-3",
@@ -92,7 +99,7 @@ export function Sidebar({
 					<Button
 						aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
 						className="h-8 w-8 text-muted-foreground hover:text-foreground"
-						onClick={onToggleCollapse}
+						onClick={toggleCollapse}
 						size="icon"
 						type="button"
 						variant="ghost"
