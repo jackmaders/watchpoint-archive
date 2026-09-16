@@ -1,3 +1,10 @@
+/**
+ * Unit test suite verifying database seeder execution, fixture insertion, and account credential setup.
+ *
+ * Tests `executeSeed` using mock database clients, asserting proper deletion sequence, user creation,
+ * Better Auth compatible account issuer linking, and fixture counts.
+ */
+
 import { describe, expect, it, vi } from "vitest";
 import { executeSeed } from "../seeder";
 
@@ -31,5 +38,21 @@ describe("executeSeed", () => {
 		expect(result.scenariosCount).toBe(5);
 		expect(result.adminEmail).toBe("admin@local.watchpoint");
 		expect(result.playerEmail).toBe("player@local.watchpoint");
+		expect(insertedRows[1]?.values).toEqual([
+			expect.objectContaining({
+				accountId: "usr_local_player",
+				id: "account_local_player",
+				issuer: "local:credential",
+				providerId: "credential",
+				userId: "usr_local_player",
+			}),
+			expect.objectContaining({
+				accountId: "usr_local_admin",
+				id: "account_local_admin",
+				issuer: "local:credential",
+				providerId: "credential",
+				userId: "usr_local_admin",
+			}),
+		]);
 	});
 });
