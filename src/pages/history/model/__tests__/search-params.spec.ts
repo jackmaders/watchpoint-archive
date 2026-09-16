@@ -8,7 +8,6 @@ describe("validateHistorySearch", () => {
 			modules: ["STRATEGY", "TACTICS"],
 			page: "2",
 			pageSize: "20",
-			status: "IN_PROGRESS",
 			vodId: "vod_123",
 		};
 
@@ -20,7 +19,6 @@ describe("validateHistorySearch", () => {
 			modules: ["STRATEGY", "TACTICS"],
 			page: 2,
 			pageSize: 20,
-			status: "IN_PROGRESS",
 			vodId: "vod_123",
 		});
 	});
@@ -43,7 +41,6 @@ describe("validateHistorySearch", () => {
 		const raw = {
 			page: "-5",
 			pageSize: "1000",
-			status: "INVALID_STATUS",
 		};
 
 		// Act

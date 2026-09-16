@@ -66,7 +66,7 @@ describe("history loaders", () => {
 	describe("historyQueryOptions", () => {
 		it("creates query options with parameters and key", () => {
 			// Arrange
-			const deps = { page: 2, pageSize: 20, status: "COMPLETED" as const };
+			const deps = { page: 2, pageSize: 20, vodId: "vod_1" };
 
 			// Act
 			const options = historyQueryOptions(deps);
@@ -96,7 +96,6 @@ describe("history loaders", () => {
 				modules: ["STRATEGY"],
 				page: 1,
 				pageSize: 10,
-				status: "COMPLETED",
 				vodId: "vod_1",
 			});
 
@@ -109,7 +108,6 @@ describe("history loaders", () => {
 					modules: ["STRATEGY"],
 					page: 1,
 					pageSize: 10,
-					status: "COMPLETED",
 					vodId: "vod_1",
 				},
 			});
@@ -136,7 +134,6 @@ describe("history loaders", () => {
 					modules: undefined,
 					page: undefined,
 					pageSize: undefined,
-					status: undefined,
 					vodId: undefined,
 				},
 			});
@@ -164,7 +161,6 @@ describe("history loaders", () => {
 				modules: ["STRATEGY"],
 				page: 2,
 				pageSize: 20,
-				status: "COMPLETED",
 				vodId: "vod_1",
 			});
 
@@ -174,7 +170,6 @@ describe("history loaders", () => {
 					modules: ["STRATEGY"],
 					page: 2,
 					pageSize: 20,
-					status: "COMPLETED",
 					vodId: "vod_1",
 				},
 			});

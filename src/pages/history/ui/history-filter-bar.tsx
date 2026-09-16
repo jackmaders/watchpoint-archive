@@ -1,15 +1,10 @@
 /**
- * Filter controls bar for narrowing match history by VOD title, playthrough status, and learning module types.
+ * Filter controls bar for narrowing match history by VOD title and learning module types.
  *
- * Implements `HistoryFilterBar` with status tabs (`COMPLETED`, `IN_PROGRESS`), a VOD selector dropdown,
- * and individual module toggle buttons.
+ * Implements `HistoryFilterBar` with a VOD selector dropdown and individual module toggle buttons.
  */
 import { type ChangeEvent, useCallback } from "react";
-import type {
-	ModuleType,
-	PlaythroughStatus,
-	PublishedVodItem,
-} from "../model/types";
+import type { ModuleType, PublishedVodItem } from "../model/types";
 
 export const MODULE_LABEL_MAP: Record<ModuleType, string> = {
 	SPATIAL: "Spatial",
@@ -26,9 +21,7 @@ export const ALL_MODULES: { key: ModuleType; label: string }[] = [
 ];
 
 export interface HistoryFilterBarProps {
-	currentStatus: PlaythroughStatus;
 	onModuleToggle: (module: ModuleType) => void;
-	onStatusChange: (status: PlaythroughStatus) => void;
 	onVodChange: (vodId: string) => void;
 	selectedModules: readonly ModuleType[];
 	selectedVodId: string;
@@ -36,22 +29,12 @@ export interface HistoryFilterBarProps {
 }
 
 export function HistoryFilterBar({
-	currentStatus,
 	onModuleToggle,
-	onStatusChange,
 	onVodChange,
 	selectedModules,
 	selectedVodId,
 	vods,
 }: HistoryFilterBarProps) {
-	const handleCompleted = useCallback(
-		() => onStatusChange("COMPLETED"),
-		[onStatusChange],
-	);
-	const handleInProgress = useCallback(
-		() => onStatusChange("IN_PROGRESS"),
-		[onStatusChange],
-	);
 	const handleSelectChange = useCallback(
 		(e: ChangeEvent<HTMLSelectElement>) => onVodChange(e.target.value),
 		[onVodChange],
@@ -59,39 +42,6 @@ export function HistoryFilterBar({
 
 	return (
 		<div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
-			<div
-				aria-label="Playthrough status"
-				className="flex items-center gap-1 rounded-md border border-border bg-muted/50 p-1"
-				role="tablist"
-			>
-				<button
-					aria-selected={currentStatus === "COMPLETED"}
-					className={`rounded px-3 py-1.5 text-xs font-semibold transition-colors ${
-						currentStatus === "COMPLETED"
-							? "bg-background text-foreground shadow-sm"
-							: "text-muted-foreground hover:text-foreground"
-					}`}
-					onClick={handleCompleted}
-					role="tab"
-					type="button"
-				>
-					Completed
-				</button>
-				<button
-					aria-selected={currentStatus === "IN_PROGRESS"}
-					className={`rounded px-3 py-1.5 text-xs font-semibold transition-colors ${
-						currentStatus === "IN_PROGRESS"
-							? "bg-background text-foreground shadow-sm"
-							: "text-muted-foreground hover:text-foreground"
-					}`}
-					onClick={handleInProgress}
-					role="tab"
-					type="button"
-				>
-					In Progress
-				</button>
-			</div>
-
 			<div className="flex flex-wrap items-center gap-3">
 				<select
 					aria-label="Filter by VOD"
@@ -106,17 +56,17 @@ export function HistoryFilterBar({
 						</option>
 					))}
 				</select>
+			</div>
 
-				<div className="flex flex-wrap items-center gap-1.5">
-					{ALL_MODULES.map((m) => (
-						<ModuleFilterButton
-							active={selectedModules.includes(m.key)}
-							definition={m}
-							key={m.key}
-							onToggle={onModuleToggle}
-						/>
-					))}
-				</div>
+			<div className="flex flex-wrap items-center gap-1.5">
+				{ALL_MODULES.map((m) => (
+					<ModuleFilterButton
+						active={selectedModules.includes(m.key)}
+						definition={m}
+						key={m.key}
+						onToggle={onModuleToggle}
+					/>
+				))}
 			</div>
 		</div>
 	);
