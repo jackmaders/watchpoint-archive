@@ -145,9 +145,12 @@ test("keeps sign-in available when registration is disabled", async ({
 	const dialog = await openAuthModal(page);
 	await expect(dialog.getByRole("tab", { name: "Sign in" })).toBeEnabled();
 	await expect(dialog.getByRole("tab", { name: "Register" })).toBeDisabled();
-	await expect(dialog.getByRole("status")).toHaveText(
-		"Registration is currently unavailable. Existing players can still sign in.",
-	);
+	await dialog.getByRole("tab", { name: "Register" }).hover();
+	await expect(
+		page.getByText(
+			"Registration is currently unavailable. Existing players can still sign in.",
+		),
+	).toBeVisible();
 
 	await expect(dialog.getByLabel("Email", { exact: true })).toBeVisible();
 	await expect(dialog.getByLabel("Password", { exact: true })).toBeVisible();
