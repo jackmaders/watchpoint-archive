@@ -61,6 +61,7 @@
 	"scripts": {
 		"build": "vite build",
 		"build-preview": "bun scripts/serve-build-preview.ts",
+		"build:quiet": "vite build --logLevel warn",
 		"cf-typegen": "wrangler types cloudflare-env.d.ts --env-interface CloudflareEnv --include-runtime false --env-file .env.example",
 		"check:all": "biome check --error-on-warnings .",
 		"check:architecture": "steiger ./src",
@@ -94,7 +95,8 @@
 		"test:e2e": "playwright test",
 		"test:routes": "vitest run app/routes",
 		"test:unit": "vitest run",
-		"validate": "bun run check:types && bun run check:all && bun run check:architecture && bun run test:coverage && bun run build && bun run deploy --dry-run"
+		"validate": "bun run check:types && bun run check:all && bun run check:architecture && bun run test:coverage && bun run build:quiet && bun run deploy --dry-run",
+		"validate:fast": "bun run check:types && bun run check:all && bun run check:architecture && bun run test:unit"
 	},
 	"trustedDependencies": [
 		"sharp",

@@ -29,7 +29,7 @@ export default defineConfig({
 				"src/**/types.ts",
 			],
 			include: ["src/**/*.{ts,tsx}"],
-			reporter: ["text-summary", "text"],
+			reporter: ["text-summary", ["text", { skipFull: true }]],
 			thresholds: {
 				branches: 100,
 				functions: 100,
@@ -67,6 +67,7 @@ export default defineConfig({
 				`Unexpected console output detected during test execution (${type}):\n${log}`,
 			);
 		},
+		reporters: process.env.CI || process.env.AGENT ? ["dot"] : ["default"],
 		setupFiles: ["./vitest.setup.ts"],
 		testTimeout: 500,
 	},
