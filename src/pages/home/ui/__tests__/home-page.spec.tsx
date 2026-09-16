@@ -1,30 +1,43 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { HomePage } from "../home-page";
 
 vi.mock("@tanstack/react-router");
 vi.mock("@/shared/lib/auth-client");
 
 describe("HomePage component", () => {
-	it("renders marketing hero, workflow steps, and account control", () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it("renders marketing hero, 4 core pillars, interactive UI preview, closing CTA, and account control", () => {
 		// Arrange & Act
 		render(<HomePage />);
 
 		// Assert
 		expect(
-			screen.getByRole("heading", { name: /master game sense/i }),
+			screen.getByRole("heading", {
+				name: /improve your decision making\.\s*win more games\./i,
+			}),
 		).toBeDefined();
 		expect(
-			screen.getByText(/transform grandmaster and top 500 gameplay/i),
+			screen.getByText(
+				/structured practice to help you climb\. refine your decision-making, test your awareness, and get instant feedback\./i,
+			),
 		).toBeDefined();
 		expect(
 			screen.getByRole("heading", { name: /how watchpoint works/i }),
 		).toBeDefined();
 		expect(
 			screen.getByRole("heading", {
-				name: /engineered for serious competitors/i,
+				name: /train in high-pressure match moments/i,
 			}),
 		).toBeDefined();
+		expect(
+			screen.queryByRole("heading", {
+				name: /engineered for serious competitors/i,
+			}),
+		).toBeNull();
 		expect(
 			screen.getByRole("heading", {
 				name: /ready to level up your game sense\?/i,
