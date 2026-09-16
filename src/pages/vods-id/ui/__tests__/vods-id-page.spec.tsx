@@ -236,14 +236,12 @@ describe("VodsIdPage", () => {
 	it("displays '1 module selected' when exactly 1 module remains selected", async () => {
 		// Arrange
 		render(<VodsIdPage vod={mockVod} />);
-		const modulesToDisable = ["STRATEGY", "TACTICS", "TRACKING"] as const;
+		const moduleNamesToDisable = [/^strategy/i, /^tactics/i, /^tracking/i];
 
 		// Act
-		for (const mod of modulesToDisable) {
+		for (const modName of moduleNamesToDisable) {
 			await act(async () => {
-				fireEvent.click(
-					screen.getByRole("button", { name: new RegExp(`^${mod}`, "i") }),
-				);
+				fireEvent.click(screen.getByRole("button", { name: modName }));
 			});
 		}
 
@@ -268,7 +266,49 @@ describe("VodsIdPage", () => {
 			screen.getByText(/select at least one module to start training/i),
 		).toBeDefined();
 		const startLink = screen.getByRole("link", { name: /start training/i });
-		expect(startLink.getAttribute("href")).toBe("#");
+		expect(startLink.getAttribute("href")).toBeNull();
+		expect(startLink.getAttribute("aria-disabled")).toBe("true");
+
+		fireEvent.click(startLink);
+		expect(screen.queryByRole("dialog")).toBeNull();
+	});
+
+	it("does not render the removed Pre-Session Setup eyebrow badge", () => {
+		// Arrange & Act
+		render(<VodsIdPage vod={mockVod} />);
+
+		// Assert
+		expect(screen.queryByText("Pre-Session Setup")).toBeNull();
+	});
+
+	it("renders sticky CTA footer container for half-width viewport accessibility", () => {
+		// Arrange & Act
+		const { container } = render(<VodsIdPage vod={mockVod} />);
+
+		// Assert
+		const stickyContainer = container.querySelector(".sticky.bottom-0");
+		expect(stickyContainer).not.toBeNull();
+	});
+
+	it("renders canonical module descriptions for training pillars", () => {
+		// Arrange & Act
+		render(<VodsIdPage vod={mockVod} />);
+
+		// Assert
+		expect(
+			screen.getByText(
+				"Pre-fight positioning, win-conditions, and lose-conditions",
+			),
+		).toBeDefined();
+		expect(
+			screen.getByText("Mid-fight opportunities and cooldown usage"),
+		).toBeDefined();
+		expect(
+			screen.getAllByText("Ultimate and ability tracking").length,
+		).toBeGreaterThanOrEqual(1);
+		expect(
+			screen.getByText("Spatial awareness and positional tracking"),
+		).toBeDefined();
 	});
 
 	it("renders VOD Not Found UI when vod is not found", () => {
