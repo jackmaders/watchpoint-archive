@@ -7,13 +7,16 @@
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+vi.mock("@tanstack/react-router");
 vi.mock("@/entities/vod");
 vi.mock("@/shared/lib/auth");
 vi.mock("../server-fns");
 
+import { redirect } from "@tanstack/react-router";
 import { getPublishedVods } from "@/entities/vod";
-import { getRegistrationStatus } from "@/shared/lib/auth";
+import { getRegistrationStatus, getSessionUser } from "@/shared/lib/auth";
 import {
+	historyBeforeLoad,
 	historyQueryOptions,
 	loadHistoryIndexPage,
 	loadPlayerHistory,
@@ -24,6 +27,40 @@ describe("history loaders", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		vi.mocked(getRegistrationStatus).mockResolvedValue(true);
+	});
+
+	describe("historyBeforeLoad", () => {
+		it("returns active user when session is present", async () => {
+			// Arrange
+			const mockUser = { id: "usr_1", role: "PLAYER" as const };
+			vi.mocked(getSessionUser).mockResolvedValueOnce(mockUser as never);
+
+			// Act
+			const result = await historyBeforeLoad();
+
+			// Assert
+			expect(result).toEqual({ user: mockUser });
+		});
+
+		it("redirects to homepage when user session is null", async () => {
+			// Arrange
+			vi.mocked(getSessionUser).mockResolvedValueOnce(null);
+
+			// Act & Assert
+			await expect(historyBeforeLoad()).rejects.toThrow();
+			expect(redirect).toHaveBeenCalledWith({ to: "/" });
+		});
+
+		it("redirects to homepage when getSessionUser throws an error", async () => {
+			// Arrange
+			vi.mocked(getSessionUser).mockRejectedValueOnce(
+				new Error("Session error"),
+			);
+
+			// Act & Assert
+			await expect(historyBeforeLoad()).rejects.toThrow();
+			expect(redirect).toHaveBeenCalledWith({ to: "/" });
+		});
 	});
 
 	describe("historyQueryOptions", () => {
