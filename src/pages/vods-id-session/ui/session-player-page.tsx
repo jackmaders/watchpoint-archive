@@ -13,8 +13,8 @@ export interface SessionPlayerPageProps {
 	playthroughId?: string | null;
 	scenarioSnapshotIds?: readonly string[];
 	searchParams?:
-		| Promise<{ modules?: string; playthroughId?: string }>
-		| { modules?: string; playthroughId?: string }
+		| Promise<{ modules?: string }>
+		| { modules?: string }
 		| undefined;
 	vod?: SessionManifest | null;
 }

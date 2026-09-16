@@ -45,7 +45,6 @@ describe("SessionPlayerRouteView", () => {
 				scenarioSnapshotIds: ["s1"],
 				searchParams: {
 					modules: undefined,
-					playthroughId: "pt_1",
 				},
 				vod: mockVod,
 			},
@@ -160,7 +159,6 @@ describe("SessionPlayerRouteView", () => {
 			expect.objectContaining({
 				searchParams: {
 					modules: "AIM",
-					playthroughId: "pt_1",
 				},
 			}),
 			undefined,
@@ -182,7 +180,6 @@ describe("SessionPlayerRouteView", () => {
 			expect.objectContaining({
 				searchParams: {
 					modules: undefined,
-					playthroughId: undefined,
 				},
 			}),
 			undefined,

@@ -166,7 +166,6 @@ describe("VodsIdPage", () => {
 				params: { id: "vod_1" },
 				search: {
 					modules: "STRATEGY,TACTICS,TRACKING,SPATIAL",
-					playthroughId: expect.any(String),
 				},
 				to: "/vods/$id/session",
 			}),

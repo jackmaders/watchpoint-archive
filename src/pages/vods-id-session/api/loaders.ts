@@ -56,7 +56,7 @@ export async function loadVodsIdSessionPage({
 		return { playthroughId: null, scenarioSnapshotIds: [], vod: null };
 	}
 	const modules = normalizeSessionManifestModules(deps.modules) ?? [];
-	const playthroughId = deps.playthroughId ?? crypto.randomUUID();
+	const playthroughId = crypto.randomUUID();
 	const scenarioSnapshotIds = vod.scenarios.map(
 		(_, index) => `snapshot-${playthroughId}-${index}`,
 	);
