@@ -21,7 +21,7 @@ export default defineConfig({
 	},
 	plugins: [
 		tanstackStart({
-			srcDirectory: "app",
+			srcDirectory: "src/app",
 		}),
 		viteReact(),
 		tailwindcss(),

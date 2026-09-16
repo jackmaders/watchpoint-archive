@@ -23,6 +23,11 @@ This repository enforces strict technical, architectural, and quality standards 
 ### 4. Immutable Auto-Generated Database Migrations
 - Auto-generated database migration scripts inside `drizzle/` MUST NOT be manually edited. Generate new migrations via `bun run db:generate`.
 
+### 5. Token Efficiency & Output Hygiene
+- **Fast Iterative Validation**: Prefer `bun run validate:fast` (`check:types`, `check:all`, `check:architecture`, `test:unit`) for intermediate development iterations. Run full `bun run validate` for final pre-PR gatekeeping.
+- **Format Before Check**: Prefer `bun run fix:all` before `bun run check:all` to automatically resolve formatting and avoid ingesting massive diff rejection logs into context.
+- **Concise Git Invocations**: Use `git status -s` (short status) and `git log -n 5 --oneline` to avoid dumping large branch and status tables.
+
 ---
 
 ## Disclosed Documentation & Pointers

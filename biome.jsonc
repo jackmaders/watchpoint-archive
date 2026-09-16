@@ -29,7 +29,7 @@
 			"!build",
 			"!storybook-static",
 			"!cloudflare-env.d.ts",
-			"!app/routeTree.gen.ts",
+			"!src/app/routeTree.gen.ts",
 			"!drizzle",
 			"!**/*.grit"
 		]
@@ -85,7 +85,7 @@
 			}
 		},
 		{
-			"includes": ["app/routes/**", "app/routeTree.gen.ts"],
+			"includes": ["src/app/routes/**", "src/app/routeTree.gen.ts"],
 			"linter": {
 				"rules": {
 					"style": {
@@ -114,12 +114,12 @@
 		},
 		{
 			"includes": [
-				"**/app/routes/**/*.tsx",
-				"**/app/routes/**/*.ts",
-				"**/app/routes/*.tsx",
-				"**/app/routes/*.ts",
-				"!**/app/routes/__root.tsx",
-				"!**/app/routes/**/__tests__/**"
+				"**/src/app/routes/**/*.tsx",
+				"**/src/app/routes/**/*.ts",
+				"**/src/app/routes/*.tsx",
+				"**/src/app/routes/*.ts",
+				"!**/src/app/routes/__root.tsx",
+				"!**/src/app/routes/**/__tests__/**"
 			],
 			"path": "./plugins/enforce-ultra-thin-routes.grit"
 		}
