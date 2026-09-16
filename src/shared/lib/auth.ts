@@ -4,9 +4,10 @@
  *
  * Configures the Better Auth instance with Drizzle ORM SQLite adapter against Cloudflare D1,
  * enforces first-user `ADMIN` role assignment and registration gating via database hooks,
- * and exports `getAuth`, `getCurrentUser`, `isRegistrationOpen`, and `handleAuthRequest`.
+ * and exports `getAuth`, `getCurrentUser`, `isRegistrationOpen`, `getRegistrationStatus`, and `handleAuthRequest`.
  */
 
+import { createServerFn } from "@tanstack/react-start";
 import { APIError, betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import {
@@ -178,9 +179,20 @@ export async function isRegistrationOpen(
 	if (env.BETTER_AUTH_ALLOW_REGISTRATION === "true") {
 		return true;
 	}
-	const existingUsers = await queryUsers({ limit: 1 }, db);
-	return existingUsers.length === 0;
+	try {
+		const existingUsers = await queryUsers({ limit: 1 }, db);
+		return existingUsers.length === 0;
+	} catch {
+		return false;
+	}
 }
+
+export const getRegistrationStatus = createServerFn({ method: "GET" }).handler(
+	async (): Promise<{ registrationEnabled: boolean }> => {
+		const registrationEnabled = await isRegistrationOpen();
+		return { registrationEnabled };
+	},
+);
 
 export async function handleAuthRequest({
 	request,

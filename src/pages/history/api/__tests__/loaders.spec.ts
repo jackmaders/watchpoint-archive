@@ -12,7 +12,7 @@ vi.mock("@/shared/lib/auth");
 vi.mock("../server-fns");
 
 import { getPublishedVods } from "@/entities/vod";
-import { isRegistrationOpen } from "@/shared/lib/auth";
+import { getRegistrationStatus } from "@/shared/lib/auth";
 import {
 	historyQueryOptions,
 	loadHistoryIndexPage,
@@ -23,7 +23,9 @@ import { getPlayerHistory } from "../server-fns";
 describe("history loaders", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
-		vi.mocked(isRegistrationOpen).mockResolvedValue(true);
+		vi.mocked(getRegistrationStatus).mockResolvedValue({
+			registrationEnabled: true,
+		});
 	});
 
 	describe("historyQueryOptions", () => {
@@ -249,6 +251,30 @@ describe("history loaders", () => {
 
 			// Assert
 			expect(result.vods).toEqual([]);
+		});
+
+		it("falls back to registrationEnabled false when getRegistrationStatus rejects", async () => {
+			// Arrange
+			vi.mocked(getPublishedVods).mockResolvedValueOnce([] as never);
+			vi.mocked(getRegistrationStatus).mockRejectedValueOnce(
+				new Error("Registration check failed"),
+			);
+			vi.mocked(getPlayerHistory).mockResolvedValueOnce({
+				data: {
+					items: [],
+					page: 1,
+					pageSize: 10,
+					total: 0,
+					totalPages: 0,
+				} as never,
+				status: "success",
+			});
+
+			// Act
+			const result = await loadHistoryIndexPage({ deps: {} });
+
+			// Assert
+			expect(result.registrationEnabled).toBe(false);
 		});
 	});
 });

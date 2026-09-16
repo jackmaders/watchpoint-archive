@@ -1,13 +1,14 @@
 /**
  * Unit test suite verifying server-side Better Auth lifecycle, user resolution, and registration governance.
  *
- * Tests `getAuthConfig`, `createAuthInstance`, `getAuth`, `getCurrentUser`, and `isRegistrationOpen` using
- * Vitest mocks for database queries and request headers across edge and local runtime scenarios.
+ * Tests `getAuthConfig`, `createAuthInstance`, `getAuth`, `getCurrentUser`, `isRegistrationOpen`, and `getRegistrationStatus`
+ * using Vitest mocks for database queries and request headers across edge and local runtime scenarios.
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("../../db");
+vi.mock("@tanstack/react-start");
 vi.mock("@tanstack/react-start/server");
 
 import { getRequestHeaders } from "@tanstack/react-start/server";
@@ -17,6 +18,7 @@ import {
 	getAuth,
 	getAuthConfig,
 	getCurrentUser,
+	getRegistrationStatus,
 	handleAuthRequest,
 	isRegistrationOpen,
 } from "../auth";
@@ -407,6 +409,65 @@ describe("auth", () => {
 
 		// Assert
 		expect(open).toBe(false);
+	});
+
+	it("isRegistrationOpen returns false when queryUsers throws an error", async () => {
+		// Arrange
+		vi.mocked(queryUsers).mockRejectedValueOnce(new Error("Database offline"));
+		const env = { BETTER_AUTH_ALLOW_REGISTRATION: "false" };
+
+		// Act
+		const open = await isRegistrationOpen(env);
+
+		// Assert
+		expect(open).toBe(false);
+	});
+
+	it("getRegistrationStatus returns registrationEnabled true when open", async () => {
+		// Arrange
+		vi.mocked(queryUsers).mockResolvedValueOnce([]);
+
+		// Act
+		const result = await (
+			getRegistrationStatus as unknown as () => Promise<{
+				registrationEnabled: boolean;
+			}>
+		)();
+
+		// Assert
+		expect(result).toEqual({ registrationEnabled: true });
+	});
+
+	it("getRegistrationStatus returns registrationEnabled false when users exist", async () => {
+		// Arrange
+		vi.mocked(queryUsers).mockResolvedValueOnce([{ id: "usr_1" } as never]);
+
+		// Act
+		const result = await (
+			getRegistrationStatus as unknown as () => Promise<{
+				registrationEnabled: boolean;
+			}>
+		)();
+
+		// Assert
+		expect(result).toEqual({ registrationEnabled: false });
+	});
+
+	it("getRegistrationStatus returns registrationEnabled false when database query throws", async () => {
+		// Arrange
+		vi.mocked(queryUsers).mockRejectedValueOnce(
+			new Error("D1 connection failure"),
+		);
+
+		// Act
+		const result = await (
+			getRegistrationStatus as unknown as () => Promise<{
+				registrationEnabled: boolean;
+			}>
+		)();
+
+		// Assert
+		expect(result).toEqual({ registrationEnabled: false });
 	});
 
 	it("handleAuthRequest delegates request to auth instance handler", async () => {
