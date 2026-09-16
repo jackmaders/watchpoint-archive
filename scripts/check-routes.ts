@@ -38,7 +38,7 @@ export function checkRouteInventory(options: CheckRouteOptions = {}): string[] {
 	const root = options.root ?? process.cwd();
 	const readFile =
 		options.readFile ?? ((path: string) => readFileSync(path, "utf-8"));
-	const routeTreePath = join(root, "app/routeTree.gen.ts");
+	const routeTreePath = join(root, "src/app/routeTree.gen.ts");
 
 	let source: string;
 	try {
@@ -51,7 +51,9 @@ export function checkRouteInventory(options: CheckRouteOptions = {}): string[] {
 
 	const routerPaths = extractRouterFullPaths(source);
 	if (!routerPaths) {
-		return ["Failed to extract FileRoutesByFullPath from app/routeTree.gen.ts"];
+		return [
+			"Failed to extract FileRoutesByFullPath from src/app/routeTree.gen.ts",
+		];
 	}
 
 	const validation = validateRouteInventory(

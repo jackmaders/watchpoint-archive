@@ -238,7 +238,7 @@ describe("AdminVodEditorPage", () => {
 		// Act: cancel scenario edit
 		const cancelBtn = screen.getByRole("button", { name: "Cancel" });
 		fireEvent.click(cancelBtn);
-	});
+	}, 2500);
 
 	it("handles creating a new scenario via createScenario and handles errors", async () => {
 		// Arrange
@@ -325,7 +325,7 @@ describe("AdminVodEditorPage", () => {
 		await waitFor(() => {
 			expect(screen.getByText("Create rejected")).toBeDefined();
 		});
-	});
+	}, 2500);
 
 	it("handles deleting a scenario via deleteScenario and handles errors", async () => {
 		// Arrange

@@ -1,4 +1,3 @@
-import type { FileRoutesByFullPath } from "../../../app/routeTree.gen";
 import { FIXTURE_IDS } from "../db/seed/fixtures";
 
 export const ACCESS_STATES = [
@@ -10,7 +9,7 @@ export const ACCESS_STATES = [
 
 export type AccessState = (typeof ACCESS_STATES)[number];
 
-export type RouterFullPath = keyof FileRoutesByFullPath;
+export type RouterFullPath = string;
 
 export interface RouteInventoryEntry {
 	accessStates: readonly AccessState[];

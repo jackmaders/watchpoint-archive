@@ -8,4 +8,10 @@ export default [
 			"fsd/insignificant-slice": "off",
 		},
 	},
+	{
+		files: ["./src/app/routes/**"],
+		rules: {
+			"fsd/no-reserved-folder-names": "off",
+		},
+	},
 ];

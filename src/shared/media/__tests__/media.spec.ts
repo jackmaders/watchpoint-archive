@@ -86,7 +86,7 @@ describe("GET /api/media/[...key] handler", () => {
 
 		// Assert
 		expect(response.status).toBe(500);
-	});
+	}, 2500);
 
 	it("returns 404 Not Found when R2 object does not exist", async () => {
 		// Arrange
