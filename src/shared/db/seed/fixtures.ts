@@ -14,14 +14,14 @@ export const FIXTURE_IDS = {
 } as const;
 
 export const FIXTURE_VOD = {
-	durationSeconds: 600,
+	durationSeconds: 960,
 	heroName: "Ana",
 	id: FIXTURE_IDS.vod,
 	isPublished: true,
-	mapName: "Local Test Map",
-	rankTier: "Synthetic",
+	mapName: "King's Row",
+	rankTier: "Grandmaster",
 	role: "SUPPORT" as const,
-	title: "Local Synthetic VOD Fixture",
+	title: "Grandmaster Ana — King's Row Defense & Streets Phase",
 	youtubeVideoId: "local-fixture-video",
 } as const;
 
@@ -35,36 +35,43 @@ export function getLocalFixtureVod() {
 const FIXTURE_SCENARIOS = [
 	{
 		explanationText:
-			"Use high ground to preserve sightlines and safe retreat options.",
+			"Holding the high ground balcony maintains sightlines over the choke while keeping safe retreat routes to the mega health pack.",
 		id: "scenario_local_strategy",
 		moduleType: "STRATEGY" as const,
-		promptText: "Where should the player position for the initial push?",
+		promptText:
+			"Where should Ana position during the enemy team's initial push through the King's Row choke?",
 	},
 	{
 		explanationText:
-			"Use the available cooldown during the short timing window.",
+			"Saving Biotic Grenade for the enemy Winston's jump commitment cancels his healing bubble advantage and enables your team to collapse.",
 		id: "scenario_local_tactics",
 		moduleType: "TACTICS" as const,
-		promptText: "What is the immediate fight-winning decision?",
+		promptText:
+			"The enemy Winston dives your co-support with Barrier Shield. What is your immediate tactical priority?",
 	},
 	{
 		explanationText:
-			"Recent damage and fight timing indicate the ultimate is nearly ready.",
+			"Tracking enemy ultimate economy indicates the opposing Reinhardt has Earthshatter ready after two uninterrupted hammer swings in the previous fight.",
 		id: "scenario_local_ultimate",
 		moduleType: "ULTIMATE" as const,
-		promptText: "What should you estimate about the enemy ultimate?",
+		promptText:
+			"Based on previous fight pacing, what is the status of the enemy Reinhardt's Earthshatter?",
 	},
 	{
-		explanationText: "The ability was used recently and remains on cooldown.",
+		explanationText:
+			"Kiriko just used Protection Suzu to cleanse an anti-heal grenade, leaving a 14-second vulnerability window for your Nano-Boosted teammate.",
 		id: "scenario_local_cooldown",
 		moduleType: "COOLDOWN" as const,
-		promptText: "Is the enemy defensive ability available?",
+		promptText:
+			"Enemy Kiriko deployed Protection Suzu 3 seconds ago. Is the defensive cooldown available for the upcoming Nano-Blade?",
 	},
 	{
-		explanationText: "Audio and team-position cues identify the flank route.",
+		explanationText:
+			"Footstep audio and lack of frontline presence suggest the enemy Reaper is flanking through the King's Row hotel corridor.",
 		id: "scenario_local_spatial",
 		moduleType: "SPATIAL" as const,
-		promptText: "Where is the unseen threat most likely positioned?",
+		promptText:
+			"Where is the unspotted enemy Reaper most likely rotating to set up Death Blossom?",
 	},
 ] as const;
 

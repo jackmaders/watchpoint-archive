@@ -18,7 +18,7 @@ describe("VodsPage catalog component", () => {
 		expect(screen.getByRole("main")).toBeDefined();
 	});
 
-	it("renders VOD cards with map name, rank tier, duration, and Start Training action", () => {
+	it("renders VOD cards with map name, hero name, rank tier, duration, and Start Training action", () => {
 		// Arrange
 		const mockVods = [
 			{
@@ -50,9 +50,11 @@ describe("VodsPage catalog component", () => {
 			screen.getByText("GM Ana VOD — King's Row Defense & Attack"),
 		).toBeDefined();
 		expect(screen.getByText("King's Row")).toBeDefined();
+		expect(screen.getByText("Ana")).toBeDefined();
 		expect(screen.getByText("Grandmaster")).toBeDefined();
 		expect(screen.getByText(/18m 00s/)).toBeDefined();
 		expect(screen.getByText(/5 Scenarios/)).toBeDefined();
+		expect(screen.queryByText(/interactive training engine/i)).toBeNull();
 
 		const startButton = screen.getByRole("link", { name: /start training/i });
 		expect(startButton).toBeDefined();
