@@ -6,27 +6,40 @@ vi.mock("@tanstack/react-router");
 vi.mock("@/shared/lib/auth-client");
 
 describe("HomePage component", () => {
-	it("renders heading, description, and account control", () => {
+	it("renders marketing hero, workflow steps, and account control", () => {
 		// Arrange & Act
 		render(<HomePage />);
 
 		// Assert
 		expect(
-			screen.getByRole("heading", { name: "Watchpoint Interactive Engine" }),
+			screen.getByRole("heading", { name: /master game sense/i }),
 		).toBeDefined();
 		expect(
-			screen.getByText(/overwatch 2 interactive vod decision training/i),
+			screen.getByText(/transform grandmaster and top 500 gameplay/i),
+		).toBeDefined();
+		expect(
+			screen.getByRole("heading", { name: /how watchpoint works/i }),
+		).toBeDefined();
+		expect(
+			screen.getByRole("heading", {
+				name: /engineered for serious competitors/i,
+			}),
+		).toBeDefined();
+		expect(
+			screen.getByRole("heading", {
+				name: /ready to level up your game sense\?/i,
+			}),
 		).toBeDefined();
 		expect(screen.getByRole("button", { name: "Sign in" })).toBeDefined();
 	});
 
-	it("renders empty database state when no VODs are passed", () => {
+	it("renders empty preview state when no VODs are passed", () => {
 		// Arrange & Act
 		render(<HomePage vods={[]} />);
 
 		// Assert
 		expect(
-			screen.getByText(/no published training vods in database/i),
+			screen.getByText(/no training scenarios currently available/i),
 		).toBeDefined();
 	});
 
