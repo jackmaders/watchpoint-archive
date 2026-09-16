@@ -104,9 +104,12 @@ This document defines the core domain terminology used across product discussion
 * **Attempt Outcome Idempotency Key**  
   The client-generated UUID attached to one accepted Attempt Outcome. The key remains stable across persistence retries and is enforced as unique by Attempt Record storage so a retry cannot create a duplicate record.
 
-* **Performance History**  
-  A player's durable chronological record of interactive training playthroughs across sessions, containing completion status, accuracy, median active-response latency, module selections, and snapshot-level drill-down.
-
 * **Median Active-Response Latency**  
   The median response time in milliseconds computed strictly for active (non-timeout) answered scenario attempts within a training playthrough.
 
+* **VOD Discovery Dimensions (Catalog & History Filtering)**  
+  The four core faceted dimensions used to filter training content across the VOD Catalog (`/vods`) and Player Training History (`/history`):
+  - **Map (`mapName`)**: The Overwatch 2 map associated with the VOD (e.g. *King's Row*, *Circuit Royal*).
+  - **Hero (`heroName`)**: The primary Overwatch 2 hero played in the VOD (e.g. *Ana*, *Tracer*).
+  - **Level of Play (`rankTier`)**: The competitive tier or league context of the VOD gameplay (e.g. *Grandmaster*, *Champion*, *GM Ranked*, *FACEIT*, *OWCS*, *Top 500*).
+  - **Player**: The player featured in the VOD, queried via case-insensitive text match against the VOD title.
