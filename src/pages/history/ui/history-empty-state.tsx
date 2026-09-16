@@ -1,28 +1,20 @@
 /**
  * Empty state presentation component rendered when no training match history records exist.
  *
- * Implements `HistoryEmptyState` tailoring its prompt and call-to-action to either completed or
- * in-progress training sessions.
+ * Implements `HistoryEmptyState` providing guidance and a call-to-action to browse VODs
+ * and complete an initial training run.
  */
 import { Link } from "@tanstack/react-router";
-import type { PlaythroughStatus } from "../model/types";
 
-export function HistoryEmptyState({
-	currentStatus,
-}: {
-	currentStatus: PlaythroughStatus;
-}) {
+export function HistoryEmptyState() {
 	return (
 		<div className="rounded-lg border border-dashed border-border bg-muted/40 p-8 text-center sm:p-12 space-y-4">
 			<p className="text-base font-medium text-foreground">
-				{currentStatus === "COMPLETED"
-					? "No completed training sessions yet."
-					: "No in-progress training sessions."}
+				No completed training sessions yet.
 			</p>
 			<p className="text-sm text-muted-foreground">
-				{currentStatus === "COMPLETED"
-					? "Complete your first interactive VOD training run to see your accuracy and response latency history."
-					: "You have no active incomplete sessions. Start a new session from our catalog."}
+				Complete your first interactive VOD training run to see your accuracy
+				and response latency history.
 			</p>
 			<div>
 				<Link

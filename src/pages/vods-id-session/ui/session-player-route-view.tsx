@@ -72,7 +72,6 @@ export function SessionPlayerRouteView({
 			scenarioSnapshotIds={scenarioSnapshotIds}
 			searchParams={{
 				modules: modules ?? undefined,
-				playthroughId: playthroughId ?? undefined,
 			}}
 			vod={vod}
 		/>

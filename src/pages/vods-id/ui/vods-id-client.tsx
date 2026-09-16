@@ -29,7 +29,6 @@ export function VodsIdClient({
 	registrationEnabled = true,
 	vod,
 }: VodsIdClientProps) {
-	const [playthroughId] = useState(() => crypto.randomUUID());
 	const [activeModules, setActiveModules] = useState<ModuleType[]>(() =>
 		MODULE_DEFINITIONS.map((def) => def.key),
 	);
@@ -52,10 +51,10 @@ export function VodsIdClient({
 	const handleAuthenticated = useCallback(() => {
 		navigate({
 			params: { id: vod.id },
-			search: { modules: serializeModulesParam(activeModules), playthroughId },
+			search: { modules: serializeModulesParam(activeModules) },
 			to: "/vods/$id/session",
 		});
-	}, [activeModules, navigate, playthroughId, vod.id]);
+	}, [activeModules, navigate, vod.id]);
 
 	const availableCounts = useMemo(
 		() => calculateModuleCounts(vod.scenarios),
@@ -116,7 +115,6 @@ export function VodsIdClient({
 						params={{ id: vod.id }}
 						search={{
 							modules: serializeModulesParam(activeModules),
-							playthroughId,
 						}}
 						to="/vods/$id/session"
 					>

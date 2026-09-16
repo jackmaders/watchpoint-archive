@@ -6,7 +6,6 @@ describe("validateSessionSearch", () => {
 		// Arrange
 		const raw = {
 			modules: "AIM,CD_TRACKING",
-			playthroughId: "a2b724bc-a62a-43bc-9171-87424ad41979",
 			prototype: "media-recovery",
 			variant: "A",
 		};

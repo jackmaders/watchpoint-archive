@@ -11,7 +11,6 @@ import type { HistorySearchParams } from "../model/search-params";
 import type {
 	ModuleType,
 	PlayerHistoryResult,
-	PlaythroughStatus,
 	PublishedVodItem,
 } from "../model/types";
 import { HistoryEmptyState } from "./history-empty-state";
@@ -58,18 +57,6 @@ function HistoryFilteredList({
 	vods,
 }: HistoryPageProps) {
 	const items = data?.items ?? [];
-	const currentStatus = searchParams?.status ?? "COMPLETED";
-
-	const handleStatusChange = useCallback(
-		(status: PlaythroughStatus) => {
-			onFilterChange?.({
-				...searchParams,
-				page: 1,
-				status,
-			});
-		},
-		[onFilterChange, searchParams],
-	);
 
 	const handleVodChange = useCallback(
 		(vodId: string | undefined) => {
@@ -112,9 +99,7 @@ function HistoryFilteredList({
 	return (
 		<div className="space-y-6">
 			<HistoryFilterBar
-				currentStatus={currentStatus}
 				onModuleToggle={handleModuleToggle}
-				onStatusChange={handleStatusChange}
 				onVodChange={handleVodChange}
 				selectedModules={searchParams?.modules ?? []}
 				selectedVodId={searchParams?.vodId ?? ""}
@@ -122,7 +107,7 @@ function HistoryFilteredList({
 			/>
 
 			{items.length === 0 ? (
-				<HistoryEmptyState currentStatus={currentStatus} />
+				<HistoryEmptyState />
 			) : (
 				<div className="space-y-4">
 					<div className="grid grid-cols-1 gap-4">
