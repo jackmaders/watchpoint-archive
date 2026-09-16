@@ -1,5 +1,11 @@
 import { cleanup, render } from "@testing-library/react";
 import React from "react";
+import { vi } from "vitest";
+
+// Configure global auto-mocks for core external dependencies and domain boundaries
+vi.mock("@/shared/db");
+vi.mock("@tanstack/react-router");
+vi.mock("@tanstack/react-start");
 
 if (typeof process !== "undefined" && typeof process.on === "function") {
 	const isConnRefused = (err: unknown) => {
