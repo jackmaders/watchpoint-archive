@@ -188,6 +188,20 @@ Reject ad-hoc `if` statements, scattered special cases, or edge-case flags dropp
 an otherwise linear execution path. Encapsulate variant behaviour into a dedicated
 helper, state machine, or policy object instead of branching further at the call site.
 
+## Biome Complexity & Function Limits
+
+Biome enforces strict cognitive and length limits on every function and React component:
+- **Max Lines Per Function**: 80 lines (`noExcessiveLinesPerFunction`).
+- **Max Cognitive Complexity**: 10 (`noExcessiveCognitiveComplexity`).
+
+Structure components proactively into cohesive, modular subcomponents, extracted custom hooks, and pure calculation helpers rather than creating oversized functions that require subsequent refactoring.
+
+## Testing Library: Selector Disambiguation
+
+When testing DOM trees where the same label or name appears across multiple UI elements (such as `<select>` dropdown options, badge pills, and card titles), use targeted queries to avoid ambiguity:
+- Prefer semantic role queries with accessible names: `screen.getByRole("combobox", { name: /filter by hero/i })`, `screen.getByRole("link", { name: /start training/i })`.
+- Use container-scoped queries (`within(card).getByText(...)`) or `screen.getAllByText(...)` when identical strings render in multiple UI regions.
+
 ## File size guard
 
 No file grows past 1,000 lines without extracting subcomponents or helper modules. Keep
