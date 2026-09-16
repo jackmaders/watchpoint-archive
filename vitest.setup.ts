@@ -2,18 +2,29 @@ import { cleanup, render } from "@testing-library/react";
 import React from "react";
 
 if (typeof process !== "undefined" && typeof process.on === "function") {
-	process.on("uncaughtException", (err: unknown) => {
+	const isConnRefused = (err: unknown) => {
 		const error = err as {
 			code?: string;
 			errors?: Array<{ code?: string }>;
 			message?: string;
 		};
-		if (
+		return (
 			error?.code === "ECONNREFUSED" ||
 			error?.message?.includes("ECONNREFUSED") ||
 			(Array.isArray(error?.errors) &&
 				error.errors.some((e) => e?.code === "ECONNREFUSED"))
-		) {
+		);
+	};
+
+	process.on("uncaughtException", (err: unknown) => {
+		if (isConnRefused(err)) {
+			return;
+		}
+		throw err;
+	});
+
+	process.on("unhandledRejection", (err: unknown) => {
+		if (isConnRefused(err)) {
 			return;
 		}
 		throw err;
