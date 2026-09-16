@@ -68,6 +68,21 @@ describe("CtaSection", () => {
 		});
 	});
 
+	it("allows direct navigation when authenticated player clicks Start Training without opening modal", () => {
+		// Arrange
+		vi.mocked(authClient.useSession).mockReturnValue({
+			data: { user: { id: "user_1", name: "Player" } },
+			isPending: false,
+		} as never);
+		render(<CtaSection />);
+
+		// Act
+		fireEvent.click(screen.getByRole("link", { name: /start training/i }));
+
+		// Assert
+		expect(screen.queryByRole("dialog")).toBeNull();
+	});
+
 	it("renders Try It Now with custom demoVodId when passed", () => {
 		// Arrange & Act
 		render(<CtaSection demoVodId="vod_custom_demo" />);
