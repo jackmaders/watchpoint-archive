@@ -506,7 +506,7 @@ function useSessionPlayerRuntime({
 }
 
 export function useSessionPlayer({
-	autoplay = true,
+	autoplay = false,
 	initialManifest,
 	isDemo = false,
 	onExit,
