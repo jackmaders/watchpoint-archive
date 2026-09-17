@@ -23,6 +23,8 @@ import { users } from "../schema/user";
 import { vods } from "../schema/vod";
 import {
 	FIXTURE_IDS,
+	getLocalDemoFixtureScenarios,
+	getLocalDemoFixtureVod,
 	getLocalFixtureScenarios,
 	getLocalFixtureVod,
 } from "./fixtures";
@@ -92,13 +94,16 @@ export async function executeSeed(db: ReturnType<typeof createDbClient>) {
 	]);
 
 	const fixtureVod = getLocalFixtureVod();
-	await db.insert(vods).values(fixtureVod);
-	await db.insert(scenarios).values(getLocalFixtureScenarios(FIXTURE_IDS.vod));
+	const demoVod = getLocalDemoFixtureVod();
+	await db.insert(vods).values([fixtureVod, demoVod]);
+	const fixtureScenarios = getLocalFixtureScenarios(FIXTURE_IDS.vod);
+	const demoScenarios = getLocalDemoFixtureScenarios(FIXTURE_IDS.demoVod);
+	await db.insert(scenarios).values([...fixtureScenarios, ...demoScenarios]);
 
 	return {
 		adminEmail: credentials.adminEmail,
 		playerEmail: credentials.playerEmail,
-		scenariosCount: 5,
+		scenariosCount: fixtureScenarios.length + demoScenarios.length,
 		vodId: FIXTURE_IDS.vod,
 	};
 }
