@@ -214,6 +214,12 @@ function executeSessionEffect(
 		case "MEDIA_PLAY":
 			media.execute({ type: "PLAY" });
 			return;
+		case "MEDIA_SEEK":
+			media.execute({
+				positionSeconds: effect.positionSeconds,
+				type: "SEEK",
+			});
+			return;
 		case "MEDIA_REPLAY_CONTEXT":
 			media.execute({
 				timestampSeconds: effect.timestampSeconds,
@@ -323,6 +329,7 @@ function getManifestKey(vod: ManifestVod | null): string {
 function useSessionPlayerActions(
 	dispatch: React.Dispatch<SessionPlaythroughAction>,
 	coordinatorRef: React.RefObject<SessionPlaythroughState>,
+	media: SessionMediaAdapterResult,
 	vodId: string,
 	onExit?: () => void,
 	isDemo?: boolean,
@@ -343,10 +350,11 @@ function useSessionPlayerActions(
 
 	const replayContext = useCallback(() => {
 		dispatch({
+			currentTime: media.currentTime,
 			generation: coordinatorRef.current.generation,
 			type: "REPLAY_CONTEXT",
 		});
-	}, [coordinatorRef, dispatch]);
+	}, [coordinatorRef, dispatch, media.currentTime]);
 
 	const resumePlayback = useCallback(() => {
 		dispatch({
@@ -506,7 +514,7 @@ function useSessionPlayerRuntime({
 }
 
 export function useSessionPlayer({
-	autoplay = true,
+	autoplay = false,
 	initialManifest,
 	isDemo = false,
 	onExit,
@@ -531,6 +539,7 @@ export function useSessionPlayer({
 	const actions = useSessionPlayerActions(
 		runtime.dispatch,
 		coordinatorRef,
+		media,
 		vodId,
 		onExit,
 		isDemo,

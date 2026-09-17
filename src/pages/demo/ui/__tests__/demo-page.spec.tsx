@@ -10,7 +10,7 @@ import { AppLayout } from "@/widgets/layout-main";
 import { SessionPlayerClient } from "@/widgets/session-player";
 
 describe("DemoPage", () => {
-	it("renders SessionPlayerClient with isDemo and demo vod manifest wrapped in AppLayout", () => {
+	it("renders SessionPlayerClient with isDemo, autoplay false, and demo vod manifest wrapped in AppLayout", () => {
 		// Arrange
 		vi.mocked(AppLayout).mockImplementation((props) => (
 			<div
@@ -32,6 +32,7 @@ describe("DemoPage", () => {
 		expect(screen.getByTestId("demo-player-client")).toBeDefined();
 		expect(SessionPlayerClient).toHaveBeenCalledWith(
 			expect.objectContaining({
+				autoplay: false,
 				isDemo: true,
 				playthroughId: null,
 				registrationEnabled: true,

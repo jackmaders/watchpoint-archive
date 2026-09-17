@@ -53,6 +53,7 @@ describe("session media adapter", () => {
 			{ rate: 1.5, type: "SET_PLAYBACK_RATE" },
 			controls,
 		);
+		executeSessionMediaCommand({ positionSeconds: 25, type: "SEEK" }, controls);
 
 		// Assert
 		expect(controls.pause).toHaveBeenCalledTimes(1);
@@ -61,7 +62,8 @@ describe("session media adapter", () => {
 		expect(controls.seekTo).toHaveBeenNthCalledWith(2, 30, true);
 		expect(controls.seekTo).toHaveBeenNthCalledWith(3, 0, true);
 		expect(controls.seekTo).toHaveBeenNthCalledWith(4, 0, true);
-		expect(controls.seekTo).toHaveBeenCalledTimes(4);
+		expect(controls.seekTo).toHaveBeenNthCalledWith(5, 25, true);
+		expect(controls.seekTo).toHaveBeenCalledTimes(5);
 		expect(controls.setPlaybackRate).toHaveBeenCalledWith(1.5);
 	});
 

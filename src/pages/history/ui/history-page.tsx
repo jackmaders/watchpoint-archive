@@ -54,6 +54,14 @@ function useHistoryFilterHandlers(
 	searchParams?: HistorySearchParams,
 	onFilterChange?: (newParams: HistorySearchParams) => void,
 ) {
+	const handleAllModulesToggle = useCallback(() => {
+		onFilterChange?.({
+			...searchParams,
+			modules: undefined,
+			page: 1,
+		});
+	}, [onFilterChange, searchParams]);
+
 	const handleMapChange = useCallback(
 		(map: string) =>
 			onFilterChange?.({ ...searchParams, map: map || undefined, page: 1 }),
@@ -104,6 +112,7 @@ function useHistoryFilterHandlers(
 	);
 
 	return {
+		handleAllModulesToggle,
 		handleHeroChange,
 		handleLevelOfPlayChange,
 		handleMapChange,
@@ -133,6 +142,7 @@ function HistoryFilteredList({
 	return (
 		<div className="space-y-6">
 			<HistoryFilterBar
+				onAllModulesToggle={handlers.handleAllModulesToggle}
 				onHeroChange={handlers.handleHeroChange}
 				onLevelOfPlayChange={handlers.handleLevelOfPlayChange}
 				onMapChange={handlers.handleMapChange}
