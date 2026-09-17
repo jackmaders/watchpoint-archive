@@ -5,6 +5,7 @@ vi.mock("@tanstack/react-router");
 vi.mock("@/shared/lib/auth-client");
 vi.mock("@/shared/ui/auth-modal");
 
+import { getRouteApi } from "@tanstack/react-router";
 import { authClient } from "@/shared/lib/auth-client";
 import { AppLayout } from "../app-layout";
 
@@ -66,6 +67,79 @@ describe("AppLayout", () => {
 		expect(
 			screen.getAllByRole("link", { name: "Privacy Statement" }),
 		).toHaveLength(1);
+	});
+
+	it("renders sidebar immediately on initial load without flashing when routeContext has preloaded user while session is pending", () => {
+		// Arrange: session.isPending is true (client auth hook hasn't resolved), but routeContext has user from SSR
+		const rootRouteApi = getRouteApi("__root__");
+		vi.mocked(rootRouteApi.useRouteContext).mockReturnValue({
+			user: { id: "u-ssr-1", name: "Preloaded Player" },
+		});
+		vi.mocked(authClient.useSession).mockReturnValue({
+			data: null,
+			isPending: true,
+		} as never);
+
+		// Act
+		render(
+			<AppLayout>
+				<div data-testid="test-content">Dashboard Content</div>
+			</AppLayout>,
+		);
+
+		// Assert: sidebar and toggle are rendered immediately without waiting for client hook
+		expect(screen.getByLabelText("Sidebar Navigation")).toBeDefined();
+		expect(screen.getByText("VOD Catalog")).toBeDefined();
+		expect(
+			screen.getByRole("button", { name: "Open navigation menu" }),
+		).toBeDefined();
+	});
+
+	it("renders sidebar immediately when user prop is explicitly passed even if session is pending", () => {
+		// Arrange
+		vi.mocked(authClient.useSession).mockReturnValue({
+			data: null,
+			isPending: true,
+		} as never);
+
+		// Act
+		render(
+			<AppLayout user={{ id: "u-prop-1", name: "Prop Player" }}>
+				<div data-testid="test-content">Dashboard Content</div>
+			</AppLayout>,
+		);
+
+		// Assert
+		expect(screen.getByLabelText("Sidebar Navigation")).toBeDefined();
+		expect(screen.getByText("VOD Catalog")).toBeDefined();
+		expect(
+			screen.getByRole("button", { name: "Open navigation menu" }),
+		).toBeDefined();
+	});
+
+	it("renders unauthenticated clean layout when routeContext user is null while session is pending", () => {
+		// Arrange: unauthenticated visitor on initial load
+		const rootRouteApi = getRouteApi("__root__");
+		vi.mocked(rootRouteApi.useRouteContext).mockReturnValue({
+			user: null,
+		});
+		vi.mocked(authClient.useSession).mockReturnValue({
+			data: null,
+			isPending: true,
+		} as never);
+
+		// Act
+		render(
+			<AppLayout>
+				<div data-testid="test-content">Homepage Content</div>
+			</AppLayout>,
+		);
+
+		// Assert: no sidebar or mobile toggle rendered
+		expect(screen.queryByLabelText("Sidebar Navigation")).toBeNull();
+		expect(
+			screen.queryByRole("button", { name: "Open navigation menu" }),
+		).toBeNull();
 	});
 
 	it("toggles desktop sidebar collapsed state when sidebar desktop toggle button is clicked for authenticated user", () => {

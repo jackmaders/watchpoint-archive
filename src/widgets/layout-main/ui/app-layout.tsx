@@ -8,9 +8,10 @@
  * and provides fluid desktop sidebar collapse interactions.
  */
 
-import { Link } from "@tanstack/react-router";
+import { getRouteApi, Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useCallback, useState } from "react";
+import type { CurrentUser } from "@/shared/lib/auth";
 import { authClient } from "@/shared/lib/auth-client";
 import { MobileNavDrawer } from "./mobile-nav-drawer";
 import { Navbar } from "./navbar";
@@ -19,15 +20,31 @@ import { Sidebar } from "./sidebar";
 export interface AppLayoutProps {
 	children?: ReactNode;
 	registrationEnabled?: boolean;
+	user?: CurrentUser | null;
 }
+
+const rootRouteApi = getRouteApi("__root__");
 
 export function AppLayout({
 	children,
 	registrationEnabled = true,
+	user: userProp,
 }: AppLayoutProps) {
 	const [isMobileOpen, setIsMobileOpen] = useState(false);
 	const session = authClient.useSession();
-	const isLoggedIn = Boolean(session.data?.user);
+	const routeContext = rootRouteApi.useRouteContext();
+	const contextUser = routeContext?.user as CurrentUser | null | undefined;
+
+	const currentUser =
+		userProp !== undefined
+			? userProp
+			: session.data?.user
+				? (session.data.user as CurrentUser)
+				: session.isPending
+					? (contextUser ?? null)
+					: null;
+
+	const isLoggedIn = Boolean(currentUser);
 
 	const toggleMobileSidebar = useCallback(() => {
 		setIsMobileOpen((prev) => !prev);
@@ -52,12 +69,15 @@ export function AppLayout({
 					onClose={closeMobileSidebar}
 					onOpenChange={setIsMobileOpen}
 					open={isMobileOpen}
+					user={currentUser}
 				/>
 			) : null}
 
 			<div className="flex flex-1">
 				{/* Desktop Sidebar */}
-				{isLoggedIn ? <Sidebar className="hidden md:flex" /> : null}
+				{isLoggedIn ? (
+					<Sidebar className="hidden md:flex" user={currentUser} />
+				) : null}
 
 				{/* Page Content & Footer */}
 				<div className="flex flex-1 flex-col min-w-0">

@@ -43,6 +43,20 @@ describe("Sidebar", () => {
 		expect(screen.getByText("Admin Panel")).toBeDefined();
 	});
 
+	it("renders admin link when user prop with ADMIN role is provided directly", () => {
+		// Arrange
+		vi.mocked(authClient.useSession).mockReturnValue({
+			data: null,
+			isPending: true,
+		} as never);
+
+		// Act
+		render(<Sidebar user={{ role: "ADMIN" }} />);
+
+		// Assert
+		expect(screen.getByText("Admin Panel")).toBeDefined();
+	});
+
 	it("renders in collapsed mode without text labels on desktop when defaultCollapsed is true", () => {
 		// Arrange
 		vi.mocked(authClient.useSession).mockReturnValue({

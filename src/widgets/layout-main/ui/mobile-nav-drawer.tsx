@@ -15,12 +15,14 @@ export interface MobileNavDrawerProps {
 	onClose: () => void;
 	onOpenChange: (open: boolean) => void;
 	open: boolean;
+	user?: { role?: string } | null;
 }
 
 export function MobileNavDrawer({
 	onClose,
 	onOpenChange,
 	open,
+	user,
 }: MobileNavDrawerProps) {
 	return (
 		<Dialog onOpenChange={onOpenChange} open={open}>
@@ -47,6 +49,7 @@ export function MobileNavDrawer({
 					className="static h-[calc(100%-4rem)] w-full border-r-0 bg-transparent"
 					onNavClick={onClose}
 					showCollapseToggle={false}
+					user={user}
 				/>
 			</DialogContent>
 		</Dialog>
