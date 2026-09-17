@@ -15,6 +15,7 @@ const mockVod: PublishedVodItem = {
 	durationSeconds: 1200,
 	heroName: "Ana",
 	id: "vod_1",
+	isDemo: false,
 	isPublished: true,
 	mapName: "King's Row",
 	rankTier: "Grandmaster",

@@ -15,6 +15,7 @@ describe("demo fixtures", () => {
 
 		// Act & Assert
 		expect(manifest.id).toBe("vod_demo_interactive");
+		expect(manifest.isDemo).toBe(true);
 		expect(manifest.isPublished).toBe(true);
 		expect(manifest.heroName).toBe("Ana");
 		expect(manifest.youtubeVideoId).toBe("dQw4w9WgXcQ");

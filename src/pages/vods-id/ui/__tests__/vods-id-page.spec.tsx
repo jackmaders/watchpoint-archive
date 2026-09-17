@@ -27,6 +27,7 @@ describe("VodsIdPage", () => {
 		durationSeconds: 1080,
 		heroName: "Ana",
 		id: "vod_1",
+		isDemo: false,
 		isPublished: true,
 		mapName: "King's Row",
 		rankTier: "Grandmaster",

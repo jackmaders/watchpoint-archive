@@ -11,6 +11,7 @@ export const DEMO_VOD_MANIFEST: SessionManifest = {
 	durationSeconds: 300,
 	heroName: "Ana",
 	id: "vod_demo_interactive",
+	isDemo: true,
 	isPublished: true,
 	mapName: "King's Row",
 	rankTier: "Grandmaster",

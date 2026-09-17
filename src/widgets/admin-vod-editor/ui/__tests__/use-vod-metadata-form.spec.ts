@@ -9,6 +9,7 @@ describe("useVodMetadataFormState hook", () => {
 		durationSeconds: 700,
 		heroName: "Winston",
 		id: "vod_win",
+		isDemo: false,
 		isPublished: false,
 		mapName: "Dorado",
 		rankTier: "Top 500",

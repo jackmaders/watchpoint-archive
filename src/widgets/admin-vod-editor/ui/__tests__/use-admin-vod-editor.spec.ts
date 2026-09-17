@@ -27,6 +27,7 @@ describe("use-admin-vod-editor hooks and utilities", () => {
 		durationSeconds: 600,
 		heroName: "Ana",
 		id: "vod_1",
+		isDemo: false,
 		isPublished: false,
 		mapName: "King's Row",
 		rankTier: "Grandmaster",

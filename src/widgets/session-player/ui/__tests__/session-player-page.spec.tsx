@@ -19,6 +19,7 @@ describe("SessionPlayerPage", () => {
 		durationSeconds: 600,
 		heroName: "Ana",
 		id: "vod_gm_ana",
+		isDemo: false,
 		isPublished: true,
 		mapName: "King's Row",
 		rankTier: "Grandmaster",
