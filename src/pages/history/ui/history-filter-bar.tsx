@@ -1,7 +1,7 @@
 /**
  * Filter controls bar for narrowing match history by learning module types and advanced dimensions.
  *
- * Implements `HistoryFilterBar` with advanced filter dropdowns (Map, Hero, Level of Play, Player, VOD)
+ * Implements `HistoryFilterBar` with advanced filter dropdowns (Map, Hero, Level of Play, Player)
  * and individual module toggle buttons.
  */
 import { type ChangeEvent, useCallback } from "react";
@@ -27,13 +27,11 @@ export interface HistoryFilterBarProps {
 	onMapChange?: (map: string) => void;
 	onModuleToggle: (module: ModuleType) => void;
 	onPlayerChange?: (player: string) => void;
-	onVodChange: (vodId: string) => void;
 	selectedHero?: string;
 	selectedLevelOfPlay?: string;
 	selectedMap?: string;
 	selectedModules: readonly ModuleType[];
 	selectedPlayer?: string;
-	selectedVodId: string;
 	vods: readonly PublishedVodItem[];
 }
 
@@ -74,18 +72,12 @@ function HistoryAdvancedInputs({
 	onLevelOfPlayChange,
 	onMapChange,
 	onPlayerChange,
-	onVodChange,
 	selectedHero = "",
 	selectedLevelOfPlay = "",
 	selectedMap = "",
 	selectedPlayer = "",
-	selectedVodId,
 	vods,
 }: HistoryFilterBarProps) {
-	const handleSelectChange = useCallback(
-		(e: ChangeEvent<HTMLSelectElement>) => onVodChange(e.target.value),
-		[onVodChange],
-	);
 	const handleMapSelect = useCallback(
 		(e: ChangeEvent<HTMLSelectElement>) => onMapChange?.(e.target.value),
 		[onMapChange],
@@ -129,7 +121,7 @@ function HistoryAdvancedInputs({
 	);
 
 	return (
-		<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5 border-t border-border pt-4">
+		<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 border-t border-border pt-4">
 			<select
 				aria-label="Filter by Map"
 				className="h-9 rounded-md border border-input bg-background px-3 py-1 text-xs text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
@@ -180,20 +172,6 @@ function HistoryAdvancedInputs({
 				type="text"
 				value={selectedPlayer}
 			/>
-
-			<select
-				aria-label="Filter by VOD"
-				className="h-9 rounded-md border border-input bg-background px-3 py-1 text-xs text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-				onChange={handleSelectChange}
-				value={selectedVodId}
-			>
-				<option value="">All VODs</option>
-				{vods.map((vod) => (
-					<option key={vod.id} value={vod.id}>
-						{vod.title} ({vod.mapName})
-					</option>
-				))}
-			</select>
 		</div>
 	);
 }

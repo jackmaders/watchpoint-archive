@@ -191,7 +191,7 @@ describe("HistoryPage component", () => {
 		).toBeDefined();
 	});
 
-	it("triggers filter changes when vod or module chip is clicked", () => {
+	it("triggers filter changes when filter or module chip is clicked", () => {
 		// Arrange
 		const onFilterChange = vi.fn();
 		const data: PlayerHistoryResult = {
@@ -209,13 +209,6 @@ describe("HistoryPage component", () => {
 				onFilterChange={onFilterChange}
 				vods={[mockVod]}
 			/>,
-		);
-
-		// Select VOD Filter
-		const select = screen.getByRole("combobox", { name: /filter by vod/i });
-		fireEvent.change(select, { target: { value: "vod_1" } });
-		expect(onFilterChange).toHaveBeenCalledWith(
-			expect.objectContaining({ page: 1, vodId: "vod_1" }),
 		);
 
 		// Select Map Filter
@@ -259,7 +252,7 @@ describe("HistoryPage component", () => {
 		);
 	});
 
-	it("handles deselecting an active module chip and clearing vod selection", () => {
+	it("handles deselecting an active module chip", () => {
 		// Arrange
 		const onFilterChange = vi.fn();
 		const data: PlayerHistoryResult = {
@@ -275,7 +268,7 @@ describe("HistoryPage component", () => {
 			<HistoryPage
 				data={data}
 				onFilterChange={onFilterChange}
-				searchParams={{ modules: ["STRATEGY", "TACTICS"], vodId: "vod_1" }}
+				searchParams={{ modules: ["STRATEGY", "TACTICS"] }}
 				vods={[mockVod]}
 			/>,
 		);
@@ -302,13 +295,6 @@ describe("HistoryPage component", () => {
 			expect.objectContaining({ modules: undefined, page: 1 }),
 		);
 		unmount();
-
-		// Clear VOD
-		const select = screen.getByRole("combobox", { name: /filter by vod/i });
-		fireEvent.change(select, { target: { value: "" } });
-		expect(onFilterChange).toHaveBeenCalledWith(
-			expect.objectContaining({ page: 1, vodId: undefined }),
-		);
 	});
 
 	it("handles clearing Map, Hero, Level of Play, and Player filters", () => {
