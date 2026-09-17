@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { HowItWorksSection } from "../how-it-works-section";
 
 describe("HowItWorksSection", () => {
-	it("renders all four core learning pillars (Strategy, Tactics, Awareness, Tracking)", () => {
+	it("renders all four learning areas without any references to pillars", () => {
 		// Arrange
 		render(<HowItWorksSection />);
 
@@ -14,7 +14,8 @@ describe("HowItWorksSection", () => {
 
 		// Assert
 		expect(heading).toBeDefined();
-		expect(screen.getByText(/core learning pillars/i)).toBeDefined();
+		expect(screen.queryByText(/core learning pillars/i)).toBeNull();
+		expect(screen.queryByText(/pillars/i)).toBeNull();
 
 		expect(screen.getByText("Strategy")).toBeDefined();
 		expect(

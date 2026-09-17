@@ -2,13 +2,12 @@
  * Landing view presentation for the Watchpoint game sense learning platform.
  *
  * Implements `HomePage` wrapped in `AppLayout`, composing benefit-driven marketing sections
- * including hero value statements, 4-pillar methodology, interactive UI preview, featured VOD previews, and action triggers.
+ * including hero value statements, learning methodology, interactive UI preview, and action triggers.
  */
 import { FIXTURE_IDS } from "@/shared/db";
 import { AppLayout } from "@/widgets/layout-main";
 import type { PublishedVodItem } from "../model/types";
 import { CtaSection } from "./cta-section";
-import { FeaturedVodsSection } from "./featured-vods-section";
 import { HeroSection } from "./hero-section";
 import { HowItWorksSection } from "./how-it-works-section";
 import { UiPreviewSection } from "./ui-preview-section";
@@ -30,7 +29,6 @@ export function HomePage(props?: {
 				/>
 				<HowItWorksSection />
 				<UiPreviewSection demoVodId={demoVodId} />
-				<FeaturedVodsSection vods={vods} />
 				<CtaSection
 					demoVodId={demoVodId}
 					registrationEnabled={registrationEnabled}

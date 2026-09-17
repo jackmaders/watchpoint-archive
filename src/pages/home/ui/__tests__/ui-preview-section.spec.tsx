@@ -5,13 +5,16 @@ import { UiPreviewSection } from "../ui-preview-section";
 vi.mock("@tanstack/react-router");
 
 describe("UiPreviewSection", () => {
-	it("renders high-fidelity decision player interface mockup and Try It Now CTA", () => {
+	it("renders decision interface screenshot and Try It Now CTA", () => {
 		// Arrange
 		render(<UiPreviewSection />);
 
 		// Act
 		const heading = screen.getByRole("heading", {
 			name: /train in high-pressure match moments/i,
+		});
+		const screenshotImage = screen.getByRole("img", {
+			name: /interactive decision interface screenshot/i,
 		});
 		const tryItNowLink = screen.getByRole("link", {
 			name: /try it now/i,
@@ -20,15 +23,10 @@ describe("UiPreviewSection", () => {
 		// Assert
 		expect(heading).toBeDefined();
 		expect(screen.getByText(/interactive decision engine/i)).toBeDefined();
-		expect(screen.getByText(/decision point/i)).toBeDefined();
-		expect(
-			screen.getByText(
-				/the enemy winston dives your co-support with barrier shield/i,
-			),
-		).toBeDefined();
-		expect(
-			screen.getByText(/save biotic grenade to counter dive commitment/i),
-		).toBeDefined();
+		expect(screenshotImage).toBeDefined();
+		expect(screenshotImage.getAttribute("src")).toBe(
+			"/images/decision-interface-preview.svg",
+		);
 		expect(tryItNowLink).toBeDefined();
 		expect(tryItNowLink.getAttribute("href")).toBe("/vods/vod_local_fixture");
 	});
