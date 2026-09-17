@@ -67,7 +67,7 @@ export function VodsIdPage({
 								</span>
 								{hero && (
 									<span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-primary/10 text-primary border border-primary/40">
-										Hero: {hero}
+										{hero}
 									</span>
 								)}
 							</div>
