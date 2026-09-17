@@ -7,13 +7,11 @@ vi.mock("@/widgets/layout-main");
 vi.mock("../hero-section");
 vi.mock("../how-it-works-section");
 vi.mock("../ui-preview-section");
-vi.mock("../featured-vods-section");
 vi.mock("../cta-section");
 
 import { AppLayout } from "@/widgets/layout-main";
 import type { PublishedVodItem } from "../../model/types";
 import { CtaSection } from "../cta-section";
-import { FeaturedVodsSection } from "../featured-vods-section";
 import { HeroSection } from "../hero-section";
 import { HomePage } from "../home-page";
 import { HowItWorksSection } from "../how-it-works-section";
@@ -51,13 +49,6 @@ describe("HomePage component", () => {
 			/>
 		));
 
-		vi.mocked(FeaturedVodsSection).mockImplementation((props) => (
-			<div
-				data-testid="mock-featured-vods-section"
-				data-vod-count={props?.vods?.length ?? 0}
-			/>
-		));
-
 		vi.mocked(CtaSection).mockImplementation((props) => (
 			<div
 				data-demo-vod-id={props?.demoVodId}
@@ -76,9 +67,6 @@ describe("HomePage component", () => {
 		const heroSection = screen.getByTestId("mock-hero-section");
 		const howItWorksSection = screen.getByTestId("mock-how-it-works-section");
 		const uiPreviewSection = screen.getByTestId("mock-ui-preview-section");
-		const featuredVodsSection = screen.getByTestId(
-			"mock-featured-vods-section",
-		);
 		const ctaSection = screen.getByTestId("mock-cta-section");
 
 		expect(appLayout).toBeDefined();
@@ -96,9 +84,6 @@ describe("HomePage component", () => {
 		expect(uiPreviewSection.getAttribute("data-demo-vod-id")).toBe(
 			"vod_local_fixture",
 		);
-
-		expect(featuredVodsSection).toBeDefined();
-		expect(featuredVodsSection.getAttribute("data-vod-count")).toBe("0");
 
 		expect(ctaSection).toBeDefined();
 		expect(ctaSection.getAttribute("data-demo-vod-id")).toBe(
@@ -131,16 +116,12 @@ describe("HomePage component", () => {
 		// Assert
 		const heroSection = screen.getByTestId("mock-hero-section");
 		const uiPreviewSection = screen.getByTestId("mock-ui-preview-section");
-		const featuredVodsSection = screen.getByTestId(
-			"mock-featured-vods-section",
-		);
 		const ctaSection = screen.getByTestId("mock-cta-section");
 
 		expect(heroSection.getAttribute("data-demo-vod-id")).toBe("vod_ana_gm");
 		expect(uiPreviewSection.getAttribute("data-demo-vod-id")).toBe(
 			"vod_ana_gm",
 		);
-		expect(featuredVodsSection.getAttribute("data-vod-count")).toBe("1");
 		expect(ctaSection.getAttribute("data-demo-vod-id")).toBe("vod_ana_gm");
 	});
 

@@ -1,11 +1,11 @@
 /**
  * Presents the primary value proposition, tactical hook, and initial action triggers for the Watchpoint platform.
  *
- * Implements `HeroSection` within `src/pages/home/ui/`, rendering high-impact competitive copy,
- * key feature badges, and primary action triggers for starting training or trying the interactive demo.
+ * Implements `HeroSection` within `src/pages/home/ui/`, rendering high-impact competitive copy
+ * and primary action triggers for starting training or trying the interactive demo.
  */
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, Crosshair, Sparkles, Zap } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { type MouseEvent, useCallback, useState } from "react";
 import { authClient } from "@/shared/lib/auth-client";
 import { AuthModal } from "@/shared/ui/auth-modal";
@@ -46,8 +46,8 @@ export function HeroSection({
 				</h1>
 
 				<p className="mx-auto max-w-2xl text-base text-muted-foreground sm:text-xl">
-					Structured practice to help you climb. Refine your decision-making,
-					test your awareness, and get instant feedback.
+					Structured practice to help you climb. Test your awareness and get
+					instant feedback.
 				</p>
 
 				<div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -65,23 +65,6 @@ export function HeroSection({
 					>
 						Try It Now
 					</Link>
-				</div>
-
-				<div className="pt-6">
-					<div className="flex flex-wrap items-center justify-center gap-6 text-xs font-medium text-muted-foreground sm:gap-8">
-						<span className="flex items-center gap-1.5">
-							<Crosshair className="h-4 w-4 text-primary" />
-							Authentic Top 500 VODs
-						</span>
-						<span className="flex items-center gap-1.5">
-							<Zap className="h-4 w-4 text-primary" />
-							Real-Time Decision Drills
-						</span>
-						<span className="flex items-center gap-1.5">
-							<Sparkles className="h-4 w-4 text-primary" />
-							Instant Tactical Feedback
-						</span>
-					</div>
 				</div>
 			</div>
 

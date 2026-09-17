@@ -19,7 +19,7 @@ describe("HeroSection", () => {
 		} as never);
 	});
 
-	it("renders exact specified Title, Subheading, and dual CTAs without old eyebrow tag", () => {
+	it("renders non-duplicated Title, Subheading, and dual CTAs without tags below buttons", () => {
 		// Arrange
 		render(<HeroSection />);
 
@@ -38,7 +38,7 @@ describe("HeroSection", () => {
 		expect(heading).toBeDefined();
 		expect(
 			screen.getByText(
-				/structured practice to help you climb\. refine your decision-making, test your awareness, and get instant feedback\./i,
+				/structured practice to help you climb\. test your awareness and get instant feedback\./i,
 			),
 		).toBeDefined();
 		expect(startTrainingLink).toBeDefined();
@@ -47,9 +47,10 @@ describe("HeroSection", () => {
 		expect(
 			screen.queryByText(/overwatch 2 tactical decision training/i),
 		).toBeNull();
-		expect(screen.getByText(/authentic top 500 vods/i)).toBeDefined();
-		expect(screen.getByText(/real-time decision drills/i)).toBeDefined();
-		expect(screen.getByText(/instant tactical feedback/i)).toBeDefined();
+		expect(screen.queryByText(/refine your decision-making/i)).toBeNull();
+		expect(screen.queryByText(/authentic top 500 vods/i)).toBeNull();
+		expect(screen.queryByText(/real-time decision drills/i)).toBeNull();
+		expect(screen.queryByText(/instant tactical feedback/i)).toBeNull();
 	});
 
 	it("opens auth modal when unauthenticated player clicks Start Training and navigates on success", async () => {
