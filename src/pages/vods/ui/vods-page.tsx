@@ -5,7 +5,8 @@
  * video durations, filter controls for Map, Hero, Level of Play, and Player, and navigation links to pre-session setup pages.
  */
 import { Link } from "@tanstack/react-router";
-import { type ChangeEvent, useCallback } from "react";
+import { useCallback } from "react";
+import { VodFilterInputs } from "@/entities/vod";
 import { formatDuration } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import type { PublishedVodItem } from "@/widgets/admin-vod-editor";
@@ -21,17 +22,6 @@ export interface VodsPageProps {
 	searchParams?: VodsSearchParams;
 	vods?: PublishedVodItem[];
 }
-
-const DEFAULT_LEVELS_OF_PLAY = [
-	"Grandmaster",
-	"Champion",
-	"GM Ranked",
-	"FACEIT",
-	"OWCS",
-	"Top 500",
-	"Master",
-	"Diamond",
-];
 
 export function VodsPage(props?: VodsPageProps) {
 	const vods = props?.vods ?? [];
@@ -102,11 +92,47 @@ function VodsFilterBar({
 	searchParams?: VodsSearchParams;
 	vods: PublishedVodItem[];
 }) {
+	const handleMapChange = useCallback(
+		(map: string) =>
+			onFilterChange?.({ ...searchParams, map: map || undefined }),
+		[onFilterChange, searchParams],
+	);
+
+	const handleHeroChange = useCallback(
+		(hero: string) =>
+			onFilterChange?.({ ...searchParams, hero: hero || undefined }),
+		[onFilterChange, searchParams],
+	);
+
+	const handleLevelOfPlayChange = useCallback(
+		(levelOfPlay: string) =>
+			onFilterChange?.({
+				...searchParams,
+				levelOfPlay: levelOfPlay || undefined,
+			}),
+		[onFilterChange, searchParams],
+	);
+
+	const handlePlayerChange = useCallback(
+		(player: string) =>
+			onFilterChange?.({
+				...searchParams,
+				player: player || undefined,
+			}),
+		[onFilterChange, searchParams],
+	);
+
 	return (
 		<div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-4">
-			<VodsFilterInputs
-				onFilterChange={onFilterChange}
-				searchParams={searchParams}
+			<VodFilterInputs
+				onHeroChange={handleHeroChange}
+				onLevelOfPlayChange={handleLevelOfPlayChange}
+				onMapChange={handleMapChange}
+				onPlayerChange={handlePlayerChange}
+				selectedHero={searchParams?.hero}
+				selectedLevelOfPlay={searchParams?.levelOfPlay}
+				selectedMap={searchParams?.map}
+				selectedPlayer={searchParams?.player}
 				vods={vods}
 			/>
 
@@ -122,127 +148,6 @@ function VodsFilterBar({
 					</Button>
 				</div>
 			) : null}
-		</div>
-	);
-}
-
-function VodsFilterInputs({
-	onFilterChange,
-	searchParams,
-	vods,
-}: {
-	onFilterChange?: (newParams: VodsSearchParams) => void;
-	searchParams?: VodsSearchParams;
-	vods: PublishedVodItem[];
-}) {
-	const handleMapChange = useCallback(
-		(e: ChangeEvent<HTMLSelectElement>) =>
-			onFilterChange?.({ ...searchParams, map: e.target.value || undefined }),
-		[onFilterChange, searchParams],
-	);
-
-	const handleHeroChange = useCallback(
-		(e: ChangeEvent<HTMLSelectElement>) =>
-			onFilterChange?.({ ...searchParams, hero: e.target.value || undefined }),
-		[onFilterChange, searchParams],
-	);
-
-	const handleLevelOfPlayChange = useCallback(
-		(e: ChangeEvent<HTMLSelectElement>) =>
-			onFilterChange?.({
-				...searchParams,
-				levelOfPlay: e.target.value || undefined,
-			}),
-		[onFilterChange, searchParams],
-	);
-
-	const handlePlayerChange = useCallback(
-		(e: ChangeEvent<HTMLInputElement>) =>
-			onFilterChange?.({
-				...searchParams,
-				player: e.target.value || undefined,
-			}),
-		[onFilterChange, searchParams],
-	);
-
-	const availableMaps = Array.from(
-		new Set(
-			[...vods.map((v) => v.mapName), searchParams?.map].filter(
-				Boolean,
-			) as string[],
-		),
-	).sort();
-
-	const availableHeroes = Array.from(
-		new Set(
-			[...vods.map((v) => v.heroName), searchParams?.hero].filter(
-				Boolean,
-			) as string[],
-		),
-	).sort();
-
-	const availableLevels = Array.from(
-		new Set(
-			[
-				...DEFAULT_LEVELS_OF_PLAY,
-				...vods.map((v) => v.rankTier),
-				searchParams?.levelOfPlay,
-			].filter(Boolean) as string[],
-		),
-	);
-
-	return (
-		<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-			<select
-				aria-label="Filter by Map"
-				className="h-9 rounded-md border border-input bg-background px-3 py-1 text-xs text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-				onChange={handleMapChange}
-				value={searchParams?.map ?? ""}
-			>
-				<option value="">All Maps</option>
-				{availableMaps.map((map) => (
-					<option key={map} value={map}>
-						{map}
-					</option>
-				))}
-			</select>
-
-			<select
-				aria-label="Filter by Hero"
-				className="h-9 rounded-md border border-input bg-background px-3 py-1 text-xs text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-				onChange={handleHeroChange}
-				value={searchParams?.hero ?? ""}
-			>
-				<option value="">All Heroes</option>
-				{availableHeroes.map((hero) => (
-					<option key={hero} value={hero}>
-						{hero}
-					</option>
-				))}
-			</select>
-
-			<select
-				aria-label="Filter by Level of Play"
-				className="h-9 rounded-md border border-input bg-background px-3 py-1 text-xs text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-				onChange={handleLevelOfPlayChange}
-				value={searchParams?.levelOfPlay ?? ""}
-			>
-				<option value="">All Levels</option>
-				{availableLevels.map((lvl) => (
-					<option key={lvl} value={lvl}>
-						{lvl}
-					</option>
-				))}
-			</select>
-
-			<input
-				aria-label="Filter by Player"
-				className="h-9 rounded-md border border-input bg-background px-3 py-1 text-xs text-foreground shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-				onChange={handlePlayerChange}
-				placeholder="Filter by player…"
-				type="text"
-				value={searchParams?.player ?? ""}
-			/>
 		</div>
 	);
 }

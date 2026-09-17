@@ -40,6 +40,29 @@ describe("ModuleFilterPills", () => {
 		expect(screen.getByText("4 scenarios")).toBeDefined();
 	});
 
+	it("renders singular 'scenario' badge when count is 1", () => {
+		// Arrange
+		const onChange = vi.fn();
+		const availableCounts: Record<ModuleType, number> = {
+			SPATIAL: 0,
+			STRATEGY: 1,
+			TACTICS: 0,
+			TRACKING: 0,
+		};
+
+		// Act
+		render(
+			<ModuleFilterPills
+				availableCounts={availableCounts}
+				onChange={onChange}
+				selectedModules={allModules}
+			/>,
+		);
+
+		// Assert
+		expect(screen.getByText("1 scenario")).toBeDefined();
+	});
+
 	it("toggles module off when an active module pill is clicked", () => {
 		// Arrange
 		const onChange = vi.fn();
