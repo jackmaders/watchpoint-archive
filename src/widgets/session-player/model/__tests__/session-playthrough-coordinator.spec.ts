@@ -149,6 +149,14 @@ describe("session playthrough coordinator", () => {
 			generation: empty.generation,
 			type: "REPLAY_CONTEXT",
 		});
+		const emptyActive = {
+			...empty,
+			session: { ...empty.session, state: "SCENARIO_ACTIVE" as const },
+		};
+		const emptyActiveReplay = sessionPlaythroughReducer(emptyActive, {
+			generation: empty.generation,
+			type: "REPLAY_CONTEXT",
+		});
 		const emptyPlaying = {
 			...empty,
 			session: { ...empty.session, state: "PLAYING" as const },
@@ -166,6 +174,7 @@ describe("session playthrough coordinator", () => {
 		expect(staleReplay).toBe(state);
 		expect(staleResume).toBe(state);
 		expect(emptyReplay).toBe(empty);
+		expect(emptyActiveReplay).toBe(emptyActive);
 		expect(emptyTime).toBe(emptyPlaying);
 	});
 
@@ -567,6 +576,10 @@ describe("session playthrough coordinator", () => {
 			generation: playingState.generation,
 			type: "REPLAY_CONTEXT",
 		});
+		const defaultTimeRewound = sessionPlaythroughReducer(playingState, {
+			generation: playingState.generation,
+			type: "REPLAY_CONTEXT",
+		});
 
 		// Assert
 		expect(playingRewound.session.state).toBe("PLAYING");
@@ -584,6 +597,12 @@ describe("session playthrough coordinator", () => {
 		});
 
 		expect(clampedRewound.effects.at(-1)).toEqual({
+			generation: playingState.generation,
+			positionSeconds: 0,
+			type: "MEDIA_SEEK",
+		});
+
+		expect(defaultTimeRewound.effects.at(-1)).toEqual({
 			generation: playingState.generation,
 			positionSeconds: 0,
 			type: "MEDIA_SEEK",
