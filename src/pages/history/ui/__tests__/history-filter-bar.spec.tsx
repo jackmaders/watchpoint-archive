@@ -34,10 +34,13 @@ const mockVods: PublishedVodItem[] = [
 
 describe("HistoryFilterBar component", () => {
 	it("renders Map, Hero, Level of Play, and Player filters without VOD dropdown", () => {
-		// Arrange & Act
+		// Arrange
+		const onModuleToggle = vi.fn();
+
+		// Act
 		render(
 			<HistoryFilterBar
-				onModuleToggle={vi.fn()}
+				onModuleToggle={onModuleToggle}
 				selectedModules={[]}
 				vods={mockVods}
 			/>,
@@ -64,10 +67,13 @@ describe("HistoryFilterBar component", () => {
 	});
 
 	it("uses 4-column responsive grid layout for advanced inputs", () => {
-		// Arrange & Act
+		// Arrange
+		const onModuleToggle = vi.fn();
+
+		// Act
 		const { container } = render(
 			<HistoryFilterBar
-				onModuleToggle={vi.fn()}
+				onModuleToggle={onModuleToggle}
 				selectedModules={[]}
 				vods={mockVods}
 			/>,
@@ -142,5 +148,112 @@ describe("HistoryFilterBar component", () => {
 		// Trigger Module toggle
 		fireEvent.click(screen.getByRole("button", { name: /toggle tactics/i }));
 		expect(onModuleToggle).toHaveBeenCalledWith("TACTICS");
+	});
+
+	it("renders 'All Scenarios' toggle as active when selectedModules is empty", () => {
+		// Arrange
+		const onAllModulesToggle = vi.fn();
+		const onModuleToggle = vi.fn();
+
+		// Act
+		render(
+			<HistoryFilterBar
+				onAllModulesToggle={onAllModulesToggle}
+				onModuleToggle={onModuleToggle}
+				selectedModules={[]}
+				vods={mockVods}
+			/>,
+		);
+
+		// Assert
+		const allButton = screen.getByRole("button", {
+			name: /toggle all scenarios/i,
+		});
+		expect(allButton).toBeDefined();
+		expect(allButton.getAttribute("aria-pressed")).toBe("true");
+		expect(allButton.className).toContain("bg-primary");
+		expect(allButton.className).toContain("text-primary-foreground");
+
+		const strategyButton = screen.getByRole("button", {
+			name: /toggle strategy/i,
+		});
+		expect(strategyButton.className).not.toContain("bg-primary");
+	});
+
+	it("renders 'All Scenarios' toggle as active when all modules are selected", () => {
+		// Arrange
+		const onAllModulesToggle = vi.fn();
+		const onModuleToggle = vi.fn();
+
+		// Act
+		render(
+			<HistoryFilterBar
+				onAllModulesToggle={onAllModulesToggle}
+				onModuleToggle={onModuleToggle}
+				selectedModules={["STRATEGY", "TACTICS", "TRACKING", "SPATIAL"]}
+				vods={mockVods}
+			/>,
+		);
+
+		// Assert
+		const allButton = screen.getByRole("button", {
+			name: /toggle all scenarios/i,
+		});
+		expect(allButton).toBeDefined();
+		expect(allButton.getAttribute("aria-pressed")).toBe("true");
+		expect(allButton.className).toContain("bg-primary");
+		expect(allButton.className).toContain("text-primary-foreground");
+	});
+
+	it("renders 'All Scenarios' toggle as inactive when a subset of modules is selected", () => {
+		// Arrange
+		const onAllModulesToggle = vi.fn();
+		const onModuleToggle = vi.fn();
+
+		// Act
+		render(
+			<HistoryFilterBar
+				onAllModulesToggle={onAllModulesToggle}
+				onModuleToggle={onModuleToggle}
+				selectedModules={["STRATEGY"]}
+				vods={mockVods}
+			/>,
+		);
+
+		// Assert
+		const allButton = screen.getByRole("button", {
+			name: /toggle all scenarios/i,
+		});
+		expect(allButton).toBeDefined();
+		expect(allButton.getAttribute("aria-pressed")).toBe("false");
+		expect(allButton.className).not.toContain("bg-primary");
+		expect(allButton.className).toContain("text-muted-foreground");
+
+		const strategyButton = screen.getByRole("button", {
+			name: /toggle strategy/i,
+		});
+		expect(strategyButton.className).toContain("bg-primary");
+	});
+
+	it("triggers onAllModulesToggle when 'All Scenarios' is clicked", () => {
+		// Arrange
+		const onAllModulesToggle = vi.fn();
+		const onModuleToggle = vi.fn();
+		render(
+			<HistoryFilterBar
+				onAllModulesToggle={onAllModulesToggle}
+				onModuleToggle={onModuleToggle}
+				selectedModules={["TACTICS"]}
+				vods={mockVods}
+			/>,
+		);
+
+		// Act
+		fireEvent.click(
+			screen.getByRole("button", { name: /toggle all scenarios/i }),
+		);
+
+		// Assert
+		expect(onAllModulesToggle).toHaveBeenCalledTimes(1);
 	});
 });
