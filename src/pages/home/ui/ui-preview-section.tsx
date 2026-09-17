@@ -6,21 +6,17 @@
  */
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import { FIXTURE_IDS } from "@/shared/db";
 
 export interface UiPreviewSectionProps {
 	demoVodId?: string;
 }
 
 export function UiPreviewSection({
-	demoVodId = FIXTURE_IDS.vod,
+	demoVodId: _demoVodId,
 }: UiPreviewSectionProps = {}) {
 	return (
 		<section className="space-y-8 py-12 sm:py-16">
 			<div className="space-y-3 text-center">
-				<p className="font-mono text-xs font-semibold uppercase tracking-widest text-primary">
-					Interactive Decision Engine
-				</p>
 				<h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
 					Train in High-Pressure Match Moments
 				</h2>
@@ -36,7 +32,7 @@ export function UiPreviewSection({
 				<img
 					alt="Interactive decision interface screenshot"
 					className="w-full h-auto object-cover"
-					src="/images/decision-interface-preview.svg"
+					src="/images/decision-interface-preview.png"
 				/>
 			</div>
 
@@ -44,8 +40,7 @@ export function UiPreviewSection({
 			<div className="text-center pt-2">
 				<Link
 					className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-primary px-8 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-					params={{ id: demoVodId }}
-					to="/vods/$id"
+					to="/demo"
 				>
 					<span>Try It Now</span>
 					<ArrowRight className="h-4 w-4" />

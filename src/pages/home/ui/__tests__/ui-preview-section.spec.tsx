@@ -5,7 +5,7 @@ import { UiPreviewSection } from "../ui-preview-section";
 vi.mock("@tanstack/react-router");
 
 describe("UiPreviewSection", () => {
-	it("renders decision interface screenshot and Try It Now CTA", () => {
+	it("renders decision interface screenshot and Try It Now CTA without eyebrow", () => {
 		// Arrange
 		render(<UiPreviewSection />);
 
@@ -22,21 +22,21 @@ describe("UiPreviewSection", () => {
 
 		// Assert
 		expect(heading).toBeDefined();
-		expect(screen.getByText(/interactive decision engine/i)).toBeDefined();
+		expect(screen.queryByText(/interactive decision engine/i)).toBeNull();
 		expect(screenshotImage).toBeDefined();
 		expect(screenshotImage.getAttribute("src")).toBe(
-			"/images/decision-interface-preview.svg",
+			"/images/decision-interface-preview.png",
 		);
 		expect(tryItNowLink).toBeDefined();
-		expect(tryItNowLink.getAttribute("href")).toBe("/vods/vod_local_fixture");
+		expect(tryItNowLink.getAttribute("href")).toBe("/demo");
 	});
 
-	it("renders Try It Now CTA with custom demoVodId when provided", () => {
+	it("renders Try It Now CTA navigating to /demo when demoVodId prop is provided", () => {
 		// Arrange & Act
 		render(<UiPreviewSection demoVodId="vod_custom_demo" />);
 
 		// Assert
 		const tryItNowLink = screen.getByRole("link", { name: /try it now/i });
-		expect(tryItNowLink.getAttribute("href")).toBe("/vods/vod_custom_demo");
+		expect(tryItNowLink.getAttribute("href")).toBe("/demo");
 	});
 });
