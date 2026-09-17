@@ -190,9 +190,6 @@ function HistoryResultsList({
 function HistoryHeader() {
 	return (
 		<header className="space-y-3 border-b border-border pb-6">
-			<div className="inline-flex rounded-sm border border-primary/40 bg-primary/10 px-3 py-1 font-mono text-xs font-semibold uppercase tracking-[0.14em] text-primary">
-				Performance History
-			</div>
 			<h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
 				Training History
 			</h1>
