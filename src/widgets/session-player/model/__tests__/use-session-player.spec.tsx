@@ -1258,6 +1258,38 @@ describe("useSessionPlayer", () => {
 		expect(result.current.state).toBe("PAUSED_USER");
 	});
 
+	it("defaults autoplay to false, transitioning to PAUSED_USER on ready when autoplay is omitted", async () => {
+		// Arrange
+		const youtube = createYouTubeMock(600);
+		setYouTubeNamespace(youtube.namespace);
+		const container = document.createElement("div");
+
+		// Act
+		const { result } = renderHook(
+			() =>
+				useSessionPlayer({
+					initialManifest: mockManifest,
+					vodId: "vod_gm_ana",
+				}),
+			{ wrapper: createWrapper() },
+		);
+		const initialState = result.current.state;
+		act(() => {
+			result.current.containerRef(container);
+		});
+		await act(async () => {
+			await Promise.resolve();
+		});
+		const player = youtube.players[0];
+		act(() => {
+			player.triggerReady();
+		});
+
+		// Assert
+		expect(initialState).toBe("LOADING");
+		expect(result.current.state).toBe("PAUSED_USER");
+	});
+
 	it("handles null/missing manifest without throwing", () => {
 		// Arrange & Act
 		const { result } = renderHook(

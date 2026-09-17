@@ -9,6 +9,7 @@ import type { SessionManifest } from "../model/types";
 import { SessionPlayerClient } from "./session-player-client";
 
 export interface SessionPlayerPageProps {
+	autoplay?: boolean;
 	params: Promise<{ id: string }> | { id: string };
 	playthroughId?: string | null;
 	scenarioSnapshotIds?: readonly string[];
@@ -20,6 +21,7 @@ export interface SessionPlayerPageProps {
 }
 
 export function SessionPlayerPage({
+	autoplay,
 	params: _params,
 	searchParams: _searchParams,
 	playthroughId,
@@ -51,6 +53,7 @@ export function SessionPlayerPage({
 	return (
 		<main className="min-h-screen bg-background text-foreground px-4 sm:px-6 py-6 sm:py-8">
 			<SessionPlayerClient
+				autoplay={autoplay}
 				playthroughId={playthroughId}
 				scenarioSnapshotIds={scenarioSnapshotIds}
 				vod={vod}

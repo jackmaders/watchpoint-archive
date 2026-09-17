@@ -95,6 +95,49 @@ describe("SessionPlayerClient", () => {
 		});
 	});
 
+	it("initializes in paused state by default once ready, displaying the Play button", async () => {
+		// Arrange
+		const youtube = createYouTubeMock(600);
+		setYouTubeNamespace(youtube.namespace);
+
+		// Act
+		renderWithClient(<SessionPlayerClient vod={mockVod} />);
+		await act(async () => {
+			await Promise.resolve();
+		});
+		const player = youtube.players[0];
+		act(() => {
+			player.triggerReady();
+		});
+
+		// Assert
+		const playBtn = screen.getByRole("button", { name: /play video/i });
+		expect(playBtn.textContent).toContain("Play");
+	});
+
+	it("starts playback when user clicks the initial Play button in paused state", async () => {
+		// Arrange
+		const youtube = createYouTubeMock(600);
+		setYouTubeNamespace(youtube.namespace);
+		renderWithClient(<SessionPlayerClient vod={mockVod} />);
+		await act(async () => {
+			await Promise.resolve();
+		});
+		const player = youtube.players[0];
+		act(() => {
+			player.triggerReady();
+		});
+		const playBtn = screen.getByRole("button", { name: /play video/i });
+
+		// Act
+		act(() => {
+			fireEvent.click(playBtn);
+		});
+
+		// Assert
+		expect(player.playVideo).toHaveBeenCalledTimes(1);
+	});
+
 	it("handles interactive play and pause toggle buttons", async () => {
 		// Arrange
 		const youtube = createYouTubeMock(600);
