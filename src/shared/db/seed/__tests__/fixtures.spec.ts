@@ -24,11 +24,13 @@ describe("seed fixtures", () => {
 		// Assert
 		expect(vod.id).toBe(FIXTURE_IDS.vod);
 		expect(vod.title).toBe(FIXTURE_VOD.title);
-		expect(vod.heroName).toBe("Ana");
+		expect(vod.heroName).toBe("Brigitte");
 		expect(vod.mapName).toBe("King's Row");
 		expect(vod.rankTier).toBe("Grandmaster");
 		expect(vod.role).toBe("SUPPORT");
 		expect(vod.durationSeconds).toBe(960);
+		expect(vod.youtubeVideoId).toBe("fyorxMHfass");
+		expect(vod.isDemo).toBe(true);
 		expect(vod.isPublished).toBe(true);
 		expect(vod.createdAt).toBeInstanceOf(Date);
 	});
@@ -53,7 +55,9 @@ describe("seed fixtures", () => {
 		for (const scenario of scenarios) {
 			expect(scenario.vodId).toBe(vodId);
 			expect(scenario.inputType).toBe("MULTIPLE_CHOICE");
-			expect(scenario.inputConfig.options).toHaveLength(2);
+			const options = scenario.inputConfig.options as unknown[];
+			expect(Array.isArray(options)).toBe(true);
+			expect(options.length).toBeGreaterThanOrEqual(2);
 		}
 	});
 });

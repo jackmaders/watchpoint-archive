@@ -100,6 +100,7 @@ describe("HomePage component", () => {
 				durationSeconds: 100,
 				heroName: "Ana",
 				id: "vod_ana_gm",
+				isDemo: false,
 				isPublished: true,
 				mapName: "King's Row",
 				rankTier: "Grandmaster",

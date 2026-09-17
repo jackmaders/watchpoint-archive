@@ -22,6 +22,7 @@ describe("vod-rules", () => {
 		durationSeconds: 600,
 		heroName: "Ana",
 		id: "vod-1",
+		isDemo: false,
 		isPublished: false,
 		mapName: "Dorado",
 		rankTier: "Diamond",

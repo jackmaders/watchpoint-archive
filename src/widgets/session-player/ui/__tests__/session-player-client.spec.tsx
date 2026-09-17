@@ -42,6 +42,7 @@ describe("SessionPlayerClient", () => {
 		durationSeconds: 0,
 		heroName: "Ana",
 		id: "vod_zero_duration",
+		isDemo: false,
 		isPublished: true,
 		mapName: "Oasis",
 		rankTier: "Diamond",

@@ -29,6 +29,7 @@ describe("VodMetadataForm", () => {
 			durationSeconds: 720,
 			heroName: "Tracer",
 			id: "vod_123",
+			isDemo: false,
 			isPublished: false,
 			mapName: "King's Row",
 			rankTier: "Top 500",

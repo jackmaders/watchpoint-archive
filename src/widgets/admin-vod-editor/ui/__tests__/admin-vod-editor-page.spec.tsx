@@ -31,6 +31,7 @@ describe("AdminVodEditorPage", () => {
 		durationSeconds: 600,
 		heroName: "Ana",
 		id: "vod_123",
+		isDemo: false,
 		isPublished: false,
 		mapName: "King's Row",
 		rankTier: "Grandmaster",

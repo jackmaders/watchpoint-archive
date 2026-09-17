@@ -12,6 +12,7 @@ describe("get-admin-vods rules", () => {
 		durationSeconds: 300,
 		heroName: "Ana",
 		id: "vod-1",
+		isDemo: false,
 		isPublished: true,
 		mapName: "Dorado",
 		rankTier: "Diamond",

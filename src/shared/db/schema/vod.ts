@@ -21,6 +21,7 @@ export const vods = sqliteTable(
 		id: text("id")
 			.primaryKey()
 			.$defaultFn(() => crypto.randomUUID()),
+		isDemo: integer("is_demo", { mode: "boolean" }).notNull().default(false),
 		isPublished: integer("is_published", { mode: "boolean" })
 			.notNull()
 			.default(false),
