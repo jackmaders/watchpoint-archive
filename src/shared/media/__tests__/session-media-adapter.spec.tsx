@@ -25,10 +25,14 @@ describe("session media adapter", () => {
 
 	it("translates semantic commands into media controls", () => {
 		// Arrange
-		const controls: Pick<VodPlayerResult, "pause" | "play" | "seekTo"> = {
+		const controls: Pick<
+			VodPlayerResult,
+			"pause" | "play" | "seekTo" | "setPlaybackRate"
+		> = {
 			pause: vi.fn(),
 			play: vi.fn(),
 			seekTo: vi.fn(),
+			setPlaybackRate: vi.fn(),
 		};
 
 		// Act
@@ -45,6 +49,10 @@ describe("session media adapter", () => {
 		);
 		executeSessionMediaCommand({ autoplay: false, type: "RESTART" }, controls);
 		executeSessionMediaCommand({ autoplay: true, type: "RESTART" }, controls);
+		executeSessionMediaCommand(
+			{ rate: 1.5, type: "SET_PLAYBACK_RATE" },
+			controls,
+		);
 
 		// Assert
 		expect(controls.pause).toHaveBeenCalledTimes(1);
@@ -54,6 +62,7 @@ describe("session media adapter", () => {
 		expect(controls.seekTo).toHaveBeenNthCalledWith(3, 0, true);
 		expect(controls.seekTo).toHaveBeenNthCalledWith(4, 0, true);
 		expect(controls.seekTo).toHaveBeenCalledTimes(4);
+		expect(controls.setPlaybackRate).toHaveBeenCalledWith(1.5);
 	});
 
 	it("delivers normalized readiness, status, and time events", async () => {

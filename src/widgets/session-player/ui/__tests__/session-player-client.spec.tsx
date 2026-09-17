@@ -144,7 +144,7 @@ describe("SessionPlayerClient", () => {
 		});
 
 		// Assert
-		expect(screen.getByText("Scenario 0 / 0")).toBeDefined();
+		expect(screen.getByText("Scenario: 0/0")).toBeDefined();
 	});
 
 	it("persists terminal completion for the authenticated playthrough", async () => {
@@ -172,6 +172,58 @@ describe("SessionPlayerClient", () => {
 		expect(complete).toHaveBeenCalledWith({
 			data: { playthroughId: "playthrough_1" },
 		});
+	});
+
+	it("renders playback speed controls and updates playback rate", async () => {
+		// Arrange
+		const youtube = createYouTubeMock(600);
+		setYouTubeNamespace(youtube.namespace);
+
+		// Act
+		renderWithClient(<SessionPlayerClient vod={mockVod} />);
+		await act(async () => {
+			await Promise.resolve();
+		});
+
+		const player = youtube.players[0];
+		act(() => {
+			player.triggerReady();
+			player.triggerStateChange(YouTubePlayerState.PLAYING);
+		});
+
+		// Assert speed controls exist
+		const speedGroup = screen.getByRole("group", { name: /playback speed/i });
+		expect(speedGroup).toBeDefined();
+
+		const btn1x = screen.getByRole("button", { name: "1x" });
+		const btn125x = screen.getByRole("button", { name: "1.25x" });
+		const btn15x = screen.getByRole("button", { name: "1.5x" });
+		const btn2x = screen.getByRole("button", { name: "2x" });
+
+		expect(btn1x.getAttribute("aria-pressed")).toBe("true");
+		expect(btn15x.getAttribute("aria-pressed")).toBe("false");
+
+		// Act: click 1.5x
+		act(() => {
+			fireEvent.click(btn15x);
+		});
+
+		// Assert 1.5x is active and called setPlaybackRate
+		expect(btn15x.getAttribute("aria-pressed")).toBe("true");
+		expect(btn1x.getAttribute("aria-pressed")).toBe("false");
+		expect(player.setPlaybackRate).toHaveBeenCalledWith(1.5);
+
+		// Act: click 2x
+		act(() => {
+			fireEvent.click(btn2x);
+		});
+		expect(player.setPlaybackRate).toHaveBeenCalledWith(2);
+
+		// Act: click 1.25x
+		act(() => {
+			fireEvent.click(btn125x);
+		});
+		expect(player.setPlaybackRate).toHaveBeenCalledWith(1.25);
 	});
 
 	it("shows non-blocking buffering and blocking recovery actions", () => {
@@ -213,10 +265,11 @@ describe("SessionPlayerClient", () => {
 		expect(onRestartSession).toHaveBeenCalledTimes(1);
 	});
 
-	it("names the player and moves focus into terminal recovery", () => {
+	it("names the player, moves focus into terminal recovery, and applies pointer-events-none to container", () => {
 		// Arrange
+		const containerRef = vi.fn();
 		const baseProps = {
-			containerRef: vi.fn(),
+			containerRef,
 			isCompleted: false,
 			isLoading: false,
 			isOverlayVisible: false,
@@ -231,9 +284,12 @@ describe("SessionPlayerClient", () => {
 		};
 
 		// Act
-		const { rerender } = render(
+		const { container, rerender } = render(
 			<SessionPlayerViewport {...baseProps} mediaHealth="ready" />,
 		);
+		const videoContainer = container.querySelector(".pointer-events-none");
+		expect(videoContainer).toBeDefined();
+
 		rerender(<SessionPlayerViewport {...baseProps} mediaHealth="failed" />);
 
 		// Assert
@@ -274,7 +330,7 @@ describe("SessionPlayerClient", () => {
 		);
 	});
 
-	it("renders demo mode badge and back to home link in demo mode", async () => {
+	it("renders refined header title strictly as Interactive Demo, clean badges, and back to home link in demo mode", async () => {
 		// Arrange
 		const youtube = createYouTubeMock(300);
 		setYouTubeNamespace(youtube.namespace);
@@ -285,8 +341,21 @@ describe("SessionPlayerClient", () => {
 			await Promise.resolve();
 		});
 
-		// Assert
-		expect(screen.getByText("Interactive Demo")).toBeDefined();
+		// Assert header title is strictly Interactive Demo
+		const heading = screen.getByRole("heading", { name: "Interactive Demo" });
+		expect(heading).toBeDefined();
+		expect(heading.textContent).toBe("Interactive Demo");
+
+		// Assert clean badges: Oasis, Diamond, Ana (no "Hero:" prefix)
+		expect(screen.getByText("Oasis")).toBeDefined();
+		expect(screen.getByText("Diamond")).toBeDefined();
+		expect(screen.getByText("Ana")).toBeDefined();
+		expect(screen.queryByText(/Hero:/)).toBeNull();
+
+		// Assert progress counter is Scenario: 1/1
+		expect(screen.getByText("Scenario: 1/1")).toBeDefined();
+
+		// Assert link back to home
 		expect(screen.getByRole("link", { name: /← back to home/i })).toBeDefined();
 	});
 });

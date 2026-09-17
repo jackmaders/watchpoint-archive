@@ -17,6 +17,7 @@ import {
 } from "react";
 import type { SessionManifest } from "@/entities/vod";
 import {
+	type PlaybackRate,
 	type PlaybackStatus,
 	type SessionMediaAdapterResult,
 	type SessionMediaEvent,
@@ -78,6 +79,7 @@ export interface UseSessionPlayerResult {
 	overlayState: ScenarioOverlayState | null;
 	pause: () => void;
 	play: () => void;
+	playbackRate: PlaybackRate;
 	playbackStatus: PlaybackStatus;
 	mediaHealth: "loading" | "ready" | "buffering" | "recovering" | "failed";
 	remainingMs?: number;
@@ -86,6 +88,7 @@ export interface UseSessionPlayerResult {
 	retrySession: () => void;
 	retryMedia: () => void;
 	selectOption: (optionId: string) => void;
+	setPlaybackRate: (rate: PlaybackRate) => void;
 	skipUnsupportedInput: () => void;
 	state: SessionPlayerState;
 	summary: SessionSummaryReport | null;
@@ -545,8 +548,10 @@ export function useSessionPlayer({
 		isReady: media.isReady,
 		mediaHealth: coordinator.mediaHealth,
 		overlayState: coordinator.session.overlayState,
+		playbackRate: media.playbackRate,
 		playbackStatus: media.status,
 		remainingMs,
+		setPlaybackRate: media.setPlaybackRate,
 		state: coordinator.session.state,
 		summary: coordinator.summary,
 		totalMs: coordinator.session.totalMs,

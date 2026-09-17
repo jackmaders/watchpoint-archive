@@ -44,6 +44,9 @@ export interface MediaDiagnostic {
 
 export type VodContainerRef = (node: HTMLDivElement | null) => void;
 
+export const PLAYBACK_RATES = [1, 1.25, 1.5, 2] as const;
+export type PlaybackRate = (typeof PLAYBACK_RATES)[number];
+
 export interface VodPlayerOptions {
 	autoplay?: boolean;
 	lifecycleKey?: number;
@@ -61,7 +64,9 @@ export interface VodPlayerResult {
 	isReady: boolean;
 	pause: () => void;
 	play: () => void;
+	playbackRate: PlaybackRate;
 	replay: () => void;
 	seekTo: (seconds: number, allowSeekAhead?: boolean) => void;
+	setPlaybackRate: (rate: PlaybackRate) => void;
 	status: PlaybackStatus;
 }

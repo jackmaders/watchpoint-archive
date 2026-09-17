@@ -3,6 +3,7 @@ import { createTimePoller, safeMediaValue } from "./time-poller";
 import {
 	type MediaFailure,
 	MediaFailureCategory,
+	type PlaybackRate,
 	PlaybackStatus,
 	type VodContainerRef,
 	type VodPlayerOptions,
@@ -32,6 +33,7 @@ function clampSeekSeconds(seconds: number, duration: number): number {
 function usePlayerControls(
 	activePlayerRef: React.RefObject<YouTubePlayer | null>,
 	durationRef: React.RefObject<number>,
+	setPlaybackRateState: (rate: PlaybackRate) => void,
 ) {
 	const play = useCallback(() => {
 		activePlayerRef.current?.playVideo();
@@ -52,6 +54,14 @@ function usePlayerControls(
 		[activePlayerRef, durationRef],
 	);
 
+	const setPlaybackRate = useCallback(
+		(rate: PlaybackRate) => {
+			activePlayerRef.current?.setPlaybackRate(rate);
+			setPlaybackRateState(rate);
+		},
+		[activePlayerRef, setPlaybackRateState],
+	);
+
 	const replay = useCallback(() => {
 		if (!activePlayerRef.current) {
 			return;
@@ -60,7 +70,7 @@ function usePlayerControls(
 		activePlayerRef.current.playVideo();
 	}, [activePlayerRef]);
 
-	return { pause, play, replay, seekTo };
+	return { pause, play, replay, seekTo, setPlaybackRate };
 }
 
 interface UseVodPlayerStateOptions extends VodPlayerOptions {
@@ -360,6 +370,7 @@ function useVodPlayerState(options: UseVodPlayerStateOptions) {
 	);
 	const [duration, setDuration] = useState(0);
 	const [currentTime, setCurrentTime] = useState(0);
+	const [playbackRate, setPlaybackRate] = useState<PlaybackRate>(1);
 
 	usePlayerLifecycle({
 		...options,
@@ -378,6 +389,8 @@ function useVodPlayerState(options: UseVodPlayerStateOptions) {
 		duration,
 		durationRef,
 		isReady,
+		playbackRate,
+		setPlaybackRate,
 		status,
 	};
 }
@@ -410,7 +423,11 @@ export function useVodPlayer({
 		videoId,
 	});
 
-	const controls = usePlayerControls(state.activePlayerRef, state.durationRef);
+	const controls = usePlayerControls(
+		state.activePlayerRef,
+		state.durationRef,
+		state.setPlaybackRate,
+	);
 
 	return {
 		containerRef,
@@ -419,8 +436,10 @@ export function useVodPlayer({
 		isReady: state.isReady,
 		pause: controls.pause,
 		play: controls.play,
+		playbackRate: state.playbackRate,
 		replay: controls.replay,
 		seekTo: controls.seekTo,
+		setPlaybackRate: controls.setPlaybackRate,
 		status: state.status,
 	};
 }

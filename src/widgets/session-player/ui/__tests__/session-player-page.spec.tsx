@@ -281,6 +281,7 @@ describe("SessionPlayerPage", () => {
 		setYouTubeNamespace(youtube.namespace);
 		const vodWithoutHero = {
 			...mockVod,
+			heroName: "",
 			title: "Grandmaster King's Row Defense",
 		};
 
@@ -293,7 +294,7 @@ describe("SessionPlayerPage", () => {
 
 		// Assert
 		expect(screen.getByText("Grandmaster King's Row Defense")).toBeDefined();
-		expect(screen.queryByText(/Hero:/)).toBeNull();
+		expect(screen.queryByText("Ana")).toBeNull();
 	});
 
 	it("resolves async Promise params and searchParams correctly", async () => {

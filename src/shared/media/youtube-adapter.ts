@@ -41,9 +41,11 @@ export interface YouTubePlayer {
 	destroy(): void;
 	getCurrentTime(): number;
 	getDuration(): number;
+	getPlaybackRate?(): number;
 	pauseVideo(): void;
 	playVideo(): void;
 	seekTo(seconds: number, allowSeekAhead?: boolean): void;
+	setPlaybackRate(suggestedRate: number): void;
 }
 
 export interface YouTubePlayerEvent {
@@ -69,6 +71,11 @@ export interface YouTubePlayerOptions {
 	playerVars?: {
 		autoplay?: 0 | 1;
 		controls?: 0 | 1;
+		disablekb?: 0 | 1;
+		fs?: 0 | 1;
+		iv_load_policy?: 1 | 3;
+		modestbranding?: 0 | 1;
+		rel?: 0 | 1;
 	};
 	videoId?: string;
 }
@@ -186,6 +193,11 @@ export function createYouTubePlayerInstance({
 		playerVars: {
 			autoplay: autoplay ? 1 : 0,
 			controls: 0,
+			disablekb: 1,
+			fs: 0,
+			iv_load_policy: 3,
+			modestbranding: 1,
+			rel: 0,
 		},
 		videoId,
 	});
