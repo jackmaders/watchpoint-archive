@@ -115,6 +115,7 @@ describe("HistoryPage component", () => {
 		expect(
 			screen.getByRole("heading", { name: "Training History" }),
 		).toBeDefined();
+		expect(screen.queryByText("Performance History")).toBeNull();
 		expect(screen.getByRole("button", { name: "Log In" })).toBeDefined();
 		expect(screen.getByRole("button", { name: "Sign Up" })).toBeDefined();
 	});
