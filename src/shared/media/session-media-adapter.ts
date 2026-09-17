@@ -36,7 +36,11 @@ export type SessionMediaCommand =
 	| { timestampSeconds: number; type: "REPLAY_CONTEXT" }
 	| { autoplay: boolean; type: "RECOVER" }
 	| { autoplay: boolean; type: "RESTART" }
-	| { rate: PlaybackRate; type: "SET_PLAYBACK_RATE" };
+	| { rate: PlaybackRate; type: "SET_PLAYBACK_RATE" }
+	| { volume: number; type: "SET_VOLUME" }
+	| { type: "MUTE" }
+	| { type: "UNMUTE" }
+	| { type: "TOGGLE_MUTE" };
 
 export interface SessionMediaAdapterOptions {
 	autoplay?: boolean;
@@ -51,15 +55,28 @@ export interface SessionMediaAdapterResult {
 	currentTime: number;
 	duration: number;
 	execute: (command: SessionMediaCommand) => void;
+	isMuted: boolean;
 	isReady: boolean;
+	mute: () => void;
 	playbackRate: PlaybackRate;
 	setPlaybackRate: (rate: PlaybackRate) => void;
+	setVolume: (volume: number) => void;
 	status: PlaybackStatus;
+	toggleMute: () => void;
+	unMute: () => void;
+	volume: number;
 }
 
 type SessionMediaControls = Pick<
 	VodPlayerResult,
-	"pause" | "play" | "seekTo" | "setPlaybackRate"
+	| "mute"
+	| "pause"
+	| "play"
+	| "seekTo"
+	| "setPlaybackRate"
+	| "setVolume"
+	| "toggleMute"
+	| "unMute"
 >;
 
 function addGeneration<T extends object>(
@@ -99,6 +116,18 @@ export function executeSessionMediaCommand(
 			return;
 		case "SET_PLAYBACK_RATE":
 			controls.setPlaybackRate(command.rate);
+			return;
+		case "SET_VOLUME":
+			controls.setVolume(command.volume);
+			return;
+		case "MUTE":
+			controls.mute();
+			return;
+		case "UNMUTE":
+			controls.unMute();
+			return;
+		case "TOGGLE_MUTE":
+			controls.toggleMute();
 			return;
 	}
 }
@@ -249,9 +278,15 @@ export function useSessionMediaAdapter({
 		currentTime: player.currentTime,
 		duration: player.duration,
 		execute,
+		isMuted: player.isMuted,
 		isReady: player.isReady,
+		mute: player.mute,
 		playbackRate: player.playbackRate,
 		setPlaybackRate: player.setPlaybackRate,
+		setVolume: player.setVolume,
 		status: player.status,
+		toggleMute: player.toggleMute,
+		unMute: player.unMute,
+		volume: player.volume,
 	};
 }

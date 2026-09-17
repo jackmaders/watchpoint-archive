@@ -226,6 +226,67 @@ describe("SessionPlayerClient", () => {
 		expect(player.setPlaybackRate).toHaveBeenCalledWith(1.25);
 	});
 
+	it("renders volume slider and mute toggle, and handles volume changes and mute toggling", async () => {
+		// Arrange
+		const youtube = createYouTubeMock(600);
+		setYouTubeNamespace(youtube.namespace);
+
+		renderWithClient(<SessionPlayerClient vod={mockVod} />);
+		await act(async () => {
+			await Promise.resolve();
+		});
+
+		const player = youtube.players[0];
+		act(() => {
+			player.triggerReady();
+			player.triggerStateChange(YouTubePlayerState.PLAYING);
+		});
+
+		const muteBtn = screen.getByRole("button", { name: /mute video/i });
+		const volumeSlider = screen.getByRole("slider", { name: /volume/i });
+		const initialSliderValue = volumeSlider.getAttribute("value");
+
+		// Act
+		act(() => {
+			fireEvent.click(muteBtn);
+		});
+		const mutedSliderValue = volumeSlider.getAttribute("value");
+		const unmuteBtn = screen.getByRole("button", { name: /unmute video/i });
+
+		act(() => {
+			fireEvent.click(unmuteBtn);
+		});
+		act(() => {
+			fireEvent.change(volumeSlider, { target: { value: "45" } });
+		});
+		const lowVolumeSliderValue = volumeSlider.getAttribute("value");
+
+		act(() => {
+			fireEvent.change(volumeSlider, { target: { value: "0" } });
+		});
+		const zeroVolumeSliderValue = volumeSlider.getAttribute("value");
+
+		act(() => {
+			fireEvent.change(volumeSlider, { target: { value: "80" } });
+		});
+		const highVolumeSliderValue = volumeSlider.getAttribute("value");
+
+		// Assert
+		expect(muteBtn).toBeDefined();
+		expect(volumeSlider).toBeDefined();
+		expect(initialSliderValue).toBe("100");
+		expect(player.mute).toHaveBeenCalledTimes(1);
+		expect(player.unMute).toHaveBeenCalledTimes(1);
+		expect(unmuteBtn).toBeDefined();
+		expect(mutedSliderValue).toBe("0");
+		expect(lowVolumeSliderValue).toBe("45");
+		expect(zeroVolumeSliderValue).toBe("0");
+		expect(highVolumeSliderValue).toBe("80");
+		expect(player.setVolume).toHaveBeenCalledWith(45);
+		expect(player.setVolume).toHaveBeenCalledWith(0);
+		expect(player.setVolume).toHaveBeenCalledWith(80);
+	});
+
 	it("shows non-blocking buffering and blocking recovery actions", () => {
 		// Arrange
 		const onRetryMedia = vi.fn();
