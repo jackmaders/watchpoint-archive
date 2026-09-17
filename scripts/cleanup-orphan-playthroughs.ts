@@ -29,7 +29,7 @@ async function main() {
 	}
 }
 
-if (import.meta.main) {
+if (import.meta.main && !process.env.VITEST) {
 	main().catch((error) => {
 		console.error(error);
 		process.exitCode = 1;

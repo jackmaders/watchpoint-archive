@@ -1,6 +1,11 @@
+import http from "node:http";
+import type { AddressInfo } from "node:net";
+import { pathToFileURL } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
 	calculateMedianMetric,
+	isDirectCliExecution,
+	isServerReachable,
 	type RouteAuditRunMetrics,
 	type RouteAuditSummary,
 	summarizeRouteMetrics,
@@ -84,5 +89,161 @@ describe("Performance Budget Audit Summary and Median Calculations", () => {
 		const lcpEval = summary.evaluations.find((e) => e.metric === "lcp");
 		expect(lcpEval?.passed).toBe(false);
 		expect(lcpEval?.value).toBe(2900);
+	});
+});
+
+describe("isDirectCliExecution", () => {
+	it("returns false in test environments when VITEST or NODE_ENV=test is set", () => {
+		// Arrange
+		const vitestEnv = { VITEST: "true" };
+		const nodeEnvTest = { NODE_ENV: "test" };
+
+		// Act
+		const isVitest = isDirectCliExecution(
+			true,
+			"file:///script.ts",
+			"/script.ts",
+			vitestEnv,
+		);
+		const isNodeTest = isDirectCliExecution(
+			true,
+			"file:///script.ts",
+			"/script.ts",
+			nodeEnvTest,
+		);
+
+		// Assert
+		expect(isVitest).toBe(false);
+		expect(isNodeTest).toBe(false);
+	});
+
+	it("returns true when metaMain is truthy in non-test environments", () => {
+		// Arrange
+		const cleanEnv = {};
+
+		// Act
+		const isDirect = isDirectCliExecution(
+			true,
+			"file:///script.ts",
+			undefined,
+			cleanEnv,
+		);
+
+		// Assert
+		expect(isDirect).toBe(true);
+	});
+
+	it("returns true when argv1 maps to metaUrl in non-test environments", () => {
+		// Arrange
+		const cleanEnv = {};
+		const filePath = "/home/user/watchpoint/scripts/check-perf-budgets.ts";
+		const fileUrl = pathToFileURL(filePath).href;
+
+		// Act
+		const isDirect = isDirectCliExecution(false, fileUrl, filePath, cleanEnv);
+
+		// Assert
+		expect(isDirect).toBe(true);
+	});
+
+	it("returns false when argv1 does not match metaUrl or is missing", () => {
+		// Arrange
+		const cleanEnv = {};
+
+		// Act
+		const mismatch = isDirectCliExecution(
+			false,
+			"file:///home/user/watchpoint/scripts/check-perf-budgets.ts",
+			"/home/user/watchpoint/scripts/other.ts",
+			cleanEnv,
+		);
+		const missingArgv = isDirectCliExecution(
+			false,
+			"file:///home/user/watchpoint/scripts/check-perf-budgets.ts",
+			undefined,
+			cleanEnv,
+		);
+
+		// Assert
+		expect(mismatch).toBe(false);
+		expect(missingArgv).toBe(false);
+	});
+});
+
+describe("isServerReachable", () => {
+	it("returns false cleanly without throwing or unhandled errors when connection is refused", async () => {
+		// Arrange
+		const unreachableUrl = "http://127.0.0.1:59999";
+
+		// Act
+		const reachable = await isServerReachable(unreachableUrl);
+
+		// Assert
+		expect(reachable).toBe(false);
+	});
+
+	it("returns false cleanly for invalid or malformed URLs", async () => {
+		// Arrange
+		const invalidUrl = "not-a-valid-url";
+
+		// Act
+		const reachable = await isServerReachable(invalidUrl);
+
+		// Assert
+		expect(reachable).toBe(false);
+	});
+
+	it("returns true when a server responds with 200 OK", async () => {
+		// Arrange
+		const server = http.createServer((_req, res) => {
+			res.writeHead(200, { "Content-Type": "text/plain" });
+			res.end("OK");
+		});
+
+		await new Promise<void>((resolve) => {
+			server.listen(0, "127.0.0.1", () => resolve());
+		});
+
+		const port = (server.address() as AddressInfo).port;
+		const targetUrl = `http://127.0.0.1:${port}`;
+
+		try {
+			// Act
+			const reachable = await isServerReachable(targetUrl);
+
+			// Assert
+			expect(reachable).toBe(true);
+		} finally {
+			await new Promise<void>((resolve) => {
+				server.close(() => resolve());
+			});
+		}
+	});
+
+	it("returns false when a server responds with 500 error status", async () => {
+		// Arrange
+		const server = http.createServer((_req, res) => {
+			res.writeHead(500, { "Content-Type": "text/plain" });
+			res.end("Internal Server Error");
+		});
+
+		await new Promise<void>((resolve) => {
+			server.listen(0, "127.0.0.1", () => resolve());
+		});
+
+		const port = (server.address() as AddressInfo).port;
+		const targetUrl = `http://127.0.0.1:${port}`;
+
+		try {
+			// Act
+			const reachable = await isServerReachable(targetUrl);
+
+			// Assert
+			expect(reachable).toBe(false);
+		} finally {
+			await new Promise<void>((resolve) => {
+				server.close(() => resolve());
+			});
+		}
 	});
 });

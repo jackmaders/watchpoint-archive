@@ -74,7 +74,7 @@ export function checkRouteInventory(options: CheckRouteOptions = {}): string[] {
 	return errors;
 }
 
-if (import.meta.main) {
+if (import.meta.main && !process.env.VITEST) {
 	const errors = checkRouteInventory();
 	if (errors.length > 0) {
 		console.error("Route inventory verification failed:");

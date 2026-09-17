@@ -7,36 +7,6 @@ vi.mock("@/shared/db");
 vi.mock("@tanstack/react-router");
 vi.mock("@tanstack/react-start");
 
-if (typeof process !== "undefined" && typeof process.on === "function") {
-	const isConnRefused = (err: unknown) => {
-		const error = err as {
-			code?: string;
-			errors?: Array<{ code?: string }>;
-			message?: string;
-		};
-		return (
-			error?.code === "ECONNREFUSED" ||
-			error?.message?.includes("ECONNREFUSED") ||
-			(Array.isArray(error?.errors) &&
-				error.errors.some((e) => e?.code === "ECONNREFUSED"))
-		);
-	};
-
-	process.on("uncaughtException", (err: unknown) => {
-		if (isConnRefused(err)) {
-			return;
-		}
-		throw err;
-	});
-
-	process.on("unhandledRejection", (err: unknown) => {
-		if (isConnRefused(err)) {
-			return;
-		}
-		throw err;
-	});
-}
-
 const failOnUnmockedFetch = (input: RequestInfo | URL) => {
 	const url =
 		typeof input === "string"
