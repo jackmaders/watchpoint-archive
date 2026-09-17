@@ -98,7 +98,7 @@
 		"test:e2e": "playwright test",
 		"test:routes": "vitest run src/app/routes",
 		"test:unit": "vitest run",
-		"validate": "bun run check:sync && bun run check:types && bun run check:all && bun run check:architecture && bun run test:coverage && bun run build:quiet && bun run deploy --dry-run",
+		"validate": "export WRANGLER_LOG='none' && bun run check:sync && bun run check:types && bun run check:all && bun run check:architecture && bun run test:coverage && bun run build:quiet && bun run deploy --dry-run",
 		"validate:fast": "bun run check:types && bun run check:all && bun run check:architecture && bun run test:unit"
 	},
 	"trustedDependencies": [
