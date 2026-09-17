@@ -22,7 +22,7 @@ describe("Sidebar", () => {
 		expect(screen.getByRole("navigation")).toBeDefined();
 		expect(screen.getByText("VOD Catalog")).toBeDefined();
 		expect(screen.getByText("Training History")).toBeDefined();
-		expect(screen.getByText("Privacy Statement")).toBeDefined();
+		expect(screen.queryByText("Privacy Statement")).toBeNull();
 		expect(screen.queryByText("Admin Panel")).toBeNull();
 	});
 
