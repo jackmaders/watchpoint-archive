@@ -17,6 +17,7 @@ describe("demo fixtures", () => {
 		expect(manifest.id).toBe("vod_demo_interactive");
 		expect(manifest.isPublished).toBe(true);
 		expect(manifest.heroName).toBe("Ana");
+		expect(manifest.youtubeVideoId).toBe("dQw4w9WgXcQ");
 		expect(manifest.scenarios).toHaveLength(2);
 		expect(manifest.scenarios[0].moduleType).toBe("STRATEGY");
 		expect(manifest.scenarios[1].moduleType).toBe("TACTICS");

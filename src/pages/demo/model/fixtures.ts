@@ -82,5 +82,5 @@ export const DEMO_VOD_MANIFEST: SessionManifest = {
 		},
 	],
 	title: "Grandmaster Ana — Interactive Tactical Demo",
-	youtubeVideoId: "local-fixture-video",
+	youtubeVideoId: "dQw4w9WgXcQ",
 };
