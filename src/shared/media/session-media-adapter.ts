@@ -3,6 +3,7 @@ import type {
 	MediaDiagnostic,
 	MediaFailure,
 	MediaFailureCategory,
+	PlaybackRate,
 	PlaybackStatus,
 	VodContainerRef,
 	VodPlayerResult,
@@ -34,7 +35,8 @@ export type SessionMediaCommand =
 	| { type: "PLAY" }
 	| { timestampSeconds: number; type: "REPLAY_CONTEXT" }
 	| { autoplay: boolean; type: "RECOVER" }
-	| { autoplay: boolean; type: "RESTART" };
+	| { autoplay: boolean; type: "RESTART" }
+	| { rate: PlaybackRate; type: "SET_PLAYBACK_RATE" };
 
 export interface SessionMediaAdapterOptions {
 	autoplay?: boolean;
@@ -50,10 +52,15 @@ export interface SessionMediaAdapterResult {
 	duration: number;
 	execute: (command: SessionMediaCommand) => void;
 	isReady: boolean;
+	playbackRate: PlaybackRate;
+	setPlaybackRate: (rate: PlaybackRate) => void;
 	status: PlaybackStatus;
 }
 
-type SessionMediaControls = Pick<VodPlayerResult, "pause" | "play" | "seekTo">;
+type SessionMediaControls = Pick<
+	VodPlayerResult,
+	"pause" | "play" | "seekTo" | "setPlaybackRate"
+>;
 
 function addGeneration<T extends object>(
 	event: T,
@@ -89,6 +96,10 @@ export function executeSessionMediaCommand(
 		case "RESTART":
 			controls.seekTo(0, true);
 			if (command.autoplay) controls.play();
+			return;
+		case "SET_PLAYBACK_RATE":
+			controls.setPlaybackRate(command.rate);
+			return;
 	}
 }
 
@@ -239,6 +250,8 @@ export function useSessionMediaAdapter({
 		duration: player.duration,
 		execute,
 		isReady: player.isReady,
+		playbackRate: player.playbackRate,
+		setPlaybackRate: player.setPlaybackRate,
 		status: player.status,
 	};
 }

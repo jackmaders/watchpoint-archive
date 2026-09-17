@@ -25,6 +25,7 @@ export {
 	useSessionMediaAdapter,
 } from "./session-media-adapter";
 export type {
+	PlaybackRate,
 	VodContainerRef,
 	VodPlayerOptions,
 	VodPlayerResult,
@@ -34,6 +35,7 @@ export {
 	type MediaFailure,
 	MediaFailureCategory,
 	type MediaFailureOutcome,
+	PLAYBACK_RATES,
 	PlaybackStatus,
 } from "./types";
 export { useVodPlayer } from "./use-vod-player";

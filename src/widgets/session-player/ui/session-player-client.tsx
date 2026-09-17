@@ -14,7 +14,11 @@ import {
 	MODULE_MAP,
 } from "@/entities/vod";
 import { formatDuration } from "@/shared/lib/utils";
-import type { VodContainerRef } from "@/shared/media";
+import {
+	PLAYBACK_RATES,
+	type PlaybackRate,
+	type VodContainerRef,
+} from "@/shared/media";
 import {
 	type ScenarioData,
 	type ScenarioOverlayState,
@@ -73,11 +77,6 @@ function SessionPlayerHeader({
 							← Exit Session
 						</Link>
 					)}
-					{isDemo ? (
-						<span className="px-2 py-0.5 rounded text-xs font-bold bg-primary/20 text-primary border border-primary/50">
-							Interactive Demo
-						</span>
-					) : null}
 					<span className="px-2 py-0.5 rounded text-xs font-bold bg-accent text-accent-foreground border border-border">
 						{vod.mapName}
 					</span>
@@ -86,21 +85,18 @@ function SessionPlayerHeader({
 					</span>
 					{hero ? (
 						<span className="px-2 py-0.5 rounded text-xs font-bold bg-primary/10 text-primary border border-primary/40">
-							Hero: {hero}
+							{hero}
 						</span>
 					) : null}
 				</div>
 				<h1 className="text-xl sm:text-2xl font-extrabold text-foreground tracking-tight">
-					{vod.title}
+					{isDemo ? "Interactive Demo" : vod.title}
 				</h1>
 			</div>
 
 			<div className="flex items-center gap-3 self-start sm:self-auto">
-				<span className="text-xs text-muted-foreground font-medium">
-					Progress:
-				</span>
 				<span className="px-3 py-1 bg-muted border border-border text-muted-foreground font-mono font-bold text-xs rounded-md">
-					Scenario {Math.min(currentIndex + 1, activeCount)} / {activeCount}
+					Scenario: {Math.min(currentIndex + 1, activeCount)}/{activeCount}
 				</span>
 			</div>
 		</header>
@@ -114,7 +110,40 @@ interface SessionPlayerControlsProps {
 	isPlaying: boolean;
 	onPause: () => void;
 	onPlay: () => void;
+	onPlaybackRateChange: (rate: PlaybackRate) => void;
 	onReplayContext: () => void;
+	playbackRate: PlaybackRate;
+}
+
+interface PlaybackRateButtonProps {
+	isSelected: boolean;
+	onSelect: (rate: PlaybackRate) => void;
+	rate: PlaybackRate;
+}
+
+function PlaybackRateButton({
+	isSelected,
+	onSelect,
+	rate,
+}: PlaybackRateButtonProps) {
+	const handleClick = useCallback(() => {
+		onSelect(rate);
+	}, [onSelect, rate]);
+
+	return (
+		<button
+			aria-pressed={isSelected}
+			className={`px-2.5 py-1 rounded text-xs font-bold transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+				isSelected
+					? "bg-primary text-primary-foreground shadow-xs"
+					: "text-muted-foreground hover:text-foreground"
+			}`}
+			onClick={handleClick}
+			type="button"
+		>
+			{rate}x
+		</button>
+	);
 }
 
 function SessionPlayerControls({
@@ -124,7 +153,9 @@ function SessionPlayerControls({
 	isPlaying,
 	onPause,
 	onPlay,
+	onPlaybackRateChange,
 	onReplayContext,
+	playbackRate,
 }: SessionPlayerControlsProps) {
 	const progressPercent =
 		duration > 0
@@ -154,7 +185,7 @@ function SessionPlayerControls({
 			</div>
 
 			<div className="flex items-center justify-between flex-wrap gap-4 pt-1">
-				<div className="flex items-center gap-3">
+				<div className="flex items-center gap-3 flex-wrap">
 					<button
 						aria-label={isPlaying ? "Pause Video" : "Play Video"}
 						className="px-4 py-2 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-sm active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -171,6 +202,20 @@ function SessionPlayerControls({
 					>
 						↺ Replay 10s
 					</button>
+
+					<fieldset
+						aria-label="Playback speed"
+						className="flex items-center bg-muted/60 rounded-md p-0.5 border border-border m-0 min-w-0"
+					>
+						{PLAYBACK_RATES.map((rate) => (
+							<PlaybackRateButton
+								isSelected={playbackRate === rate}
+								key={rate}
+								onSelect={onPlaybackRateChange}
+								rate={rate}
+							/>
+						))}
+					</fieldset>
 				</div>
 
 				<div className="flex items-center gap-4 text-xs font-mono font-medium text-muted-foreground">
@@ -249,7 +294,7 @@ export function SessionPlayerViewport({
 					: "relative aspect-video w-full rounded-lg overflow-hidden bg-background border border-border shadow-lg"
 			}
 		>
-			<div className="w-full h-full" ref={containerRef} />
+			<div className="w-full h-full pointer-events-none" ref={containerRef} />
 
 			{announcement ? (
 				<div className="sr-only" role="status">
@@ -388,7 +433,7 @@ function useSessionPlayerClientState({
 	scenarioSnapshotIds,
 	vod,
 }: SessionPlayerClientProps) {
-	const hero = extractHeroFromTitle(vod.title);
+	const hero = extractHeroFromTitle(vod.title) ?? vod.heroName;
 	const handleSessionComplete = useCallback(() => {
 		if (playthroughId) {
 			void completePlaythrough({ data: { playthroughId } });
@@ -480,7 +525,9 @@ export function SessionPlayerClient(props: SessionPlayerClientProps) {
 					isPlaying={player.state === "PLAYING"}
 					onPause={player.pause}
 					onPlay={player.play}
+					onPlaybackRateChange={player.setPlaybackRate}
 					onReplayContext={player.replayContext}
+					playbackRate={player.playbackRate}
 				/>
 			) : null}
 		</div>

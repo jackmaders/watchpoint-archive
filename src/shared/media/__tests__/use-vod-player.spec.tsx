@@ -60,7 +60,15 @@ describe("useVodPlayer", () => {
 		expect(youtube.players).toHaveLength(1);
 		expect(player.options).toEqual({
 			events: expect.any(Object),
-			playerVars: { autoplay: 1, controls: 0 },
+			playerVars: {
+				autoplay: 1,
+				controls: 0,
+				disablekb: 1,
+				fs: 0,
+				iv_load_policy: 3,
+				modestbranding: 1,
+				rel: 0,
+			},
 			videoId: "dQw4w9WgXcQ",
 		});
 		expect(result.current.isReady).toBe(true);
@@ -315,6 +323,36 @@ describe("useVodPlayer", () => {
 		expect(player.seekTo).toHaveBeenNthCalledWith(3, 0, true);
 		expect(player.seekTo).toHaveBeenNthCalledWith(4, 100, true);
 		expect(player.seekTo).toHaveBeenNthCalledWith(5, 0, true);
+	});
+
+	it("updates playback rate and delegates setPlaybackRate to the active player", async () => {
+		// Arrange
+		const { useVodPlayer } = await import("../use-vod-player");
+		const youtube = createYouTubeMock(100);
+		setYouTubeNamespace(youtube.namespace);
+		const container = document.createElement("div");
+		const { result } = renderHook(() =>
+			useVodPlayer({ videoId: "rate-video" }),
+		);
+		act(() => {
+			result.current.containerRef(container);
+		});
+		await act(async () => {
+			await Promise.resolve();
+			await Promise.resolve();
+		});
+		const player = youtube.players[0];
+		act(() => player.triggerReady());
+
+		// Act
+		expect(result.current.playbackRate).toBe(1);
+		act(() => {
+			result.current.setPlaybackRate(1.5);
+		});
+
+		// Assert
+		expect(result.current.playbackRate).toBe(1.5);
+		expect(player.setPlaybackRate).toHaveBeenCalledWith(1.5);
 	});
 
 	it("executes replay as seek-to-zero followed by play in exact sequence", async () => {

@@ -28,22 +28,26 @@ export interface YouTubeMock {
 
 export function createYouTubeMock(
 	duration = 142,
-	onCreate?: () => void,
+	_onCreate?: () => void,
 ): YouTubeMock {
 	const players: MockYouTubePlayer[] = [];
 	function PlayerConstructor(
 		_element: HTMLElement,
 		options: YouTubePlayerOptions,
 	): MockYouTubePlayer {
-		onCreate?.();
+		let currentPlaybackRate = 1;
 		const player = {
 			destroy: vi.fn(),
 			getCurrentTime: vi.fn(() => 0),
 			getDuration: vi.fn(() => duration),
+			getPlaybackRate: vi.fn(() => currentPlaybackRate),
 			options,
 			pauseVideo: vi.fn(),
 			playVideo: vi.fn(),
 			seekTo: vi.fn(),
+			setPlaybackRate: vi.fn((rate: number) => {
+				currentPlaybackRate = rate;
+			}),
 			triggerReady: () => {
 				options.events?.onReady?.({ target: player });
 			},

@@ -1787,4 +1787,113 @@ describe("useSessionPlayer", () => {
 			value: originalLocation,
 		});
 	});
+
+	it("supports playback rate changes and propagates them to the underlying media player", async () => {
+		// Arrange
+		const youtube = createYouTubeMock(600);
+		setYouTubeNamespace(youtube.namespace);
+		const container = document.createElement("div");
+
+		const { result } = renderHook(
+			() =>
+				useSessionPlayer({
+					autoplay: true,
+					initialManifest: mockManifest,
+					vodId: "vod_gm_ana",
+				}),
+			{ wrapper: createWrapper() },
+		);
+
+		act(() => {
+			result.current.containerRef(container);
+		});
+		await act(async () => {
+			await Promise.resolve();
+		});
+
+		const player = youtube.players[0];
+		act(() => {
+			player.triggerReady();
+			player.triggerStateChange(YouTubePlayerState.PLAYING);
+		});
+
+		// Assert initial rate
+		expect(result.current.playbackRate).toBe(1);
+
+		// Act: update rates across all supported tiers
+		act(() => {
+			result.current.setPlaybackRate(1.25);
+		});
+		expect(result.current.playbackRate).toBe(1.25);
+		expect(player.setPlaybackRate).toHaveBeenCalledWith(1.25);
+
+		act(() => {
+			result.current.setPlaybackRate(1.5);
+		});
+		expect(result.current.playbackRate).toBe(1.5);
+		expect(player.setPlaybackRate).toHaveBeenCalledWith(1.5);
+
+		act(() => {
+			result.current.setPlaybackRate(2);
+		});
+		expect(result.current.playbackRate).toBe(2);
+		expect(player.setPlaybackRate).toHaveBeenCalledWith(2);
+	});
+
+	it.each([1, 1.25, 1.5, 2])(
+		"triggers scenario pause overlay reliably at %sx playback rate with accelerated time step jumps",
+		async (rate) => {
+			// Arrange
+			const frameController = installMockFrames();
+			const youtube = createYouTubeMock(600);
+			setYouTubeNamespace(youtube.namespace);
+			const container = document.createElement("div");
+
+			const { result } = renderHook(
+				() =>
+					useSessionPlayer({
+						autoplay: true,
+						initialManifest: mockManifest,
+						vodId: "vod_gm_ana",
+					}),
+				{ wrapper: createWrapper() },
+			);
+
+			act(() => {
+				result.current.containerRef(container);
+			});
+			await act(async () => {
+				await Promise.resolve();
+			});
+
+			const player = youtube.players[0];
+			act(() => {
+				player.triggerReady();
+				player.triggerStateChange(YouTubePlayerState.PLAYING);
+			});
+
+			act(() => {
+				result.current.setPlaybackRate(rate as 1 | 1.25 | 1.5 | 2);
+			});
+
+			// Frame right before timestamp 30s
+			player.getCurrentTime = vi.fn(() => 29.5);
+			act(() => {
+				frameController.flush();
+			});
+			expect(result.current.state).toBe("PLAYING");
+
+			// Accelerated frame jump past 30s based on playback rate
+			player.getCurrentTime = vi.fn(() => 30.0 + (rate - 1) * 0.5);
+			act(() => {
+				frameController.flush();
+			});
+
+			// Assert scenario pause is triggered reliably
+			expect(result.current.state).toBe("SCENARIO_ACTIVE");
+			expect(result.current.currentScenario?.id).toBe("sc_1");
+			expect(result.current.overlayState).toEqual({ status: "unanswered" });
+			expect(player.pauseVideo).toHaveBeenCalled();
+		},
+	);
 });
