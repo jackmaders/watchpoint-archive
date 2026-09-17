@@ -42,10 +42,15 @@ export interface YouTubePlayer {
 	getCurrentTime(): number;
 	getDuration(): number;
 	getPlaybackRate?(): number;
+	getVolume(): number;
+	isMuted(): boolean;
+	mute(): void;
 	pauseVideo(): void;
 	playVideo(): void;
 	seekTo(seconds: number, allowSeekAhead?: boolean): void;
 	setPlaybackRate(suggestedRate: number): void;
+	setVolume(volume: number): void;
+	unMute(): void;
 }
 
 export interface YouTubePlayerEvent {
