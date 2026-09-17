@@ -6,7 +6,7 @@ vi.mock("@tanstack/react-router");
 vi.mock("@/shared/lib/auth-client");
 
 describe("PrivacyPage component", () => {
-	it("renders main header, badge, and descriptive briefing", () => {
+	it("renders main header and descriptive briefing", () => {
 		// Arrange & Act
 		render(<PrivacyPage />);
 
@@ -14,7 +14,7 @@ describe("PrivacyPage component", () => {
 		expect(
 			screen.getByRole("heading", { level: 1, name: "Privacy Statement" }),
 		).toBeDefined();
-		expect(screen.getByText("Watchpoint / Legal & Compliance")).toBeDefined();
+		expect(screen.queryByText("Watchpoint / Legal & Compliance")).toBeNull();
 		expect(
 			screen.getByText(
 				/transparency and data protection are fundamental to our platform/i,

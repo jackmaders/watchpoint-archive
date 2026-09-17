@@ -13,9 +13,6 @@ export function PrivacyPage(props?: PrivacyPageProps) {
 			<article className="mx-auto max-w-3xl space-y-8 py-6 sm:py-10">
 				{/* Document Header */}
 				<header className="space-y-3 border-b border-border pb-6">
-					<p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-						Watchpoint / Legal & Compliance
-					</p>
 					<h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
 						Privacy Statement
 					</h1>

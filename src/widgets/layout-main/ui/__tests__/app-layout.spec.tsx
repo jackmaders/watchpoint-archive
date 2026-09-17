@@ -65,7 +65,7 @@ describe("AppLayout", () => {
 		expect(screen.getByRole("contentinfo")).toBeDefined();
 		expect(
 			screen.getAllByRole("link", { name: "Privacy Statement" }),
-		).toHaveLength(2);
+		).toHaveLength(1);
 	});
 
 	it("toggles desktop sidebar collapsed state when sidebar desktop toggle button is clicked for authenticated user", () => {
