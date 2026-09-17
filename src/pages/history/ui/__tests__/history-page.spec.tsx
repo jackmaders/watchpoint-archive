@@ -298,6 +298,37 @@ describe("HistoryPage component", () => {
 		unmount();
 	});
 
+	it("handles clicking 'All Scenarios' to reset active module filters", () => {
+		// Arrange
+		const onFilterChange = vi.fn();
+		const data: PlayerHistoryResult = {
+			items: [],
+			page: 1,
+			pageSize: 10,
+			total: 0,
+			totalPages: 1,
+		};
+
+		// Act
+		render(
+			<HistoryPage
+				data={data}
+				onFilterChange={onFilterChange}
+				searchParams={{ modules: ["STRATEGY", "TRACKING"] }}
+				vods={[mockVod]}
+			/>,
+		);
+
+		fireEvent.click(
+			screen.getByRole("button", { name: /toggle all scenarios/i }),
+		);
+
+		// Assert
+		expect(onFilterChange).toHaveBeenCalledWith(
+			expect.objectContaining({ modules: undefined, page: 1 }),
+		);
+	});
+
 	it("handles clearing Map, Hero, Level of Play, and Player filters", () => {
 		// Arrange
 		const onFilterChange = vi.fn();

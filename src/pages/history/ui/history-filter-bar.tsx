@@ -22,6 +22,7 @@ export const ALL_MODULES: { key: ModuleType; label: string }[] = [
 ];
 
 export interface HistoryFilterBarProps {
+	onAllModulesToggle?: () => void;
 	onHeroChange?: (hero: string) => void;
 	onLevelOfPlayChange?: (levelOfPlay: string) => void;
 	onMapChange?: (map: string) => void;
@@ -47,11 +48,28 @@ const DEFAULT_LEVELS_OF_PLAY = [
 ];
 
 export function HistoryFilterBar(props: HistoryFilterBarProps) {
+	const isAllActive =
+		props.selectedModules.length === 0 ||
+		props.selectedModules.length === ALL_MODULES.length;
+
 	return (
 		<div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-4">
 			<div className="flex flex-wrap items-center justify-between gap-4">
 				<div className="text-sm font-semibold text-foreground">Filters</div>
 				<div className="flex flex-wrap items-center gap-1.5">
+					<button
+						aria-label="Toggle All Scenarios"
+						aria-pressed={isAllActive}
+						className={`rounded border px-2.5 py-1 text-xs font-medium transition-colors ${
+							isAllActive
+								? "border-primary bg-primary text-primary-foreground"
+								: "border-border bg-background text-muted-foreground hover:border-foreground/30 hover:text-foreground"
+						}`}
+						onClick={props.onAllModulesToggle}
+						type="button"
+					>
+						All Scenarios
+					</button>
 					{ALL_MODULES.map((m) => (
 						<ModuleFilterButton
 							active={props.selectedModules.includes(m.key)}
