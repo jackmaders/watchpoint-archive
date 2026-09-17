@@ -61,9 +61,7 @@ describe("HeroSection", () => {
 
 		// Assert modal opened
 		expect(screen.getByRole("dialog")).toBeDefined();
-		expect(
-			screen.getByRole("heading", { name: "Welcome back, player" }),
-		).toBeDefined();
+		expect(screen.getByRole("tab", { name: "Sign in" })).toBeDefined();
 
 		// Submit form to trigger handleAuthenticated
 		fireEvent.change(screen.getByLabelText(/email/i), {

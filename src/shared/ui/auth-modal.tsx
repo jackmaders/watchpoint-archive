@@ -7,7 +7,6 @@
 
 "use client";
 
-import { Link } from "@tanstack/react-router";
 import type { FormEvent } from "react";
 import { useCallback, useId, useState } from "react";
 import { authClient, invalidateSessionState } from "@/shared/lib/auth-client";
@@ -146,11 +145,15 @@ export function AuthModal({
 							<TabsTrigger value="register">Register</TabsTrigger>
 						)}
 					</TabsList>
-					<DialogTitle id={`${ids}-title`}>
-						{mode === "register"
-							? "Create your player identity"
-							: "Welcome back, player"}
-					</DialogTitle>
+					{mode === "register" ? (
+						<DialogTitle id={`${ids}-title`}>
+							Create your player identity
+						</DialogTitle>
+					) : (
+						<DialogTitle className="sr-only" id={`${ids}-title`}>
+							Sign in
+						</DialogTitle>
+					)}
 					<TabsContent value="sign-in">
 						<AuthForm
 							busy={busy}
@@ -213,17 +216,8 @@ export function AccountControls({
 		await invalidateSessionState();
 	}, []);
 	if (session.data?.user) {
-		const isAdmin = (session.data.user as { role?: string }).role === "ADMIN";
 		return (
 			<div className="flex items-center gap-3">
-				{isAdmin ? (
-					<Link
-						className="text-sm font-semibold text-primary transition-colors hover:text-primary/80"
-						to="/admin"
-					>
-						Admin
-					</Link>
-				) : null}
 				<span className="text-sm text-muted-foreground">
 					{session.data.user.name}
 				</span>

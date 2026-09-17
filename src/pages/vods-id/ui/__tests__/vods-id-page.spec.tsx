@@ -135,9 +135,7 @@ describe("VodsIdPage", () => {
 
 		// Assert
 		expect(screen.getByRole("dialog")).toBeDefined();
-		expect(
-			screen.getByRole("heading", { name: "Welcome back, player" }),
-		).toBeDefined();
+		expect(screen.getByRole("tab", { name: "Sign in" })).toBeDefined();
 	});
 
 	it("returns an authenticated player to the requested training destination", async () => {

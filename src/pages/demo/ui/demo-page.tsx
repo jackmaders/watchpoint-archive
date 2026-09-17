@@ -5,6 +5,7 @@
  * requiring user authentication or server-side attempt persistence.
  */
 import type { SessionManifest } from "@/entities/vod";
+import { AppLayout } from "@/widgets/layout-main";
 import { SessionPlayerClient } from "@/widgets/session-player";
 
 export interface DemoPageProps {
@@ -14,13 +15,13 @@ export interface DemoPageProps {
 
 export function DemoPage({ registrationEnabled = true, vod }: DemoPageProps) {
 	return (
-		<main className="min-h-screen bg-background text-foreground px-4 sm:px-6 py-6 sm:py-8">
+		<AppLayout registrationEnabled={registrationEnabled}>
 			<SessionPlayerClient
 				isDemo
 				playthroughId={null}
 				registrationEnabled={registrationEnabled}
 				vod={vod}
 			/>
-		</main>
+		</AppLayout>
 	);
 }
