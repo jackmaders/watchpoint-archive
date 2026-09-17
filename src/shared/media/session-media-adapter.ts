@@ -33,6 +33,7 @@ export type SessionMediaEvent =
 export type SessionMediaCommand =
 	| { type: "PAUSE" }
 	| { type: "PLAY" }
+	| { positionSeconds: number; type: "SEEK" }
 	| { timestampSeconds: number; type: "REPLAY_CONTEXT" }
 	| { autoplay: boolean; type: "RECOVER" }
 	| { autoplay: boolean; type: "RESTART" }
@@ -103,6 +104,9 @@ export function executeSessionMediaCommand(
 			return;
 		case "PLAY":
 			controls.play();
+			return;
+		case "SEEK":
+			controls.seekTo(Math.max(0, command.positionSeconds), true);
 			return;
 		case "REPLAY_CONTEXT":
 			controls.seekTo(Math.max(0, command.timestampSeconds - 10), true);

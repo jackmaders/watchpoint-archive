@@ -21,8 +21,11 @@ import { userRoleEnum, users } from "../schema/user";
 import { verifications } from "../schema/verification";
 import { heroRoleEnum, vods } from "../schema/vod";
 import {
+	FIXTURE_DEMO_VOD,
 	FIXTURE_IDS,
 	FIXTURE_VOD,
+	getLocalDemoFixtureScenarios,
+	getLocalDemoFixtureVod,
 	getLocalFixtureScenarios,
 	getLocalFixtureVod,
 } from "../seed/fixtures";
@@ -122,8 +125,11 @@ export {
 	attemptRecords,
 	auditEntries,
 	executeSeed,
+	FIXTURE_DEMO_VOD,
 	FIXTURE_IDS,
 	FIXTURE_VOD,
+	getLocalDemoFixtureScenarios,
+	getLocalDemoFixtureVod,
 	getLocalFixtureScenarios,
 	getLocalFixtureVod,
 	getSeedCredentials,

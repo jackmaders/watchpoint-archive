@@ -4,12 +4,16 @@
  *
  * Serves as the public barrel for database seed operations. Re-exports `executeSeed`,
  * safety policy checkers `assertLocalSeedTarget` and `getSeedCredentials`, alongside
- * fixture accessors `getLocalFixtureVod` and `getLocalFixtureScenarios`.
+ * fixture accessors `getLocalFixtureVod`, `getLocalDemoFixtureVod`, `getLocalFixtureScenarios`,
+ * and `getLocalDemoFixtureScenarios`.
  */
 
 export {
+	FIXTURE_DEMO_VOD,
 	FIXTURE_IDS,
 	FIXTURE_VOD,
+	getLocalDemoFixtureScenarios,
+	getLocalDemoFixtureVod,
 	getLocalFixtureScenarios,
 	getLocalFixtureVod,
 } from "./fixtures";

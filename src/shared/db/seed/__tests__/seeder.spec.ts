@@ -34,8 +34,8 @@ describe("executeSeed", () => {
 
 		// Assert
 		expect(deletedTables.length).toBeGreaterThan(0);
-		expect(insertedRows.length).toBe(4); // users, accounts, vods, scenarios
-		expect(result.scenariosCount).toBe(5);
+		expect(insertedRows.length).toBe(5); // users, accounts, vods, fixture scenarios, demo scenarios
+		expect(result.scenariosCount).toBe(13);
 		expect(result.adminEmail).toBe("admin@local.watchpoint");
 		expect(result.playerEmail).toBe("player@local.watchpoint");
 		expect(insertedRows[1]?.values).toEqual([
@@ -54,5 +54,21 @@ describe("executeSeed", () => {
 				userId: "usr_local_admin",
 			}),
 		]);
+		const insertedVods = insertedRows[2]?.values as Array<{ id: string }>;
+		expect(insertedVods).toHaveLength(2);
+		expect(insertedVods.map((v) => v.id)).toEqual([
+			"vod_local_fixture",
+			"vod_demo_interactive",
+		]);
+		const fixtureScenarios = insertedRows[3]?.values as Array<{
+			id: string;
+			vodId: string;
+		}>;
+		expect(fixtureScenarios).toHaveLength(5);
+		const demoScenarios = insertedRows[4]?.values as Array<{
+			id: string;
+			vodId: string;
+		}>;
+		expect(demoScenarios).toHaveLength(8);
 	});
 });

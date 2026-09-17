@@ -35,6 +35,7 @@ import { ScenarioOverlay } from "./scenario-overlay";
 import { SessionSummaryPanel } from "./session-summary-panel";
 
 export interface SessionPlayerClientProps {
+	autoplay?: boolean;
 	isDemo?: boolean;
 	onExit?: () => void;
 	playthroughId?: string | null;
@@ -497,6 +498,7 @@ function SessionPlayerHeaderOrSummary({
 }
 
 function useSessionPlayerClientState({
+	autoplay = false,
 	isDemo,
 	onExit,
 	playthroughId,
@@ -511,6 +513,7 @@ function useSessionPlayerClientState({
 	}, [playthroughId]);
 
 	const player = useSessionPlayer({
+		autoplay,
 		initialManifest: vod,
 		isDemo,
 		onExit,
