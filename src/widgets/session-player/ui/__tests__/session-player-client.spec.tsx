@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import * as serverFns from "@/entities/vod";
 import {
 	createYouTubeMock,
+	installMockFrames,
 	setYouTubeNamespace,
 	YouTubePlayerState,
 } from "@/shared/lib/testing";
@@ -133,6 +134,96 @@ describe("SessionPlayerClient", () => {
 		act(() => {
 			fireEvent.click(playBtn);
 		});
+	});
+
+	it("rewinds 10 seconds on clicking replay 10s button during active playback", async () => {
+		// Arrange
+		const frameController = installMockFrames();
+		const youtube = createYouTubeMock(600);
+		setYouTubeNamespace(youtube.namespace);
+		const activeVod = {
+			...mockVod,
+			durationSeconds: 600,
+			scenarios: [
+				{
+					...mockVod.scenarios[0],
+					timestampSeconds: 100,
+				},
+			],
+			title: "Grandmaster [Ana] Oasis",
+		};
+
+		// Act
+		renderWithClient(<SessionPlayerClient vod={activeVod} />);
+		await act(async () => {
+			await Promise.resolve();
+		});
+
+		const player = youtube.players[0];
+		act(() => {
+			player.triggerReady();
+			player.triggerStateChange(YouTubePlayerState.PLAYING);
+		});
+
+		player.getCurrentTime = vi.fn(() => 45);
+		act(() => {
+			frameController.flush();
+		});
+
+		const replayBtn = screen.getByRole("button", { name: /replay 10s/i });
+		act(() => {
+			fireEvent.click(replayBtn);
+		});
+
+		// Assert
+		expect(player.seekTo).toHaveBeenCalledWith(35, true);
+	});
+
+	it("rewinds 10 seconds on clicking replay 10s button while paused", async () => {
+		// Arrange
+		const frameController = installMockFrames();
+		const youtube = createYouTubeMock(600);
+		setYouTubeNamespace(youtube.namespace);
+		const activeVod = {
+			...mockVod,
+			durationSeconds: 600,
+			scenarios: [
+				{
+					...mockVod.scenarios[0],
+					timestampSeconds: 100,
+				},
+			],
+			title: "Grandmaster [Ana] Oasis",
+		};
+
+		// Act
+		renderWithClient(<SessionPlayerClient vod={activeVod} />);
+		await act(async () => {
+			await Promise.resolve();
+		});
+
+		const player = youtube.players[0];
+		act(() => {
+			player.triggerReady();
+			player.triggerStateChange(YouTubePlayerState.PLAYING);
+		});
+
+		player.getCurrentTime = vi.fn(() => 20);
+		act(() => {
+			frameController.flush();
+		});
+
+		act(() => {
+			fireEvent.click(screen.getByRole("button", { name: /pause video/i }));
+		});
+
+		const replayBtn = screen.getByRole("button", { name: /replay 10s/i });
+		act(() => {
+			fireEvent.click(replayBtn);
+		});
+
+		// Assert
+		expect(player.seekTo).toHaveBeenCalledWith(10, true);
 	});
 
 	it("renders correctly when vod has no scenarios", async () => {
