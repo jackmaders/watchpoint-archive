@@ -10,8 +10,8 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { type MouseEvent, useCallback, useMemo, useState } from "react";
 import {
 	calculateModuleCounts,
+	DEFAULT_MODULE_TYPES,
 	filterScenariosByModules,
-	MODULE_DEFINITIONS,
 	ModuleFilterPills,
 	type ModuleType,
 	type SessionManifest,
@@ -29,9 +29,9 @@ export function VodsIdClient({
 	registrationEnabled = true,
 	vod,
 }: VodsIdClientProps) {
-	const [activeModules, setActiveModules] = useState<ModuleType[]>(() =>
-		MODULE_DEFINITIONS.map((def) => def.key),
-	);
+	const [activeModules, setActiveModules] = useState<ModuleType[]>(() => [
+		...DEFAULT_MODULE_TYPES,
+	]);
 	const [authOpen, setAuthOpen] = useState(false);
 	const session = authClient.useSession();
 	const navigate = useNavigate();

@@ -33,7 +33,7 @@ describe("module-helpers", () => {
 		expect(getModuleDescription("CUSTOM" as never)).toBe("");
 	});
 
-	it("calculates module counts for a scenario list", () => {
+	it("calculates module counts for a scenario list and handles edge cases", () => {
 		// Arrange
 		const scenarios = [
 			{ moduleType: "STRATEGY" as const },
@@ -44,14 +44,19 @@ describe("module-helpers", () => {
 
 		// Act
 		const counts = calculateModuleCounts(scenarios);
+		const emptyCounts = calculateModuleCounts([] as never);
+		const nullCounts = calculateModuleCounts(null as never);
 
 		// Assert
 		expect(counts.STRATEGY).toBe(2);
 		expect(counts.TACTICS).toBe(1);
 		expect(counts.TRACKING).toBe(0);
+		expect(counts.SPATIAL).toBe(0);
+		expect(emptyCounts.STRATEGY).toBe(0);
+		expect(nullCounts.STRATEGY).toBe(0);
 	});
 
-	it("filters scenarios by active modules (Set or Array)", () => {
+	it("filters scenarios by active modules (Set or Array) and handles edge cases", () => {
 		// Arrange
 		const scenarios = [
 			{ id: 1, moduleType: "STRATEGY" as const },
@@ -68,10 +73,14 @@ describe("module-helpers", () => {
 			scenarios,
 			new Set(["TACTICS" as const]),
 		);
+		const resEmpty = filterScenariosByModules(null as never, ["STRATEGY"]);
+		const resNoModules = filterScenariosByModules(scenarios, null as never);
 
 		// Assert
 		expect(resArray.map((s) => s.id)).toEqual([1, 3]);
 		expect(resSet.map((s) => s.id)).toEqual([2]);
+		expect(resEmpty).toEqual([]);
+		expect(resNoModules).toEqual([]);
 	});
 
 	it("parses module types from string, array, or null", () => {

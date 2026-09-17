@@ -41,16 +41,17 @@ export function getModuleDescription(key: ModuleType): string {
 export function calculateModuleCounts(
 	scenarios: readonly { moduleType: ModuleType }[],
 ): Record<ModuleType, number> {
-	const counts: Record<ModuleType, number> = {
-		SPATIAL: 0,
-		STRATEGY: 0,
-		TACTICS: 0,
-		TRACKING: 0,
-	};
+	const counts = DEFAULT_MODULE_TYPES.reduce(
+		(acc, type) => {
+			acc[type] = 0;
+			return acc;
+		},
+		{} as Record<ModuleType, number>,
+	);
 
-	for (const scenario of scenarios) {
-		if (scenario.moduleType in counts) {
-			counts[scenario.moduleType] += 1;
+	for (const scenario of scenarios ?? []) {
+		if (isModuleType(scenario.moduleType)) {
+			counts[scenario.moduleType] = (counts[scenario.moduleType] ?? 0) + 1;
 		}
 	}
 
@@ -62,8 +63,11 @@ export function filterScenariosByModules<T extends { moduleType: ModuleType }>(
 	activeModules: readonly ModuleType[] | ReadonlySet<ModuleType>,
 ): T[] {
 	const activeSet =
-		activeModules instanceof Set ? activeModules : new Set(activeModules);
-	return scenarios.filter((scenario) => activeSet.has(scenario.moduleType));
+		activeModules instanceof Set ? activeModules : new Set(activeModules ?? []);
+	return (scenarios ?? []).filter(
+		(scenario) =>
+			isModuleType(scenario.moduleType) && activeSet.has(scenario.moduleType),
+	);
 }
 
 export function parseModuleTypes(
