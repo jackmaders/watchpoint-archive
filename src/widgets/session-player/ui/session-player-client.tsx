@@ -433,7 +433,7 @@ function useSessionPlayerClientState({
 	scenarioSnapshotIds,
 	vod,
 }: SessionPlayerClientProps) {
-	const hero = extractHeroFromTitle(vod.title) ?? vod.heroName ?? null;
+	const hero = extractHeroFromTitle(vod.title) ?? vod.heroName;
 	const handleSessionComplete = useCallback(() => {
 		if (playthroughId) {
 			void completePlaythrough({ data: { playthroughId } });

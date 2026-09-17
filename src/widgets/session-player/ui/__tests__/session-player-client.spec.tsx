@@ -358,4 +358,25 @@ describe("SessionPlayerClient", () => {
 		// Assert link back to home
 		expect(screen.getByRole("link", { name: /← back to home/i })).toBeDefined();
 	});
+
+	it("renders cleanly when VOD has no extractable hero in title or heroName", async () => {
+		// Arrange
+		const youtube = createYouTubeMock(300);
+		setYouTubeNamespace(youtube.namespace);
+		const vodWithoutHero = {
+			...mockVod,
+			heroName: "",
+			title: "Overwatch 2 Map Guide",
+		};
+
+		// Act
+		renderWithClient(<SessionPlayerClient vod={vodWithoutHero} />);
+		await act(async () => {
+			await Promise.resolve();
+		});
+
+		// Assert title and no hero badge
+		expect(screen.getByText("Overwatch 2 Map Guide")).toBeDefined();
+		expect(screen.queryByText("Ana")).toBeNull();
+	});
 });
