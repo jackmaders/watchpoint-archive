@@ -12,7 +12,7 @@ describe("PrivacyPage component", () => {
 
 		// Assert
 		expect(
-			screen.getByRole("heading", { name: "Privacy Statement" }),
+			screen.getByRole("heading", { level: 1, name: "Privacy Statement" }),
 		).toBeDefined();
 		expect(screen.getByText("Watchpoint / Legal & Compliance")).toBeDefined();
 		expect(
@@ -22,54 +22,56 @@ describe("PrivacyPage component", () => {
 		).toBeDefined();
 	});
 
-	it("renders key highlight summary callouts", () => {
-		// Arrange & Act
-		render(<PrivacyPage />);
-
-		// Assert
-		expect(
-			screen.getByRole("heading", { name: "Zero Ad Tracking" }),
-		).toBeDefined();
-		expect(
-			screen.getByRole("heading", { name: "Edge-Native Security" }),
-		).toBeDefined();
-		expect(
-			screen.getByRole("heading", { name: "Player Data Rights" }),
-		).toBeDefined();
-	});
-
-	it("renders all six core privacy sections", () => {
+	it("renders all six core privacy sections with clean document hierarchy", () => {
 		// Arrange & Act
 		render(<PrivacyPage />);
 
 		// Assert
 		expect(
 			screen.getByRole("heading", {
+				level: 2,
 				name: /1\. Who We Are and Scope/i,
 			}),
 		).toBeDefined();
 		expect(
 			screen.getByRole("heading", {
+				level: 2,
 				name: /2\. Information We Collect/i,
 			}),
 		).toBeDefined();
 		expect(
 			screen.getByRole("heading", {
+				level: 3,
+				name: /A\. Information You Provide Directly/i,
+			}),
+		).toBeDefined();
+		expect(
+			screen.getByRole("heading", {
+				level: 3,
+				name: /B\. Information Collected Automatically/i,
+			}),
+		).toBeDefined();
+		expect(
+			screen.getByRole("heading", {
+				level: 2,
 				name: /3\. How and Why We Use Your Information/i,
 			}),
 		).toBeDefined();
 		expect(
 			screen.getByRole("heading", {
+				level: 2,
 				name: /4\. Data Sharing and Third Parties/i,
 			}),
 		).toBeDefined();
 		expect(
 			screen.getByRole("heading", {
+				level: 2,
 				name: /5\. Data Retention Policies/i,
 			}),
 		).toBeDefined();
 		expect(
 			screen.getByRole("heading", {
+				level: 2,
 				name: /6\. Your Data Protection Rights/i,
 			}),
 		).toBeDefined();
@@ -81,7 +83,7 @@ describe("PrivacyPage component", () => {
 
 		// Assert
 		expect(
-			screen.getByRole("heading", { name: "Privacy Statement" }),
+			screen.getByRole("heading", { level: 1, name: "Privacy Statement" }),
 		).toBeDefined();
 	});
 });
