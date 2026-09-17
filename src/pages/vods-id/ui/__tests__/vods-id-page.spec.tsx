@@ -170,7 +170,7 @@ describe("VodsIdPage", () => {
 		);
 	});
 
-	it("allows an authenticated player to start training", () => {
+	it("allows an authenticated player to start training with selected modules", () => {
 		// Arrange
 		vi.mocked(authClient.useSession).mockReturnValue({
 			data: { user: { id: "user-1" } },
@@ -178,12 +178,51 @@ describe("VodsIdPage", () => {
 		render(<VodsIdPage vod={mockVod} />);
 
 		// Act
-		fireEvent.click(
-			screen.getByRole("link", { name: "Start Training Session" }),
-		);
+		const startLink = screen.getByRole("link", {
+			name: "Start Training Session",
+		});
+		fireEvent.click(startLink);
 
 		// Assert
 		expect(screen.queryByRole("dialog")).toBeNull();
+		expect(startLink.getAttribute("href")).toContain("/vods/vod_1/session");
+		expect(startLink.getAttribute("href")).toContain(
+			"modules=STRATEGY%2CTACTICS%2CTRACKING%2CSPATIAL",
+		);
+	});
+
+	it("displays 5 / 5 active scenarios count when all 4 modules are selected", () => {
+		// Arrange & Act
+		render(<VodsIdPage vod={mockVod} />);
+
+		// Assert
+		expect(screen.getByText("5 / 5")).toBeDefined();
+		expect(screen.getByText("4 of 4 modules active")).toBeDefined();
+	});
+
+	it("dynamically updates active scenarios count when modules are toggled", async () => {
+		// Arrange
+		render(<VodsIdPage vod={mockVod} />);
+
+		// Act: Disable Tracking (which has 2 scenarios: sc_3 and sc_4)
+		const trackingBtn = screen.getByRole("button", { name: /^tracking/i });
+		await act(async () => {
+			fireEvent.click(trackingBtn);
+		});
+
+		// Assert: Active Scenarios should now be 3 / 5 (STRATEGY, TACTICS, SPATIAL)
+		expect(screen.getByText("3 / 5")).toBeDefined();
+		expect(screen.getByText("3 of 4 modules active")).toBeDefined();
+
+		// Act: Disable Strategy (1 scenario: sc_1)
+		const strategyBtn = screen.getByRole("button", { name: /^strategy/i });
+		await act(async () => {
+			fireEvent.click(strategyBtn);
+		});
+
+		// Assert: Active Scenarios should now be 2 / 5 (TACTICS, SPATIAL)
+		expect(screen.getByText("2 / 5")).toBeDefined();
+		expect(screen.getByText("2 of 4 modules active")).toBeDefined();
 	});
 
 	it("renders module filter controls for all 4 modules (STRATEGY, TACTICS, TRACKING, SPATIAL)", () => {
