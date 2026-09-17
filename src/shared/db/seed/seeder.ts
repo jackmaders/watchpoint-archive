@@ -98,7 +98,8 @@ export async function executeSeed(db: ReturnType<typeof createDbClient>) {
 	await db.insert(vods).values([fixtureVod, demoVod]);
 	const fixtureScenarios = getLocalFixtureScenarios(FIXTURE_IDS.vod);
 	const demoScenarios = getLocalDemoFixtureScenarios(FIXTURE_IDS.demoVod);
-	await db.insert(scenarios).values([...fixtureScenarios, ...demoScenarios]);
+	await db.insert(scenarios).values(fixtureScenarios);
+	await db.insert(scenarios).values(demoScenarios);
 
 	return {
 		adminEmail: credentials.adminEmail,
