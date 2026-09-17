@@ -27,6 +27,7 @@ export interface SidebarProps {
 	defaultCollapsed?: boolean;
 	onNavClick?: () => void;
 	showCollapseToggle?: boolean;
+	user?: { role?: string } | null;
 }
 
 interface NavItem {
@@ -60,11 +61,49 @@ const NAV_ITEMS: NavItem[] = [
 	},
 ];
 
+function SidebarHeader({
+	isCollapsed,
+	onToggleCollapse,
+}: {
+	isCollapsed: boolean;
+	onToggleCollapse: () => void;
+}) {
+	return (
+		<div
+			className={cn(
+				"flex h-12 items-center border-b border-border/60 px-3",
+				isCollapsed ? "justify-center px-0" : "justify-between",
+			)}
+		>
+			{!isCollapsed ? (
+				<span className="font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+					Navigation
+				</span>
+			) : null}
+			<Button
+				aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+				className="h-8 w-8 text-muted-foreground hover:text-foreground"
+				onClick={onToggleCollapse}
+				size="icon"
+				type="button"
+				variant="ghost"
+			>
+				{isCollapsed ? (
+					<PanelLeft className="h-4 w-4" />
+				) : (
+					<PanelLeftClose className="h-4 w-4" />
+				)}
+			</Button>
+		</div>
+	);
+}
+
 export function Sidebar({
 	className,
 	defaultCollapsed = false,
 	onNavClick,
 	showCollapseToggle = true,
+	user: userProp,
 }: SidebarProps) {
 	const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
 
@@ -73,8 +112,11 @@ export function Sidebar({
 	}, []);
 
 	const session = authClient.useSession();
-	const user = session.data?.user as { role?: string } | undefined;
-	const userRole = user?.role;
+	const activeUser =
+		userProp !== undefined
+			? userProp
+			: (session.data?.user as { role?: string } | undefined);
+	const userRole = activeUser?.role;
 	const isAdmin = hasPermission(userRole, PERMISSIONS.ADMIN_ACCESS);
 
 	const visibleItems = NAV_ITEMS.filter(
@@ -91,32 +133,10 @@ export function Sidebar({
 			)}
 		>
 			{showCollapseToggle ? (
-				<div
-					className={cn(
-						"flex h-12 items-center border-b border-border/60 px-3",
-						isCollapsed ? "justify-center px-0" : "justify-between",
-					)}
-				>
-					{!isCollapsed ? (
-						<span className="font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-							Navigation
-						</span>
-					) : null}
-					<Button
-						aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-						className="h-8 w-8 text-muted-foreground hover:text-foreground"
-						onClick={toggleCollapse}
-						size="icon"
-						type="button"
-						variant="ghost"
-					>
-						{isCollapsed ? (
-							<PanelLeft className="h-4 w-4" />
-						) : (
-							<PanelLeftClose className="h-4 w-4" />
-						)}
-					</Button>
-				</div>
+				<SidebarHeader
+					isCollapsed={isCollapsed}
+					onToggleCollapse={toggleCollapse}
+				/>
 			) : null}
 
 			<nav className="flex-1 space-y-1.5 p-3">

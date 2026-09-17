@@ -9,11 +9,18 @@ import {
 import type { ReactNode } from "react";
 import appCss from "@/app/styles/globals.css?url";
 
+import { type CurrentUser, getSessionUser } from "@/shared/lib/auth";
+
 export interface RouterContext {
 	queryClient: QueryClient;
+	user?: CurrentUser | null;
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
+	beforeLoad: async () => {
+		const user = await getSessionUser().catch(() => null);
+		return { user };
+	},
 	component: RootComponent,
 	head: () => ({
 		links: [
