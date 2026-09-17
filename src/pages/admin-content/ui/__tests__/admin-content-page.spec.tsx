@@ -297,7 +297,7 @@ describe("AdminContentPage", () => {
 			});
 			expect(screen.queryByText("GM Rein Guide")).toBeNull();
 		});
-	});
+	}, 2500);
 
 	it("executes bulk publish with partial failures and displays summary alert", async () => {
 		// Arrange

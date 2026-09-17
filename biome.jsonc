@@ -25,6 +25,7 @@
 			"!.output",
 			"!.nitro",
 			"!.vinxi",
+			"!.vitest-reports",
 			"!dist",
 			"!build",
 			"!storybook-static",
