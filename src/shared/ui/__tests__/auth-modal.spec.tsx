@@ -254,9 +254,10 @@ describe("AuthModal", () => {
 
 		// Assert
 		expect(screen.getByRole("dialog")).toBeDefined();
+		expect(screen.getByRole("tab", { name: "Sign in" })).toBeDefined();
 		expect(
-			screen.getByRole("heading", { name: "Welcome back, player" }),
-		).toBeDefined();
+			screen.queryByRole("heading", { name: "Welcome back, player" }),
+		).toBeNull();
 	});
 
 	it("opens AuthModal in register mode when Sign Up button is clicked", () => {
@@ -304,7 +305,7 @@ describe("AuthModal", () => {
 		expect(signOut).toHaveBeenCalledTimes(1);
 	});
 
-	it("renders signed-in account controls with Admin link for administrator", () => {
+	it("renders signed-in account controls without Admin link for administrator", () => {
 		// Arrange
 		vi.mocked(useSession).mockReturnValue({
 			data: { user: { name: "Admin Boss", role: "ADMIN" } },
@@ -315,7 +316,7 @@ describe("AuthModal", () => {
 
 		// Assert
 		expect(screen.getByText("Admin Boss")).toBeDefined();
-		expect(screen.getByRole("link", { name: "Admin" })).toBeDefined();
+		expect(screen.queryByRole("link", { name: "Admin" })).toBeNull();
 	});
 
 	it("resolves successful and failed auth results", () => {

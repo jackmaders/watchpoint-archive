@@ -31,6 +31,10 @@ const SECTION_MAPPINGS: readonly RouteSectionMapping[] = [
 		section: "Home",
 	},
 	{
+		match: (path) => path === "/demo",
+		section: "Interactive Demo",
+	},
+	{
 		match: (path) => path === "/privacy",
 		section: "Privacy Statement",
 	},

@@ -147,6 +147,19 @@ describe("Navbar", () => {
 		expect(screen.getByText("Home")).toBeDefined();
 	});
 
+	it("renders section for interactive demo route", () => {
+		// Arrange
+		vi.mocked(useLocation).mockReturnValue({
+			pathname: "/demo",
+		} as never);
+
+		// Act
+		render(<Navbar />);
+
+		// Assert
+		expect(screen.getByText("Interactive Demo")).toBeDefined();
+	});
+
 	it("renders section for privacy route", () => {
 		// Arrange
 		vi.mocked(useLocation).mockReturnValue({
