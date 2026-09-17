@@ -737,6 +737,95 @@ describe("useSessionPlayer", () => {
 		expect(player.playVideo).toHaveBeenCalled();
 	});
 
+	it("rewinds 10 seconds during PLAYING state and maintains playback", async () => {
+		// Arrange
+		const frameController = installMockFrames();
+		const youtube = createYouTubeMock(600);
+		setYouTubeNamespace(youtube.namespace);
+		const container = document.createElement("div");
+
+		const { result } = renderHook(
+			() =>
+				useSessionPlayer({
+					autoplay: true,
+					initialManifest: mockManifest,
+					vodId: "vod_gm_ana",
+				}),
+			{ wrapper: createWrapper() },
+		);
+
+		act(() => {
+			result.current.containerRef(container);
+		});
+		await act(async () => {
+			await Promise.resolve();
+		});
+		const player = youtube.players[0];
+		act(() => {
+			player.triggerReady();
+			player.triggerStateChange(YouTubePlayerState.PLAYING);
+		});
+		player.getCurrentTime = vi.fn(() => 15.0);
+		act(() => {
+			frameController.flush();
+		});
+
+		// Act
+		act(() => {
+			result.current.replayContext();
+		});
+
+		// Assert
+		expect(result.current.state).toBe("PLAYING");
+		expect(player.seekTo).toHaveBeenCalledWith(5, true);
+	});
+
+	it("rewinds 10 seconds during PAUSED_USER state and remains paused", async () => {
+		// Arrange
+		const frameController = installMockFrames();
+		const youtube = createYouTubeMock(600);
+		setYouTubeNamespace(youtube.namespace);
+		const container = document.createElement("div");
+
+		const { result } = renderHook(
+			() =>
+				useSessionPlayer({
+					autoplay: true,
+					initialManifest: mockManifest,
+					vodId: "vod_gm_ana",
+				}),
+			{ wrapper: createWrapper() },
+		);
+
+		act(() => {
+			result.current.containerRef(container);
+		});
+		await act(async () => {
+			await Promise.resolve();
+		});
+		const player = youtube.players[0];
+		act(() => {
+			player.triggerReady();
+			player.triggerStateChange(YouTubePlayerState.PLAYING);
+		});
+		player.getCurrentTime = vi.fn(() => 15.0);
+		act(() => {
+			frameController.flush();
+		});
+		act(() => {
+			result.current.pause();
+		});
+
+		// Act
+		act(() => {
+			result.current.replayContext();
+		});
+
+		// Assert
+		expect(result.current.state).toBe("PAUSED_USER");
+		expect(player.seekTo).toHaveBeenCalledWith(5, true);
+	});
+
 	it("automatically fails scenario when Tactics timer expires and transitions to FEEDBACK", async () => {
 		// Arrange
 		vi.useFakeTimers();

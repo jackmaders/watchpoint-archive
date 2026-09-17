@@ -543,6 +543,53 @@ describe("session playthrough coordinator", () => {
 		expect(seeked.replayAwaitingSeek).toBe(false);
 	});
 
+	it("rewinds 10 seconds and maintains playback state during PLAYING and PAUSED_USER", () => {
+		// Arrange
+		const playingState = readyPlayingState();
+		const pausedState = sessionPlaythroughReducer(playingState, {
+			generation: playingState.generation,
+			type: "PAUSE_REQUESTED",
+		});
+
+		// Act
+		const playingRewound = sessionPlaythroughReducer(playingState, {
+			currentTime: 25,
+			generation: playingState.generation,
+			type: "REPLAY_CONTEXT",
+		});
+		const pausedRewound = sessionPlaythroughReducer(pausedState, {
+			currentTime: 25,
+			generation: pausedState.generation,
+			type: "REPLAY_CONTEXT",
+		});
+		const clampedRewound = sessionPlaythroughReducer(playingState, {
+			currentTime: 6,
+			generation: playingState.generation,
+			type: "REPLAY_CONTEXT",
+		});
+
+		// Assert
+		expect(playingRewound.session.state).toBe("PLAYING");
+		expect(playingRewound.effects.at(-1)).toEqual({
+			generation: playingState.generation,
+			positionSeconds: 15,
+			type: "MEDIA_SEEK",
+		});
+
+		expect(pausedRewound.session.state).toBe("PAUSED_USER");
+		expect(pausedRewound.effects.at(-1)).toEqual({
+			generation: pausedState.generation,
+			positionSeconds: 15,
+			type: "MEDIA_SEEK",
+		});
+
+		expect(clampedRewound.effects.at(-1)).toEqual({
+			generation: playingState.generation,
+			positionSeconds: 0,
+			type: "MEDIA_SEEK",
+		});
+	});
+
 	it("increments the generation for manifest changes and retry, and completes once", () => {
 		// Arrange
 		const state = readyPlayingState([scenario]);

@@ -82,6 +82,11 @@ export type SessionPlaythroughEffect =
 	  }
 	| {
 			generation: number;
+			positionSeconds: number;
+			type: "MEDIA_SEEK";
+	  }
+	| {
+			generation: number;
 			scenarioId: string;
 			timestampSeconds: number;
 			type: "MEDIA_REPLAY_CONTEXT";
@@ -144,7 +149,7 @@ export type SessionPlaythroughAction =
 			scenarioId: string;
 			type: "TIMEOUT_REQUESTED";
 	  }
-	| { generation: number; type: "REPLAY_CONTEXT" }
+	| { currentTime?: number; generation: number; type: "REPLAY_CONTEXT" }
 	| { generation: number; nowMs: number; type: "RETRY_MEDIA" }
 	| { generation: number; type: "RESUME_PLAYBACK" }
 	| {
@@ -559,27 +564,42 @@ function handleReplayContext(
 	action: Extract<SessionPlaythroughAction, { type: "REPLAY_CONTEXT" }>,
 ): SessionPlaythroughState {
 	if (!isCurrentGeneration(state, action)) return state;
-	const scenario = getCurrentScenario(state);
-	if (!scenario) return state;
-	if (state.session.state !== "SCENARIO_ACTIVE") return state;
-	return transitionSession(
-		state,
-		{
-			...state.session,
-			overlayState: null,
-			state: "PLAYING",
-			totalMs: undefined,
-		},
-		{ replayAwaitingSeek: true },
-		[
+	if (state.session.state === "SCENARIO_ACTIVE") {
+		const scenario = getCurrentScenario(state);
+		if (!scenario) return state;
+		return transitionSession(
+			state,
+			{
+				...state.session,
+				overlayState: null,
+				state: "PLAYING",
+				totalMs: undefined,
+			},
+			{ replayAwaitingSeek: true },
+			[
+				{
+					generation: state.generation,
+					scenarioId: scenario.id,
+					timestampSeconds: scenario.timestampSeconds,
+					type: "MEDIA_REPLAY_CONTEXT",
+				},
+			],
+		);
+	}
+	if (
+		state.session.state === "PLAYING" ||
+		state.session.state === "PAUSED_USER"
+	) {
+		const positionSeconds = Math.max(0, (action.currentTime ?? 0) - 10);
+		return withEffects(state, {}, [
 			{
 				generation: state.generation,
-				scenarioId: scenario.id,
-				timestampSeconds: scenario.timestampSeconds,
-				type: "MEDIA_REPLAY_CONTEXT",
+				positionSeconds,
+				type: "MEDIA_SEEK",
 			},
-		],
-	);
+		]);
+	}
+	return state;
 }
 
 function handleResumePlayback(
