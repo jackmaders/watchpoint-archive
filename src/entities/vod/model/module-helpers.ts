@@ -51,7 +51,7 @@ export function calculateModuleCounts(
 
 	for (const scenario of scenarios ?? []) {
 		if (isModuleType(scenario.moduleType)) {
-			counts[scenario.moduleType] = (counts[scenario.moduleType] ?? 0) + 1;
+			counts[scenario.moduleType] += 1;
 		}
 	}
 
