@@ -19,6 +19,7 @@ describe("session media adapter", () => {
 		vi.useRealTimers();
 		vi.restoreAllMocks();
 		setYouTubeNamespace(undefined);
+		setDocumentVisibility("visible");
 		document.head.replaceChildren();
 		delete window.onYouTubeIframeAPIReady;
 	});
@@ -27,12 +28,23 @@ describe("session media adapter", () => {
 		// Arrange
 		const controls: Pick<
 			VodPlayerResult,
-			"pause" | "play" | "seekTo" | "setPlaybackRate"
+			| "mute"
+			| "pause"
+			| "play"
+			| "seekTo"
+			| "setPlaybackRate"
+			| "setVolume"
+			| "toggleMute"
+			| "unMute"
 		> = {
+			mute: vi.fn(),
 			pause: vi.fn(),
 			play: vi.fn(),
 			seekTo: vi.fn(),
 			setPlaybackRate: vi.fn(),
+			setVolume: vi.fn(),
+			toggleMute: vi.fn(),
+			unMute: vi.fn(),
 		};
 
 		// Act
@@ -53,6 +65,10 @@ describe("session media adapter", () => {
 			{ rate: 1.5, type: "SET_PLAYBACK_RATE" },
 			controls,
 		);
+		executeSessionMediaCommand({ type: "SET_VOLUME", volume: 80 }, controls);
+		executeSessionMediaCommand({ type: "MUTE" }, controls);
+		executeSessionMediaCommand({ type: "UNMUTE" }, controls);
+		executeSessionMediaCommand({ type: "TOGGLE_MUTE" }, controls);
 		executeSessionMediaCommand({ positionSeconds: 25, type: "SEEK" }, controls);
 
 		// Assert
@@ -65,6 +81,10 @@ describe("session media adapter", () => {
 		expect(controls.seekTo).toHaveBeenNthCalledWith(5, 25, true);
 		expect(controls.seekTo).toHaveBeenCalledTimes(5);
 		expect(controls.setPlaybackRate).toHaveBeenCalledWith(1.5);
+		expect(controls.setVolume).toHaveBeenCalledWith(80);
+		expect(controls.mute).toHaveBeenCalledTimes(1);
+		expect(controls.unMute).toHaveBeenCalledTimes(1);
+		expect(controls.toggleMute).toHaveBeenCalledTimes(1);
 	});
 
 	it("delivers normalized readiness, status, and time events", async () => {
@@ -106,6 +126,54 @@ describe("session media adapter", () => {
 			type: "PLAYBACK_STATUS_CHANGED",
 		});
 		expect(result.current.currentTime).toBe(18.5);
+	});
+
+	it("manages volume and mute controls through adapter result", async () => {
+		// Arrange
+		const youtube = createYouTubeMock(142);
+		setYouTubeNamespace(youtube.namespace);
+		const container = document.createElement("div");
+		const { result } = renderHook(() =>
+			useSessionMediaAdapter({ videoId: "volume-mute-video" }),
+		);
+		act(() => result.current.containerRef(container));
+		await act(async () => {
+			await Promise.resolve();
+			await Promise.resolve();
+		});
+		const player = youtube.players[0];
+		act(() => {
+			player.triggerReady();
+		});
+
+		// Act
+		const initialVolume = result.current.volume;
+		const initialMuted = result.current.isMuted;
+		act(() => {
+			result.current.setVolume(60);
+			result.current.mute();
+		});
+		const mutedVolume = result.current.volume;
+		const mutedState = result.current.isMuted;
+		act(() => {
+			result.current.unMute();
+		});
+		const unmutedState = result.current.isMuted;
+		act(() => {
+			result.current.toggleMute();
+		});
+		const toggledState = result.current.isMuted;
+
+		// Assert
+		expect(initialVolume).toBe(100);
+		expect(initialMuted).toBe(false);
+		expect(mutedVolume).toBe(60);
+		expect(mutedState).toBe(true);
+		expect(unmutedState).toBe(false);
+		expect(toggledState).toBe(true);
+		expect(player.setVolume).toHaveBeenCalledWith(60);
+		expect(player.mute).toHaveBeenCalledTimes(2);
+		expect(player.unMute).toHaveBeenCalledTimes(1);
 	});
 
 	it("ignores stale lifecycle events after the VOD changes", async () => {

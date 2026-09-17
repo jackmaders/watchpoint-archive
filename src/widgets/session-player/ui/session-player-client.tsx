@@ -7,6 +7,7 @@
 "use client";
 
 import { Link } from "@tanstack/react-router";
+import { Volume1, Volume2, VolumeX } from "lucide-react";
 import { useCallback, useMemo } from "react";
 import {
 	completePlaythrough,
@@ -109,12 +110,16 @@ interface SessionPlayerControlsProps {
 	activeScenarios: ScenarioItem[];
 	currentTime: number;
 	duration: number;
+	isMuted: boolean;
 	isPlaying: boolean;
+	onMuteToggle: () => void;
 	onPause: () => void;
 	onPlay: () => void;
 	onPlaybackRateChange: (rate: PlaybackRate) => void;
 	onReplayContext: () => void;
+	onVolumeChange: (volume: number) => void;
 	playbackRate: PlaybackRate;
+	volume: number;
 }
 
 interface PlaybackRateButtonProps {
@@ -148,16 +153,74 @@ function PlaybackRateButton({
 	);
 }
 
+interface VolumeControlProps {
+	isMuted: boolean;
+	onMuteToggle: () => void;
+	onVolumeChange: (volume: number) => void;
+	volume: number;
+}
+
+function VolumeControl({
+	isMuted,
+	onMuteToggle,
+	onVolumeChange,
+	volume,
+}: VolumeControlProps) {
+	const currentEffectiveVolume = isMuted ? 0 : volume;
+
+	const handleSliderChange = useCallback(
+		(e: React.ChangeEvent<HTMLInputElement>) => {
+			onVolumeChange(Number(e.target.value));
+		},
+		[onVolumeChange],
+	);
+
+	return (
+		<div className="flex items-center gap-1.5 bg-muted/60 rounded-md px-2 py-1 border border-border">
+			<button
+				aria-label={isMuted ? "Unmute Video" : "Mute Video"}
+				className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded flex items-center justify-center p-0.5"
+				onClick={onMuteToggle}
+				type="button"
+			>
+				{isMuted || volume === 0 ? (
+					<VolumeX aria-hidden="true" className="w-4 h-4" />
+				) : volume < 50 ? (
+					<Volume1 aria-hidden="true" className="w-4 h-4" />
+				) : (
+					<Volume2 aria-hidden="true" className="w-4 h-4" />
+				)}
+			</button>
+			<input
+				aria-label="Volume"
+				aria-valuemax={100}
+				aria-valuemin={0}
+				aria-valuenow={currentEffectiveVolume}
+				className="w-16 sm:w-20 h-1.5 accent-primary bg-muted rounded-lg appearance-none cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+				max={100}
+				min={0}
+				onChange={handleSliderChange}
+				type="range"
+				value={currentEffectiveVolume}
+			/>
+		</div>
+	);
+}
+
 function SessionPlayerControls({
 	activeScenarios,
 	currentTime,
 	duration,
+	isMuted,
 	isPlaying,
+	onMuteToggle,
 	onPause,
 	onPlay,
 	onPlaybackRateChange,
 	onReplayContext,
+	onVolumeChange,
 	playbackRate,
+	volume,
 }: SessionPlayerControlsProps) {
 	const progressPercent =
 		duration > 0
@@ -204,6 +267,13 @@ function SessionPlayerControls({
 					>
 						↺ Replay 10s
 					</button>
+
+					<VolumeControl
+						isMuted={isMuted}
+						onMuteToggle={onMuteToggle}
+						onVolumeChange={onVolumeChange}
+						volume={volume}
+					/>
 
 					<fieldset
 						aria-label="Playback speed"
@@ -454,12 +524,16 @@ export function SessionPlayerClient(props: SessionPlayerClientProps) {
 					activeScenarios={player.activeScenarios}
 					currentTime={player.currentTime}
 					duration={effectiveDuration}
+					isMuted={player.isMuted}
 					isPlaying={player.state === "PLAYING"}
+					onMuteToggle={player.toggleMute}
 					onPause={player.pause}
 					onPlay={player.play}
 					onPlaybackRateChange={player.setPlaybackRate}
 					onReplayContext={player.replayContext}
+					onVolumeChange={player.setVolume}
 					playbackRate={player.playbackRate}
+					volume={player.volume}
 				/>
 			) : null}
 		</div>

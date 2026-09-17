@@ -2017,4 +2017,67 @@ describe("useSessionPlayer", () => {
 			expect(player.pauseVideo).toHaveBeenCalled();
 		},
 	);
+
+	it("supports volume and mute controls and propagates them to the underlying media player", async () => {
+		// Arrange
+		const youtube = createYouTubeMock(600);
+		setYouTubeNamespace(youtube.namespace);
+		const container = document.createElement("div");
+
+		const { result } = renderHook(
+			() =>
+				useSessionPlayer({
+					autoplay: true,
+					initialManifest: mockManifest,
+					vodId: "vod_gm_ana",
+				}),
+			{ wrapper: createWrapper() },
+		);
+
+		act(() => {
+			result.current.containerRef(container);
+		});
+		await act(async () => {
+			await Promise.resolve();
+		});
+
+		const player = youtube.players[0];
+		act(() => {
+			player.triggerReady();
+			player.triggerStateChange(YouTubePlayerState.PLAYING);
+		});
+
+		// Act
+		expect(result.current.volume).toBe(100);
+		expect(result.current.isMuted).toBe(false);
+
+		act(() => {
+			result.current.setVolume(70);
+		});
+		const updatedVolume = result.current.volume;
+
+		act(() => {
+			result.current.toggleMute();
+		});
+		const isMutedAfterToggle = result.current.isMuted;
+
+		act(() => {
+			result.current.unMute();
+		});
+		const isMutedAfterUnmute = result.current.isMuted;
+
+		act(() => {
+			result.current.mute();
+		});
+		const isMutedAfterMute = result.current.isMuted;
+
+		// Assert
+		expect(updatedVolume).toBe(70);
+		expect(player.setVolume).toHaveBeenCalledWith(70);
+		expect(isMutedAfterToggle).toBe(true);
+		expect(player.mute).toHaveBeenCalledTimes(2);
+		expect(isMutedAfterUnmute).toBe(false);
+		expect(player.unMute).toHaveBeenCalledTimes(1);
+		expect(isMutedAfterMute).toBe(true);
+	});
 });
