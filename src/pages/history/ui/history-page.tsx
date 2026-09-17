@@ -54,12 +54,6 @@ function useHistoryFilterHandlers(
 	searchParams?: HistorySearchParams,
 	onFilterChange?: (newParams: HistorySearchParams) => void,
 ) {
-	const handleVodChange = useCallback(
-		(vodId: string | undefined) =>
-			onFilterChange?.({ ...searchParams, page: 1, vodId: vodId || undefined }),
-		[onFilterChange, searchParams],
-	);
-
 	const handleMapChange = useCallback(
 		(map: string) =>
 			onFilterChange?.({ ...searchParams, map: map || undefined, page: 1 }),
@@ -115,7 +109,6 @@ function useHistoryFilterHandlers(
 		handleMapChange,
 		handleModuleToggle,
 		handlePlayerChange,
-		handleVodChange,
 	};
 }
 
@@ -145,13 +138,11 @@ function HistoryFilteredList({
 				onMapChange={handlers.handleMapChange}
 				onModuleToggle={handlers.handleModuleToggle}
 				onPlayerChange={handlers.handlePlayerChange}
-				onVodChange={handlers.handleVodChange}
 				selectedHero={searchParams?.hero}
 				selectedLevelOfPlay={searchParams?.levelOfPlay}
 				selectedMap={searchParams?.map}
 				selectedModules={searchParams?.modules ?? []}
 				selectedPlayer={searchParams?.player}
-				selectedVodId={searchParams?.vodId ?? ""}
 				vods={vods ?? []}
 			/>
 
