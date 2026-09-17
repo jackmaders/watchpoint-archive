@@ -84,3 +84,8 @@ export {
 	ModuleFilterPills,
 	type ModuleFilterPillsProps,
 } from "./ui/module-filter-pills";
+export {
+	VodFilterInputs,
+	type VodFilterInputsProps,
+	type VodFilterItem,
+} from "./ui/vod-filter-inputs";
