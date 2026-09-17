@@ -69,10 +69,12 @@ export {
 	SessionPlayerViewport,
 } from "./ui/session-player-client";
 export {
-	type MediaRecoveryPrototypeVariant,
-	SessionPlayerMediaRecoveryPrototype,
-	type SessionPlayerMediaRecoveryPrototypeProps,
-} from "./ui/session-player-media-recovery-prototype";
+	RecoveryMessage,
+	type RecoveryMessageProps,
+	type RecoveryState,
+	SessionPlayerMediaRecovery,
+	type SessionPlayerMediaRecoveryProps,
+} from "./ui/session-player-media-recovery";
 export {
 	SessionPlayerPage,
 	type SessionPlayerPageProps,

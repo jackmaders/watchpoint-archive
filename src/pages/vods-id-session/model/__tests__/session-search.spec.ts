@@ -6,8 +6,6 @@ describe("validateSessionSearch", () => {
 		// Arrange
 		const raw = {
 			modules: "AIM,CD_TRACKING",
-			prototype: "media-recovery",
-			variant: "A",
 		};
 
 		// Act
@@ -17,10 +15,21 @@ describe("validateSessionSearch", () => {
 		expect(result).toEqual(raw);
 	});
 
+	it("handles empty search parameters", () => {
+		// Arrange
+		const raw = {};
+
+		// Act
+		const result = validateSessionSearch(raw);
+
+		// Assert
+		expect(result).toEqual({});
+	});
+
 	it("throws on invalid search parameters", () => {
 		// Arrange
 		const raw = {
-			variant: "INVALID",
+			modules: 123,
 		};
 
 		// Act & Assert

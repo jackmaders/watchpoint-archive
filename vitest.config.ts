@@ -25,7 +25,6 @@ export default defineConfig({
 				"src/app/**",
 				"src/shared/db/**/schema.ts",
 				"src/shared/db/schema/**",
-				"src/widgets/session-player/ui/session-player-media-recovery-prototype.tsx",
 				"src/**/types.ts",
 			],
 			include: ["src/**/*.{ts,tsx}"],
