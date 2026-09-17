@@ -1,8 +1,11 @@
 import { type ChildProcess, spawn } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
+import http from "node:http";
+import https from "node:https";
 import { join } from "node:path";
-import { type BrowserContext, chromium } from "@playwright/test";
-import { getSeedCredentials } from "../src/shared/db/seed";
+import { pathToFileURL } from "node:url";
+import type { BrowserContext } from "@playwright/test";
+import { getSeedCredentials } from "../src/shared/db/seed/policy";
 import {
 	type AccessState,
 	DEFAULT_ROUTE_INVENTORY,
@@ -229,6 +232,7 @@ async function authenticateContext(
 }
 
 async function prepareAuthStates(baseUrl: string) {
+	const { chromium } = await import("@playwright/test");
 	const credentials = getSeedCredentials();
 	const browser = await chromium.launch({ headless: true });
 
@@ -342,10 +346,56 @@ export async function runPerformanceAudits(
 	return summaries;
 }
 
-async function isServerReachable(url: string): Promise<boolean> {
+export async function isServerReachable(url: string): Promise<boolean> {
+	return new Promise((resolve) => {
+		try {
+			const parsed = new URL(url);
+			const transport = parsed.protocol === "https:" ? https : http;
+			const req = transport.request(
+				url,
+				{
+					method: "GET",
+					timeout: 1000,
+				},
+				(res) => {
+					resolve((res.statusCode ?? 500) < 500);
+					res.resume();
+				},
+			);
+
+			req.on("error", () => {
+				resolve(false);
+			});
+
+			req.on("timeout", () => {
+				req.destroy();
+				resolve(false);
+			});
+
+			req.end();
+		} catch {
+			resolve(false);
+		}
+	});
+}
+
+export function isDirectCliExecution(
+	metaMain = import.meta.main,
+	metaUrl = import.meta.url,
+	argv1 = process.argv[1],
+	env: Record<string, string | undefined> = process.env,
+): boolean {
+	if (env.VITEST === "true" || env.NODE_ENV === "test") {
+		return false;
+	}
+	if (metaMain) {
+		return true;
+	}
+	if (!argv1) {
+		return false;
+	}
 	try {
-		const res = await fetch(url);
-		return res.ok || res.status < 500;
+		return metaUrl === pathToFileURL(argv1).href;
 	} catch {
 		return false;
 	}
@@ -414,7 +464,7 @@ function displayAuditResults(
 	);
 }
 
-if (import.meta.main) {
+if (isDirectCliExecution()) {
 	const startTime = Date.now();
 	console.log("Starting performance budget audit across route inventory...");
 

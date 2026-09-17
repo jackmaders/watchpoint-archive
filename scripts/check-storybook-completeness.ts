@@ -186,7 +186,7 @@ function validateStoryMetadata(
 	});
 }
 
-if (import.meta.main) {
+if (import.meta.main && !process.env.VITEST) {
 	const errors = checkCompleteness();
 	if (errors.length > 0) {
 		console.error(errors.join("\n"));
