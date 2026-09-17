@@ -102,8 +102,11 @@ export {
 export {
 	assertLocalSeedTarget,
 	executeSeed,
+	FIXTURE_DEMO_VOD,
 	FIXTURE_IDS,
 	FIXTURE_VOD,
+	getLocalDemoFixtureScenarios,
+	getLocalDemoFixtureVod,
 	getLocalFixtureScenarios,
 	getLocalFixtureVod,
 	getSeedCredentials,
