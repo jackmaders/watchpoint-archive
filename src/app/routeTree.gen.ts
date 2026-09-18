@@ -1,5 +1,4 @@
 /* eslint-disable */
-/* v8 ignore file */
 
 // @ts-nocheck
 

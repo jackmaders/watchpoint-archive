@@ -1,9 +1,6 @@
 {
 	"$schema": "./node_modules/wrangler/config-schema.json",
-	"assets": {
-		"binding": "ASSETS",
-		"directory": "dist/client"
-	},
+	"assets": { "binding": "ASSETS", "directory": "dist/client" },
 	"compatibility_date": "2026-08-07",
 	"compatibility_flags": ["nodejs_compat"],
 	"d1_databases": [
@@ -15,16 +12,9 @@
 			"migrations_pattern": "drizzle/*/migration.sql"
 		}
 	],
-	"main": "dist/server/server.js",
+	"main": "@tanstack/react-start/server-entry",
 	"name": "watchpoint",
-	"observability": {
-		"enabled": true
-	},
-	"r2_buckets": [
-		{
-			"binding": "MEDIA",
-			"bucket_name": "watchpoint-media"
-		}
-	],
+	"observability": { "enabled": true },
+	"r2_buckets": [{ "binding": "MEDIA", "bucket_name": "watchpoint-media" }],
 	"workers_dev": true
 }

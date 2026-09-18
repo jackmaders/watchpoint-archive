@@ -1,23 +1,19 @@
 {
 	"compilerOptions": {
-		"allowJs": true,
 		"esModuleInterop": true,
-		"incremental": true,
 		"isolatedModules": true,
 		"jsx": "react-jsx",
-		"lib": ["dom", "dom.iterable", "esnext"],
-		"module": "esnext",
+		"lib": ["DOM", "DOM.Iterable", "ESNext"],
+		"module": "ESNext",
+		"moduleDetection": "force",
 		"moduleResolution": "bundler",
 		"noEmit": true,
-		"paths": {
-			"@/*": ["./src/*"]
-		},
-		"resolveJsonModule": true,
+		"paths": { "@/*": ["./src/*"] },
 		"skipLibCheck": true,
 		"strict": true,
 		"target": "ES2022",
-		"types": ["@cloudflare/workers-types", "@types/bun", "@types/node"]
+		"types": ["@cloudflare/workers-types"]
 	},
-	"exclude": ["node_modules", "dist", ".output"],
+	"exclude": ["dist", ".output"],
 	"include": ["**/*.ts", "**/*.tsx", "**/*.mts"]
 }
