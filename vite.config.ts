@@ -7,10 +7,10 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
 	plugins: [
-		cloudflare(),
+		cloudflare({ viteEnvironment: { name: "ssr" } }),
 		tanstackStart({ srcDirectory: "src/app" }),
-		tailwindcss(),
 		viteReact(),
+		tailwindcss(),
 		...(process.env.ANALYSE ? [visualizer()] : []),
 	],
 	resolve: { tsconfigPaths: true },
