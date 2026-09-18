@@ -15,11 +15,12 @@ import {
 	PanelLeftClose,
 	Shield,
 } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { authClient } from "@/shared/lib/auth-client";
 import { hasPermission, PERMISSIONS } from "@/shared/lib/permissions";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
+import { useSidebarCollapsedState } from "../model/sidebar-state";
 
 export interface SidebarProps {
 	className?: string;
@@ -99,11 +100,14 @@ export function Sidebar({
 	showCollapseToggle = true,
 	user: userProp,
 }: SidebarProps) {
-	const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
+	const [isCollapsed, setIsCollapsed] = useSidebarCollapsedState(
+		defaultCollapsed,
+		showCollapseToggle,
+	);
 
 	const toggleCollapse = useCallback(() => {
-		setIsCollapsed((prev) => !prev);
-	}, []);
+		setIsCollapsed(!isCollapsed);
+	}, [isCollapsed, setIsCollapsed]);
 
 	const session = authClient.useSession();
 	const activeUser =

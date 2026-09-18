@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@tanstack/react-router");
 vi.mock("@/shared/lib/auth-client");
@@ -8,6 +8,10 @@ import { authClient } from "@/shared/lib/auth-client";
 import { Sidebar } from "../sidebar";
 
 describe("Sidebar", () => {
+	beforeEach(() => {
+		localStorage.clear();
+	});
+
 	it("renders public navigation links with accessible labels", () => {
 		// Arrange
 		vi.mocked(authClient.useSession).mockReturnValue({
@@ -115,6 +119,55 @@ describe("Sidebar", () => {
 		expect(
 			screen.getByRole("button", { name: "Collapse sidebar" }),
 		).toBeDefined();
+	});
+
+	it("persists collapsed preference when the collapse toggle is used", () => {
+		// Arrange
+		vi.mocked(authClient.useSession).mockReturnValue({
+			data: null,
+			isPending: false,
+		} as never);
+		render(<Sidebar />);
+
+		// Act
+		fireEvent.click(screen.getByRole("button", { name: "Collapse sidebar" }));
+
+		// Assert
+		expect(localStorage.getItem("watchpoint:sidebar-collapsed")).toBe("true");
+	});
+
+	it("persists expanded preference when the expand toggle is used", () => {
+		// Arrange
+		localStorage.setItem("watchpoint:sidebar-collapsed", "true");
+		vi.mocked(authClient.useSession).mockReturnValue({
+			data: null,
+			isPending: false,
+		} as never);
+		render(<Sidebar />);
+
+		// Act
+		fireEvent.click(screen.getByRole("button", { name: "Expand sidebar" }));
+
+		// Assert
+		expect(localStorage.getItem("watchpoint:sidebar-collapsed")).toBe("false");
+	});
+
+	it("restores a stored collapsed preference on mount", () => {
+		// Arrange
+		localStorage.setItem("watchpoint:sidebar-collapsed", "true");
+		vi.mocked(authClient.useSession).mockReturnValue({
+			data: null,
+			isPending: false,
+		} as never);
+
+		// Act
+		render(<Sidebar />);
+
+		// Assert
+		expect(
+			screen.getByRole("button", { name: "Expand sidebar" }),
+		).toBeDefined();
+		expect(screen.queryByText("Navigation")).toBeNull();
 	});
 
 	it("hides collapse toggle button when showCollapseToggle is false", () => {
