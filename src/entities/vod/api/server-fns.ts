@@ -12,7 +12,7 @@ import {
 	getVodById as dbGetVodById,
 	queryScenarios,
 	queryVods,
-} from "@/shared/db";
+} from "@/shared/db/index.server";
 import { isWithinVodTimeRange } from "@/shared/lib/vod-time-range";
 import {
 	type RecordAttemptInput,

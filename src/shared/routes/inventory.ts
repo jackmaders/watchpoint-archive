@@ -1,4 +1,4 @@
-import { FIXTURE_IDS } from "../db/seed/fixtures";
+import { FIXTURE_IDS } from "../seed";
 
 export const ACCESS_STATES = [
 	"public",

@@ -1,12 +1,10 @@
 /**
  * Route options and loader bindings for the playthrough detail view.
  *
- * Configures `historyIdRouteOptions` binding `loadHistoryIdPage` to `HistoryIdRouteComponent`.
+ * Configures the eager history-detail loader while the route presentation loads lazily.
  */
 import { loadHistoryIdPage } from "../api/loaders";
-import { HistoryIdRouteComponent } from "../ui/history-id-route";
 
 export const historyIdRouteOptions = {
-	component: HistoryIdRouteComponent,
 	loader: loadHistoryIdPage,
 };

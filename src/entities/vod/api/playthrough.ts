@@ -18,7 +18,7 @@ import {
 	type playthroughCompletions,
 	type playthroughs,
 	updatePlaythrough,
-} from "@/shared/db";
+} from "@/shared/db/index.server";
 
 export type PlaythroughItem = typeof playthroughs.$inferSelect;
 export type PlaythroughCompletionItem =

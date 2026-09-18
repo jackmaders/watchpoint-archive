@@ -1,12 +1,10 @@
 /**
  * Route configuration options for the admin content catalog view.
  *
- * Configures `adminContentRouteOptions` binding `loadAdminContent` to `AdminContentRouteComponent`.
+ * Configures the eager `adminContentRouteOptions` loader while the catalog UI loads lazily.
  */
 import { loadAdminContent } from "../api/loaders";
-import { AdminContentRouteComponent } from "../ui/admin-content-route";
 
 export const adminContentRouteOptions = {
-	component: AdminContentRouteComponent,
 	loader: loadAdminContent,
 };

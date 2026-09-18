@@ -6,9 +6,9 @@
  */
 
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { userRoleEnum } from "../database-contracts";
 
-export const userRoleEnum = ["PLAYER", "ADMIN"] as const;
-export type UserRole = (typeof userRoleEnum)[number];
+export { type UserRole, userRoleEnum } from "../database-contracts";
 
 export const users = sqliteTable("user", {
 	createdAt: integer("createdAt", { mode: "timestamp" })

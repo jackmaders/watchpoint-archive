@@ -1,119 +1,34 @@
 /**
- * Entrypoint public API barrel exposing the database layer:
- * single-table schemas, relations, query functions, client factory, query helpers, and seed fixtures.
+ * Provides the browser-safe public API for database-backed application contracts.
+ *
+ * Re-exports primitive domain constants and type-only schema projections without loading
+ * Drizzle tables, query implementations, database clients, or seed operations at runtime.
  */
 
-// Client factory
-export { createDbClient } from "./client";
-// Queries
+export type {
+	HeroRole,
+	InputType,
+	ModuleType,
+	PlaythroughStatus,
+	UserRole,
+} from "./database-contracts";
 export {
-	createAttemptRecord,
-	deleteAttemptRecord,
-	getAttemptRecordById,
-	queryAttemptRecords,
-	updateAttemptRecord,
-} from "./queries/attempts";
-export {
-	createAuditEntry,
-	deleteAuditEntry,
-	getAuditEntryById,
-	queryAuditEntries,
-} from "./queries/audit";
-export {
-	createPlaythrough,
-	createPlaythroughCompletion,
-	createPlaythroughModuleSelections,
-	createScenarioSnapshots,
-	deleteOrphanInProgressPlaythroughs,
-	deletePlaythrough,
-	getPlaythroughById,
-	queryPlaythroughCompletions,
-	queryPlaythroughModuleSelections,
-	queryPlaythroughs,
-	queryScenarioSnapshots,
-	updatePlaythrough,
-} from "./queries/playthroughs";
-export {
-	createScenario,
-	createScenarios,
-	deleteScenario,
-	getScenarioById,
-	queryScenarios,
-	reorderScenarios,
-	updateScenario,
-} from "./queries/scenarios";
-export {
-	createUser,
-	deleteUser,
-	getUserByEmail,
-	getUserById,
-	queryUsers,
-	updateUser,
-} from "./queries/users";
-export {
-	bulkDeleteVods,
-	bulkPublishVods,
-	createVod,
-	deleteVod,
-	getVodById,
-	queryVods,
-	updateVod,
-} from "./queries/vods";
-// Query helpers
-export {
-	DEFAULT_LIMIT,
-	filterToSQL,
-	orderToSQL,
-	type QueryOptions,
-} from "./query";
-// Schema definitions & enums
-export { accounts } from "./schema/account";
-export { attemptRecords } from "./schema/attempt-record";
-export { auditEntries } from "./schema/audit";
-export {
-	type PlaythroughStatus,
-	playthroughStatusEnum,
-	playthroughs,
-} from "./schema/playthrough";
-export { playthroughCompletions } from "./schema/playthrough-completion";
-export { playthroughModuleSelections } from "./schema/playthrough-module-selection";
-export { relations } from "./schema/relations";
-export {
-	type InputType,
-	inputTypeEnum,
-	type ModuleType,
-	moduleTypeEnum,
-	scenarios,
-} from "./schema/scenario";
-export { scenarioSnapshots } from "./schema/scenario-snapshot";
-export { sessions } from "./schema/session";
-export {
-	type UserRole,
-	userRoleEnum,
-	users,
-} from "./schema/user";
-export { verifications } from "./schema/verification";
-export {
-	type HeroRole,
 	heroRoleEnum,
-	type VodRecord,
-	type VodTransportRecord,
-	vods,
-} from "./schema/vod";
-// Seed fixtures & runner
-export {
-	assertLocalSeedTarget,
-	executeSeed,
-	FIXTURE_DEMO_VOD,
-	FIXTURE_IDS,
-	FIXTURE_VOD,
-	getLocalDemoFixtureScenarios,
-	getLocalDemoFixtureVod,
-	getLocalFixtureScenarios,
-	getLocalFixtureVod,
-	getSeedCredentials,
-	type SeedCredentials,
-	type SeedEnvironment,
-} from "./seed";
-// Type primitives
+	inputTypeEnum,
+	moduleTypeEnum,
+	playthroughStatusEnum,
+	userRoleEnum,
+} from "./database-contracts";
+export type { accounts } from "./schema/account";
+export type { attemptRecords } from "./schema/attempt-record";
+export type { auditEntries } from "./schema/audit";
+export type { playthroughs } from "./schema/playthrough";
+export type { playthroughCompletions } from "./schema/playthrough-completion";
+export type { playthroughModuleSelections } from "./schema/playthrough-module-selection";
+export type { scenarios } from "./schema/scenario";
+export type { scenarioSnapshots } from "./schema/scenario-snapshot";
+export type { sessions } from "./schema/session";
+export type { users } from "./schema/user";
+export type { verifications } from "./schema/verification";
+export type { VodRecord, VodTransportRecord, vods } from "./schema/vod";
 export type { JsonPrimitive, JsonValue } from "./types";

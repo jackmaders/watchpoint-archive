@@ -6,9 +6,9 @@
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("@/shared/db");
+vi.mock("@/shared/db/index.server");
 
-import { queryUsers } from "@/shared/db";
+import { queryUsers } from "@/shared/db/index.server";
 import { getAdminUsersRule } from "../get-admin-users";
 
 describe("getAdminUsersRule", () => {

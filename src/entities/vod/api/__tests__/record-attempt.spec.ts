@@ -5,10 +5,10 @@ import {
 	createDbClient,
 	getPlaythroughById,
 	queryScenarioSnapshots,
-} from "@/shared/db";
+} from "@/shared/db/index.server";
 import { recordAttemptAction } from "../record-attempt";
 
-vi.mock("@/shared/db");
+vi.mock("@/shared/db/index.server");
 vi.mock("@/shared/auth/index.server");
 
 describe("recordAttemptAction", () => {

@@ -12,7 +12,6 @@ import https from "node:https";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import type { BrowserContext } from "@playwright/test";
-import { getSeedCredentials } from "../src/shared/db/seed/policy";
 import {
 	type AccessState,
 	DEFAULT_ROUTE_INVENTORY,
@@ -25,6 +24,7 @@ import {
 	type PerfBudgetException,
 	validatePerfExceptions,
 } from "../src/shared/routes/perf-budgets";
+import { getSeedCredentials } from "../src/shared/seed/index.server";
 
 export interface RouteAuditRunMetrics {
 	cls: number;

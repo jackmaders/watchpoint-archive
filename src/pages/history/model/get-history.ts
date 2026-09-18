@@ -17,7 +17,7 @@ import {
 	queryPlaythroughModuleSelections,
 	queryPlaythroughs,
 	queryScenarioSnapshots,
-} from "@/shared/db";
+} from "@/shared/db/index.server";
 import {
 	calculateAccuracy,
 	calculateMedianActiveLatency,

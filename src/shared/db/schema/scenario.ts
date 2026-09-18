@@ -13,24 +13,17 @@ import {
 	sqliteTable,
 	text,
 } from "drizzle-orm/sqlite-core";
+import { inputTypeEnum, moduleTypeEnum } from "../database-contracts";
+
+export {
+	type InputType,
+	inputTypeEnum,
+	type ModuleType,
+	moduleTypeEnum,
+} from "../database-contracts";
+
 import type { JsonValue } from "../types";
 import { vods } from "./vod";
-
-export const moduleTypeEnum = [
-	"STRATEGY",
-	"TACTICS",
-	"TRACKING",
-	"SPATIAL",
-] as const;
-export type ModuleType = (typeof moduleTypeEnum)[number];
-
-export const inputTypeEnum = [
-	"MULTIPLE_CHOICE",
-	"PERCENT_SLIDER",
-	"TIME_SLIDER",
-	"MAP_PIN_2D",
-] as const;
-export type InputType = (typeof inputTypeEnum)[number];
 
 export const scenarios = sqliteTable(
 	"scenario",

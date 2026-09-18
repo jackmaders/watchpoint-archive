@@ -13,7 +13,7 @@ import {
 	getPlaythroughById,
 	type JsonValue,
 	queryScenarioSnapshots,
-} from "@/shared/db";
+} from "@/shared/db/index.server";
 import {
 	type RecordAttemptInput,
 	RecordAttemptInputSchema,

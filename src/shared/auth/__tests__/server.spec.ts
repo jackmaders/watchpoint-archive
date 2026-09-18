@@ -4,7 +4,7 @@ vi.mock("../../db");
 vi.mock("@tanstack/react-start/server");
 
 import { getRequestHeaders } from "@tanstack/react-start/server";
-import { queryUsers } from "../../db";
+import { queryUsers } from "../../db/index.server";
 import {
 	createAuthInstance,
 	getAuth,

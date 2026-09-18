@@ -1,12 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { AdminContentNewRouteComponent } from "../../ui/admin-content-new-route";
 import { adminContentNewRouteOptions } from "../route-options";
 
 describe("admin-content-new route options", () => {
-	it("wires AdminContentNewRouteComponent", () => {
+	it("leaves presentation to the lazy route companion", () => {
 		// Arrange & Act & Assert
-		expect(adminContentNewRouteOptions.component).toBe(
-			AdminContentNewRouteComponent,
-		);
+		expect(adminContentNewRouteOptions).toEqual({});
 	});
 });

@@ -4,6 +4,7 @@ import { vi } from "vitest";
 
 // Configure global auto-mocks for core external dependencies and domain boundaries
 vi.mock("@/shared/db");
+vi.mock("@/shared/db/index.server");
 vi.mock("@tanstack/react-router");
 vi.mock("@tanstack/react-start");
 

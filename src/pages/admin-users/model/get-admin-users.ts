@@ -4,7 +4,7 @@
  * Implements `getAdminUsersRule` querying the database with role filters and in-memory search.
  */
 
-import { queryUsers } from "@/shared/db";
+import { queryUsers } from "@/shared/db/index.server";
 import type { UserItem, UserRole } from "./types";
 
 export async function getAdminUsersRule(

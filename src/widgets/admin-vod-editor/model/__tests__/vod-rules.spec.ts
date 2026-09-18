@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, it, vi } from "vitest";
-import * as dbQueries from "@/shared/db";
+import * as dbQueries from "@/shared/db/index.server";
 import * as validationModule from "../validation";
 import {
 	bulkDeleteVodsRule,

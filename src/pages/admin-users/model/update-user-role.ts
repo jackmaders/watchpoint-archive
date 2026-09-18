@@ -12,7 +12,7 @@ import {
 	queryUsers,
 	updateUser,
 	userRoleEnum,
-} from "@/shared/db";
+} from "@/shared/db/index.server";
 import type { UserItem } from "./types";
 
 export const updateUserRoleSchema = z.object({

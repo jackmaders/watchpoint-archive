@@ -8,7 +8,7 @@ import {
 	type UserRole,
 	users,
 	verifications,
-} from "@/shared/db";
+} from "@/shared/db/index.server";
 import type { CurrentUser } from "./types";
 
 export function getAuthConfig(

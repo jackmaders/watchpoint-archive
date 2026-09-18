@@ -8,7 +8,7 @@ import {
 	createDbClient,
 	queryVods,
 	type VodTransportRecord,
-} from "@/shared/db";
+} from "@/shared/db/index.server";
 import { vodsSearchSchema } from "../model/search-params";
 
 export type PublishedVodItem = VodTransportRecord;

@@ -1,12 +1,10 @@
 /**
  * Route configuration options for the public interactive demo training session (`/demo`).
  *
- * Configures `demoRouteOptions` binding `loadDemoPage` to `DemoRouteComponent` without authentication guards.
+ * Configures the eager `demoRouteOptions` loader without authentication guards; UI loads lazily.
  */
 import { loadDemoPage } from "../api/loaders";
-import { DemoRouteComponent } from "../ui/demo-route";
 
 export const demoRouteOptions = {
-	component: DemoRouteComponent,
 	loader: loadDemoPage,
 };

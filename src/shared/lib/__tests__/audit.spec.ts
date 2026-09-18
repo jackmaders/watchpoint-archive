@@ -8,10 +8,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@tanstack/react-start");
-vi.mock("@/shared/db");
+vi.mock("@/shared/db/index.server");
 vi.mock("../permissions");
 
-import { queryAuditEntries } from "@/shared/db";
+import { queryAuditEntries } from "@/shared/db/index.server";
 import { getAdminAuditLogs } from "../audit";
 import { requirePermission } from "../permissions";
 

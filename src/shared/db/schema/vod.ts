@@ -6,9 +6,9 @@
  */
 
 import { index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { heroRoleEnum } from "../database-contracts";
 
-export const heroRoleEnum = ["TANK", "DAMAGE", "SUPPORT"] as const;
-export type HeroRole = (typeof heroRoleEnum)[number];
+export { type HeroRole, heroRoleEnum } from "../database-contracts";
 
 export const vods = sqliteTable(
 	"vod",

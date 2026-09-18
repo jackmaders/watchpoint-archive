@@ -4,6 +4,7 @@ vi.mock("@tanstack/react-router");
 vi.mock("@tanstack/react-router-ssr-query");
 vi.mock("@tanstack/react-query");
 vi.mock("@/shared/auth");
+vi.mock("../routeTree.gen");
 
 import { QueryClient } from "@tanstack/react-query";
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
