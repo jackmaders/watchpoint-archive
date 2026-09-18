@@ -7,9 +7,9 @@
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("../auth");
+vi.mock("@/shared/auth/index.server");
 
-import { getCurrentUser } from "../auth";
+import { getCurrentUser } from "@/shared/auth/index.server";
 import {
 	getUserPermissions,
 	hasPermission,

@@ -9,8 +9,8 @@
 
 import type { FormEvent } from "react";
 import { useCallback, useId, useState } from "react";
-import { authClient, invalidateSessionState } from "@/shared/lib/auth-client";
-import { useControllableState } from "@/shared/lib/use-controllable-state";
+import { authClient, invalidateSessionState } from "@/shared/auth";
+import { useControllableState } from "@/shared/lib/hooks";
 import { Alert, AlertDescription } from "@/shared/ui/alert";
 import { Button } from "@/shared/ui/button";
 import {

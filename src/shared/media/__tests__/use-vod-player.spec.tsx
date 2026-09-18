@@ -6,7 +6,7 @@ import {
 	installMockFrames,
 	setDocumentVisibility,
 	setYouTubeNamespace,
-} from "../__mocks__/youtube";
+} from "@/shared/test-fixtures";
 import { PlaybackStatus } from "../types";
 import { YouTubePlayerState } from "../youtube-adapter";
 

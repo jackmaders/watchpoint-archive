@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("@tanstack/react-router");
-vi.mock("@/shared/lib/auth");
+vi.mock("@/shared/auth");
 
-import { getSessionUser } from "@/shared/lib/auth";
+import { getSessionUser } from "@/shared/auth";
 import { Route } from "../__root";
 
 describe("Root route", () => {

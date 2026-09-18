@@ -5,6 +5,7 @@
  * telemetry through D1 query functions without throwing runtime exceptions.
  */
 
+import { getCurrentUser } from "@/shared/auth/index.server";
 import {
 	createDbClient,
 	getUserById,
@@ -17,7 +18,6 @@ import {
 	queryPlaythroughs,
 	queryScenarioSnapshots,
 } from "@/shared/db";
-import { getCurrentUser } from "@/shared/lib/auth";
 import {
 	calculateAccuracy,
 	calculateMedianActiveLatency,

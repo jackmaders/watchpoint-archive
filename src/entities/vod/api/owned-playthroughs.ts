@@ -5,13 +5,14 @@
  * the authenticated user context before delegating CRUD, history listing, and playthrough finalization
  * to the underlying D1 database layer via direct query functions.
  */
+
+import { getCurrentUser } from "@/shared/auth/index.server";
 import {
 	createDbClient,
 	getPlaythroughById,
 	queryAttemptRecords,
 	queryPlaythroughs,
 } from "@/shared/db";
-import { getCurrentUser } from "@/shared/lib/auth";
 import {
 	completePlaythroughAction,
 	type StartPlaythroughInput,

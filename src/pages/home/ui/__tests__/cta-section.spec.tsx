@@ -1,11 +1,11 @@
 import { useNavigate } from "@tanstack/react-router";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { authClient } from "@/shared/lib/auth-client";
+import { authClient } from "@/shared/auth";
 import { CtaSection } from "../cta-section";
 
 vi.mock("@tanstack/react-router");
-vi.mock("@/shared/lib/auth-client");
+vi.mock("@/shared/auth");
 
 describe("CtaSection", () => {
 	const navigate = vi.fn();

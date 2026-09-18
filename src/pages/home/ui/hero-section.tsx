@@ -7,8 +7,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { type MouseEvent, useCallback, useState } from "react";
-import { authClient } from "@/shared/lib/auth-client";
-import { AuthModal } from "@/shared/ui/auth-modal";
+import { AuthModal } from "@/features/authentication";
+import { authClient } from "@/shared/auth";
 
 export interface HeroSectionProps {
 	demoVodId?: string;

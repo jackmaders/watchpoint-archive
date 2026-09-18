@@ -1,7 +1,7 @@
 import { QueryClient } from "@tanstack/react-query";
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
-import { registerSessionSync } from "@/shared/lib/auth-client";
+import { registerSessionSync } from "@/shared/auth";
 import { routeTree } from "./routeTree.gen";
 
 export function createRouter() {

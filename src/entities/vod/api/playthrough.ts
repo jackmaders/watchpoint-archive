@@ -4,6 +4,8 @@
  * Implements `startPlaythroughAction` and `completePlaythroughAction` with user authentication checks
  * and graceful fallback semantics using direct query functions.
  */
+
+import { getCurrentUser } from "@/shared/auth/index.server";
 import {
 	createDbClient,
 	createPlaythrough,
@@ -17,7 +19,6 @@ import {
 	type playthroughs,
 	updatePlaythrough,
 } from "@/shared/db";
-import { getCurrentUser } from "@/shared/lib/auth";
 
 export type PlaythroughItem = typeof playthroughs.$inferSelect;
 export type PlaythroughCompletionItem =

@@ -7,8 +7,8 @@
  * against `getCurrentUser` and throws standard 401/403 HTTP responses on authorization failure.
  */
 
+import { getCurrentUser } from "@/shared/auth/index.server";
 import type { UserRole } from "../db";
-import { getCurrentUser } from "./auth";
 
 export const PERMISSIONS = {
 	ADMIN_ACCESS: "admin:access",

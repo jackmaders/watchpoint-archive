@@ -8,7 +8,7 @@ import { queryOptions } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
 import { getPublishedVods } from "@/entities/vod";
 import { queryKeys } from "@/shared/api";
-import { isRegistrationOpen } from "@/shared/lib/auth";
+import { isRegistrationOpen } from "@/shared/auth/index.server";
 
 export const fetchHomePage = createServerFn({ method: "GET" }).handler(
 	async () => {

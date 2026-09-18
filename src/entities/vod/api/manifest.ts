@@ -5,8 +5,9 @@
  * manifest endpoint. Verifies user authentication, parses module query parameters, invokes direct query functions,
  * and serializes the ordered scenario bundle as JSON.
  */
+
+import { getCurrentUser } from "@/shared/auth/index.server";
 import { createDbClient, getVodById, queryScenarios } from "@/shared/db";
-import { getCurrentUser } from "@/shared/lib/auth";
 import type { SessionManifest } from "../model/types";
 import { normalizeSessionManifestModules } from "./session-manifest-query";
 

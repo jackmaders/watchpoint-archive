@@ -5,6 +5,8 @@
  * authenticated user ownership of the active playthrough snapshot, and persist the attempt
  * outcome using direct query functions.
  */
+
+import { getCurrentUser } from "@/shared/auth/index.server";
 import {
 	createAttemptRecord,
 	createDbClient,
@@ -12,7 +14,6 @@ import {
 	type JsonValue,
 	queryScenarioSnapshots,
 } from "@/shared/db";
-import { getCurrentUser } from "@/shared/lib/auth";
 import {
 	type RecordAttemptInput,
 	RecordAttemptInputSchema,

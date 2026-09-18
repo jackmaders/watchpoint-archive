@@ -11,8 +11,8 @@
 import { getRouteApi, Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useCallback, useState } from "react";
-import type { CurrentUser } from "@/shared/lib/auth";
-import { authClient } from "@/shared/lib/auth-client";
+import type { CurrentUser } from "@/shared/auth";
+import { authClient } from "@/shared/auth";
 import { MobileNavDrawer } from "./mobile-nav-drawer";
 import { Navbar } from "./navbar";
 import { Sidebar } from "./sidebar";

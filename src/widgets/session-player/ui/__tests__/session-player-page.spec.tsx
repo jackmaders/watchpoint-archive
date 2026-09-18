@@ -8,7 +8,7 @@ import {
 	installMockFrames,
 	setYouTubeNamespace,
 	YouTubePlayerState,
-} from "@/shared/lib/testing";
+} from "@/shared/test-fixtures";
 import { SessionPlayerPage } from "../session-player-page";
 
 vi.mock("@tanstack/react-router");

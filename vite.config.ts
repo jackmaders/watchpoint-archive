@@ -1,6 +1,7 @@
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
+import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig } from "vite";
 
 export default defineConfig({
@@ -25,6 +26,11 @@ export default defineConfig({
 		}),
 		viteReact(),
 		tailwindcss(),
+		visualizer({
+			filename: "stats.json",
+			gzipSize: true,
+			template: "raw-data", // Outputs structured JSON instead of HTML
+		}),
 	],
 	resolve: {
 		tsconfigPaths: true,

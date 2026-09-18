@@ -16,7 +16,7 @@ import {
 	Shield,
 } from "lucide-react";
 import { useCallback, useState } from "react";
-import { authClient } from "@/shared/lib/auth-client";
+import { authClient } from "@/shared/auth";
 import { hasPermission, PERMISSIONS } from "@/shared/lib/permissions";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";

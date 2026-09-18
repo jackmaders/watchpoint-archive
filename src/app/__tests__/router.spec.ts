@@ -3,12 +3,12 @@ import { describe, expect, it, vi } from "vitest";
 vi.mock("@tanstack/react-router");
 vi.mock("@tanstack/react-router-ssr-query");
 vi.mock("@tanstack/react-query");
-vi.mock("@/shared/lib/auth-client");
+vi.mock("@/shared/auth");
 
 import { QueryClient } from "@tanstack/react-query";
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
-import { registerSessionSync } from "@/shared/lib/auth-client";
+import { registerSessionSync } from "@/shared/auth";
 import { createRouter } from "../router";
 import { routeTree } from "../routeTree.gen";
 

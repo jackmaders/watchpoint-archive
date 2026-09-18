@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { getCurrentUser } from "@/shared/auth/index.server";
 import {
 	createDbClient,
 	getPlaythroughById,
 	queryAttemptRecords,
 	queryPlaythroughs,
 } from "@/shared/db";
-import { getCurrentUser } from "@/shared/lib/auth";
 import {
 	completeOwnedPlaythrough,
 	createOwnedPlaythrough,
@@ -16,7 +16,7 @@ import {
 import * as playthroughActions from "../playthrough";
 
 vi.mock("@/shared/db");
-vi.mock("@/shared/lib/auth");
+vi.mock("@/shared/auth/index.server");
 
 describe("owned playthrough server boundary", () => {
 	beforeEach(() => {

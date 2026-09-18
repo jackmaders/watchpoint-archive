@@ -1,15 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { getCurrentUser } from "@/shared/auth/index.server";
 import {
 	createAttemptRecord,
 	createDbClient,
 	getPlaythroughById,
 	queryScenarioSnapshots,
 } from "@/shared/db";
-import { getCurrentUser } from "@/shared/lib/auth";
 import { recordAttemptAction } from "../record-attempt";
 
 vi.mock("@/shared/db");
-vi.mock("@/shared/lib/auth");
+vi.mock("@/shared/auth/index.server");
 
 describe("recordAttemptAction", () => {
 	const validIdempotencyKey = "7b3b7f7e-4f3c-4f84-8a0d-5e3a4f7f2c91";

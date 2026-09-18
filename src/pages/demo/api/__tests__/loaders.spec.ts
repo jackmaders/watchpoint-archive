@@ -7,9 +7,9 @@
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("@/shared/lib/auth");
+vi.mock("@/shared/auth");
 
-import { getRegistrationStatus } from "@/shared/lib/auth";
+import { getRegistrationStatus } from "@/shared/auth";
 import { DEMO_VOD_MANIFEST } from "../../model/fixtures";
 import { demoPageQueryOptions, loadDemoPage } from "../loaders";
 

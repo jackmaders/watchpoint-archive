@@ -9,11 +9,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@tanstack/react-router");
 vi.mock("@/entities/vod");
-vi.mock("@/shared/lib/auth");
+vi.mock("@/shared/auth");
 
 import { redirect } from "@tanstack/react-router";
 import { getPublishedVods } from "@/entities/vod";
-import { getRegistrationStatus, getSessionUser } from "@/shared/lib/auth";
+import { getRegistrationStatus, getSessionUser } from "@/shared/auth";
 import { loadVodsPage, vodsBeforeLoad } from "../loaders";
 
 describe("vods loaders", () => {

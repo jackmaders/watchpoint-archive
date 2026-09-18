@@ -6,13 +6,13 @@
  * to D1 query functions.
  */
 import { createServerFn } from "@tanstack/react-start";
+import { getCurrentUser } from "@/shared/auth/index.server";
 import {
 	createDbClient,
 	getVodById as dbGetVodById,
 	queryScenarios,
 	queryVods,
 } from "@/shared/db";
-import { getCurrentUser } from "@/shared/lib/auth";
 import {
 	type RecordAttemptInput,
 	RecordAttemptInputSchema,

@@ -2,11 +2,11 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@tanstack/react-router");
-vi.mock("@/shared/lib/auth-client");
-vi.mock("@/shared/ui/auth-modal");
+vi.mock("@/shared/auth");
+vi.mock("@/features/authentication");
 
 import { getRouteApi } from "@tanstack/react-router";
-import { authClient } from "@/shared/lib/auth-client";
+import { authClient } from "@/shared/auth";
 import { AppLayout } from "../app-layout";
 
 describe("AppLayout", () => {
