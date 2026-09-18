@@ -14,6 +14,7 @@ import {
 	reorderScenarios,
 	updateScenario,
 } from "@/shared/db";
+import { isWithinVodTimeRange } from "@/shared/lib/vod-time-range";
 import type {
 	CreateScenarioPayload,
 	CreateScenarioResult,
@@ -25,7 +26,11 @@ import type {
 	UpdateScenarioPayload,
 	UpdateScenarioResult,
 } from "./types";
-import { validateScenarioConfig } from "./validation";
+import {
+	getScenarioRangeError,
+	validateScenarioConfig,
+	validateVodTimeRange,
+} from "./validation";
 import type { ActorContext } from "./vod-rules";
 
 export async function createScenarioRule(
@@ -45,9 +50,13 @@ export async function createScenarioRule(
 		return { reason: "VOD not found", status: "rejected" };
 	}
 
-	if (input.timestampSeconds > vod.durationSeconds) {
+	const rangeError = validateVodTimeRange(vod);
+	if (rangeError) {
+		return { reason: rangeError, status: "rejected" };
+	}
+	if (!isWithinVodTimeRange(input.timestampSeconds, vod)) {
 		return {
-			reason: `Scenario timestamp (${input.timestampSeconds}s) exceeds VOD duration (${vod.durationSeconds}s)`,
+			reason: getScenarioRangeError(input.timestampSeconds, vod),
 			status: "rejected",
 		};
 	}
@@ -147,6 +156,21 @@ export async function updateScenarioRule(
 		};
 	}
 
+	const vod = await getVodById(existing.vodId, db);
+	if (!vod) {
+		return { reason: "VOD not found", status: "rejected" };
+	}
+	const rangeError = validateVodTimeRange(vod);
+	if (rangeError) {
+		return { reason: rangeError, status: "rejected" };
+	}
+	if (!isWithinVodTimeRange(mergedConfig.timestampSeconds, vod)) {
+		return {
+			reason: getScenarioRangeError(mergedConfig.timestampSeconds, vod),
+			status: "rejected",
+		};
+	}
+
 	const updateValues = getScenarioUpdateValues(input);
 	const updated = await updateScenario(input.id, updateValues, db);
 	if (!updated) {
@@ -231,6 +255,12 @@ export async function reorderScenariosRule(
 		) {
 			return {
 				reason: "Scenario timestamp must be a non-negative number",
+				status: "rejected",
+			};
+		}
+		if (!isWithinVodTimeRange(order.timestampSeconds, vod)) {
+			return {
+				reason: getScenarioRangeError(order.timestampSeconds, vod),
 				status: "rejected",
 			};
 		}

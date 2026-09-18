@@ -141,6 +141,27 @@ describe("entities/vod server-fns", () => {
 		]);
 	});
 
+	it("excludes published scenarios outside the VOD time range", async () => {
+		// Arrange
+		const mockVods = [{ durationSeconds: 600, id: "vod_1" }] as never;
+		const mockScenarios = [
+			{ id: "sc_in", timestampSeconds: 300, vodId: "vod_1" },
+			{ id: "sc_out", timestampSeconds: 700, vodId: "vod_1" },
+		] as never;
+		vi.mocked(queryVods).mockResolvedValueOnce(mockVods);
+		vi.mocked(queryScenarios).mockResolvedValueOnce(mockScenarios);
+
+		// Act
+		const result = await (
+			getPublishedVods as unknown as () => Promise<unknown>
+		)();
+
+		// Assert
+		expect(result).toEqual([
+			{ durationSeconds: 600, id: "vod_1", scenarios: [{ id: "sc_in" }] },
+		]);
+	});
+
 	it("returns empty array when no published VODs exist", async () => {
 		// Arrange
 		vi.mocked(queryVods).mockResolvedValueOnce([]);
@@ -171,6 +192,35 @@ describe("entities/vod server-fns", () => {
 		// Assert
 		expect(dbGetVodById).toHaveBeenCalledWith("vod_1", expect.anything());
 		expect(result).toEqual({ ...mockVod, scenarios: [] });
+	});
+
+	it("filters VOD scenarios by the configured time range", async () => {
+		// Arrange
+		const mockVod = {
+			durationSeconds: 600,
+			endSeconds: 420,
+			id: "vod_1",
+			startSeconds: 90,
+		};
+		const mockScenarios = [
+			{ id: "sc_in", timestampSeconds: 300 },
+			{ id: "sc_out", timestampSeconds: 500 },
+		] as never;
+		vi.mocked(dbGetVodById).mockResolvedValueOnce(mockVod as never);
+		vi.mocked(queryScenarios).mockResolvedValueOnce(mockScenarios);
+
+		// Act
+		const result = await (
+			getVodById as unknown as (ctx: {
+				data: { id: string };
+			}) => Promise<unknown>
+		)({ data: { id: "vod_1" } });
+
+		// Assert
+		expect(result).toEqual({
+			...mockVod,
+			scenarios: [{ id: "sc_in", timestampSeconds: 300 }],
+		});
 	});
 
 	it("rejects anonymous protected manifest requests", async () => {

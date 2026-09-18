@@ -96,6 +96,8 @@ export { verifications } from "./schema/verification";
 export {
 	type HeroRole,
 	heroRoleEnum,
+	type VodRecord,
+	type VodTransportRecord,
 	vods,
 } from "./schema/vod";
 // Seed fixtures & runner

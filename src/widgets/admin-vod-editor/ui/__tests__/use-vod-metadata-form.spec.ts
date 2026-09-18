@@ -7,6 +7,7 @@ describe("useVodMetadataFormState hook", () => {
 	const mockVod: VodItem = {
 		createdAt: new Date("2026-01-01"),
 		durationSeconds: 700,
+		endSeconds: 650,
 		heroName: "Winston",
 		id: "vod_win",
 		isDemo: false,
@@ -14,6 +15,7 @@ describe("useVodMetadataFormState hook", () => {
 		mapName: "Dorado",
 		rankTier: "Top 500",
 		role: "TANK" as HeroRole,
+		startSeconds: 30,
 		title: "Winston Top 500",
 		youtubeVideoId: "yt_win",
 	};
@@ -32,6 +34,8 @@ describe("useVodMetadataFormState hook", () => {
 		expect(result.current.role).toBe("TANK");
 		expect(result.current.mapName).toBe("Dorado");
 		expect(result.current.durationSeconds).toBe(700);
+		expect(result.current.startSeconds).toBe(30);
+		expect(result.current.endSeconds).toBe(650);
 
 		// Act: rerender with updated vod prop
 		rerender({
@@ -66,6 +70,12 @@ describe("useVodMetadataFormState hook", () => {
 			result.current.handleDurationChange({
 				target: { value: "850" },
 			} as never);
+			result.current.handleStartChange({
+				target: { value: "45" },
+			} as never);
+			result.current.handleEndChange({
+				target: { value: "600" },
+			} as never);
 			result.current.handleRankChange({
 				target: { value: "Grandmaster" },
 			} as never);
@@ -79,10 +89,12 @@ describe("useVodMetadataFormState hook", () => {
 		// Assert
 		expect(onSave).toHaveBeenCalledWith({
 			durationSeconds: 850,
+			endSeconds: 600,
 			heroName: "D.Va",
 			mapName: "Oasis",
 			rankTier: "Grandmaster",
 			role: "TANK",
+			startSeconds: 45,
 			title: "Updated Title",
 			youtubeVideoId: "yt_new",
 		});

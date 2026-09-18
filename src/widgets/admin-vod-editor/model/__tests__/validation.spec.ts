@@ -8,6 +8,7 @@ import {
 	validateInputConfigByType,
 	validateScenarioConfig,
 	validateVodForPublishing,
+	validateVodTimeRange,
 } from "../validation";
 
 describe("admin-vod-editor validation rules", () => {
@@ -222,6 +223,20 @@ describe("admin-vod-editor validation rules", () => {
 			expect(result.error).toBe("Cannot publish a VOD with zero scenarios");
 		});
 
+		it("rejects an invalid VOD range before checking scenarios", () => {
+			// Act
+			const result = validateVodForPublishing(
+				{ durationSeconds: 600, startSeconds: 700 },
+				[],
+			);
+
+			// Assert
+			expect(result).toEqual({
+				error: "VOD start offset (700s) exceeds VOD duration (600s)",
+				valid: false,
+			});
+		});
+
 		it("rejects invalid scenario in list", () => {
 			const [first] = mockScenarios;
 			const invalid = [{ ...(first ?? mockScenarios[0]), promptText: "" }];
@@ -237,6 +252,69 @@ describe("admin-vod-editor validation rules", () => {
 			const result = validateVodForPublishing(mockVod, exceeding);
 			expect(result.valid).toBe(false);
 			expect(result.error).toContain("exceeds VOD duration");
+		});
+
+		it("bounds scenarios to a configured VOD time range", () => {
+			// Arrange
+			const trimmedVod = {
+				...mockVod,
+				endSeconds: 420,
+				startSeconds: 90,
+			};
+			const [first] = mockScenarios;
+
+			// Act
+			const beforeStart = validateVodForPublishing(trimmedVod, [
+				{ ...(first ?? mockScenarios[0]), timestampSeconds: 60 },
+			]);
+			const afterEnd = validateVodForPublishing(trimmedVod, [
+				{ ...(first ?? mockScenarios[0]), timestampSeconds: 430 },
+			]);
+
+			// Assert
+			expect(beforeStart.error).toContain("precedes VOD start");
+			expect(afterEnd.error).toContain("exceeds playable VOD end");
+		});
+	});
+
+	describe("validateVodTimeRange", () => {
+		it.each([
+			[
+				"rejects a non-positive duration",
+				{ durationSeconds: 0 },
+				"VOD duration must be a positive integer",
+			],
+			[
+				"rejects a negative start",
+				{ durationSeconds: 600, startSeconds: -1 },
+				"VOD start offset must be a non-negative integer",
+			],
+			[
+				"rejects a start after the duration",
+				{ durationSeconds: 600, startSeconds: 700 },
+				"VOD start offset (700s) exceeds VOD duration (600s)",
+			],
+			[
+				"rejects an end before zero",
+				{ durationSeconds: 600, endSeconds: -1 },
+				"VOD end offset must be a non-negative integer",
+			],
+			[
+				"rejects an end at the start",
+				{ durationSeconds: 600, endSeconds: 90, startSeconds: 90 },
+				"VOD end offset must be greater than the start offset",
+			],
+			[
+				"rejects an end after the duration",
+				{ durationSeconds: 600, endSeconds: 700 },
+				"VOD end offset (700s) exceeds VOD duration (600s)",
+			],
+		] as const)("%s", (_description, vod, expected) => {
+			// Act
+			const result = validateVodTimeRange(vod);
+
+			// Assert
+			expect(result).toBe(expected);
 		});
 	});
 });

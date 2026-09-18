@@ -8,6 +8,7 @@
 
 import { getCurrentUser } from "@/shared/auth/index.server";
 import { createDbClient, getVodById, queryScenarios } from "@/shared/db";
+import { isWithinVodTimeRange } from "@/shared/lib/vod-time-range";
 import type { SessionManifest } from "../model/types";
 import { normalizeSessionManifestModules } from "./session-manifest-query";
 
@@ -38,12 +39,18 @@ export async function handleGetVodManifest(
 		filter.moduleType = { in: modules };
 	}
 
-	const scenariosList = await queryScenarios(
-		{
-			filter,
-			order: { timestampSeconds: "asc" },
-		},
-		db,
+	const scenariosList = (
+		await queryScenarios(
+			{
+				filter,
+				order: { timestampSeconds: "asc" },
+			},
+			db,
+		)
+	).filter(
+		(scenario) =>
+			typeof scenario.timestampSeconds !== "number" ||
+			isWithinVodTimeRange(scenario.timestampSeconds, vod),
 	);
 
 	const manifest: SessionManifest = {

@@ -1,9 +1,27 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { VodItem } from "../../model";
-import { VodMetadataForm } from "../vod-metadata-form";
+import { VodMetadataForm, validateVodMetadata } from "../vod-metadata-form";
 
 describe("VodMetadataForm", () => {
+	it("validates optional and bounded trim values", () => {
+		// Arrange
+		const values = {
+			durationSeconds: 600,
+			heroName: "Ana",
+			mapName: "Dorado",
+			rankTier: "Grandmaster",
+			title: "Ana VOD",
+			youtubeVideoId: "yt_123",
+		};
+
+		// Act and Assert
+		expect(validateVodMetadata(values)).toBeNull();
+		expect(validateVodMetadata({ ...values, startSeconds: -1 })).toBe(
+			"VOD start offset must be a non-negative integer",
+		);
+	});
+
 	it("renders blank create form with required metadata fields", () => {
 		// Arrange
 		const onSave = vi.fn();
@@ -27,6 +45,7 @@ describe("VodMetadataForm", () => {
 		const existingVod: VodItem = {
 			createdAt: new Date("2026-01-01"),
 			durationSeconds: 720,
+			endSeconds: 600,
 			heroName: "Tracer",
 			id: "vod_123",
 			isDemo: false,
@@ -34,6 +53,7 @@ describe("VodMetadataForm", () => {
 			mapName: "King's Row",
 			rankTier: "Top 500",
 			role: "DAMAGE" as const,
+			startSeconds: 30,
 			title: "Top 500 Tracer Guide",
 			youtubeVideoId: "yt_12345",
 		};
@@ -69,6 +89,17 @@ describe("VodMetadataForm", () => {
 		expect(
 			(screen.getByLabelText("Duration (Seconds)") as HTMLInputElement).value,
 		).toBe("720");
+		expect(
+			(screen.getByLabelText("Start Offset (Seconds)") as HTMLInputElement)
+				.value,
+		).toBe("30");
+		expect(
+			(
+				screen.getByLabelText(
+					"End Offset (Seconds, optional)",
+				) as HTMLInputElement
+			).value,
+		).toBe("600");
 		expect((screen.getByLabelText("Rank Tier") as HTMLInputElement).value).toBe(
 			"Top 500",
 		);
@@ -180,6 +211,12 @@ describe("VodMetadataForm", () => {
 		fireEvent.change(screen.getByLabelText("Duration (Seconds)"), {
 			target: { value: "600" },
 		});
+		fireEvent.change(screen.getByLabelText("Start Offset (Seconds)"), {
+			target: { value: "90" },
+		});
+		fireEvent.change(screen.getByLabelText("End Offset (Seconds, optional)"), {
+			target: { value: "450" },
+		});
 		fireEvent.change(screen.getByLabelText("Rank Tier"), {
 			target: { value: "Grandmaster" },
 		});
@@ -192,10 +229,12 @@ describe("VodMetadataForm", () => {
 		// Assert
 		expect(onSave).toHaveBeenCalledWith({
 			durationSeconds: 600,
+			endSeconds: 450,
 			heroName: "Ana",
 			mapName: "King's Row",
 			rankTier: "Grandmaster",
 			role: "SUPPORT",
+			startSeconds: 90,
 			title: "Grandmaster Ana King's Row",
 			youtubeVideoId: "dQw4w9WgXcQ",
 		});

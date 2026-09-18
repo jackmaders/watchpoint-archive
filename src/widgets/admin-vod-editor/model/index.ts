@@ -39,6 +39,7 @@ export {
 	GetAdminVodByIdSchema,
 	type GetAdminVodsQueryPayload,
 	GetAdminVodsQuerySchema,
+	getScenarioRangeError,
 	type HeroRole,
 	heroRoleEnum,
 	type InputType,
@@ -62,6 +63,7 @@ export {
 	UpdateVodSchema,
 	type VodItem,
 	validateVodForPublishing,
+	validateVodTimeRange,
 } from "./types";
 export {
 	bulkDeleteVodsRule,

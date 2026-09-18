@@ -20,6 +20,7 @@ describe("vod-rules", () => {
 	const sampleVod = {
 		createdAt: new Date(),
 		durationSeconds: 600,
+		endSeconds: null,
 		heroName: "Ana",
 		id: "vod-1",
 		isDemo: false,
@@ -27,6 +28,7 @@ describe("vod-rules", () => {
 		mapName: "Dorado",
 		rankTier: "Diamond",
 		role: "SUPPORT" as const,
+		startSeconds: 0,
 		title: "Ana VOD",
 		youtubeVideoId: "yt-ana-1",
 	};
@@ -59,19 +61,18 @@ describe("vod-rules", () => {
 		it("creates VOD successfully and creates audit log", async () => {
 			// Arrange
 			const mockDb = {} as unknown as Parameters<typeof createVodRule>[1];
+			const input = {
+				...sampleVod,
+				actorUserId: "admin-1",
+				startSeconds: undefined,
+			};
 			vi.spyOn(dbQueries, "createVod").mockResolvedValueOnce(sampleVod);
 			vi.spyOn(dbQueries, "createAuditEntry").mockResolvedValueOnce(
 				sampleAuditEntry,
 			);
 
 			// Act
-			const result = await createVodRule(
-				{
-					...sampleVod,
-					actorUserId: "admin-1",
-				},
-				mockDb,
-			);
+			const result = await createVodRule(input, mockDb);
 
 			// Assert
 			expect(result).toEqual({
@@ -84,6 +85,10 @@ describe("vod-rules", () => {
 					actorUserId: "admin-1",
 					entityId: "vod-1",
 				}),
+				mockDb,
+			);
+			expect(dbQueries.createVod).toHaveBeenCalledWith(
+				expect.objectContaining({ startSeconds: 0 }),
 				mockDb,
 			);
 		});
@@ -100,6 +105,23 @@ describe("vod-rules", () => {
 			// Assert
 			expect(result).toEqual({
 				reason: "Failed to create VOD",
+				status: "rejected",
+			});
+		});
+
+		it("rejects an invalid playback range", async () => {
+			// Arrange
+			const input = {
+				...sampleVod,
+				startSeconds: 601,
+			};
+
+			// Act
+			const result = await createVodRule(input);
+
+			// Assert
+			expect(result).toEqual({
+				reason: "VOD start offset (601s) exceeds VOD duration (600s)",
 				status: "rejected",
 			});
 		});
@@ -270,6 +292,46 @@ describe("vod-rules", () => {
 				reason: "Failed to update VOD",
 				status: "rejected",
 			});
+		});
+
+		it("rejects an invalid playback range update", async () => {
+			// Arrange
+			vi.spyOn(dbQueries, "getVodById").mockResolvedValueOnce(sampleVod);
+
+			// Act
+			const result = await updateVodRule({
+				endSeconds: 10,
+				id: "vod-1",
+				startSeconds: 10,
+			});
+
+			// Assert
+			expect(result).toEqual({
+				reason: "VOD end offset must be greater than the start offset",
+				status: "rejected",
+			});
+		});
+
+		it("updates playback range fields", async () => {
+			// Arrange
+			const updatedVod = { ...sampleVod, endSeconds: 500, startSeconds: 60 };
+			vi.spyOn(dbQueries, "getVodById").mockResolvedValueOnce(sampleVod);
+			vi.spyOn(dbQueries, "updateVod").mockResolvedValueOnce(updatedVod);
+
+			// Act
+			const result = await updateVodRule({
+				endSeconds: 500,
+				id: "vod-1",
+				startSeconds: 60,
+			});
+
+			// Assert
+			expect(result).toEqual({ status: "success", vod: updatedVod });
+			expect(dbQueries.updateVod).toHaveBeenCalledWith(
+				"vod-1",
+				expect.objectContaining({ endSeconds: 500, startSeconds: 60 }),
+				undefined,
+			);
 		});
 	});
 

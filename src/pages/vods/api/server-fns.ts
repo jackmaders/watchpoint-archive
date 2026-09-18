@@ -4,10 +4,14 @@
  * Implements `getPublishedVods` using `createServerFn` and delegating to `queryVods`.
  */
 import { createServerFn } from "@tanstack/react-start";
-import { createDbClient, queryVods, type vods } from "@/shared/db";
+import {
+	createDbClient,
+	queryVods,
+	type VodTransportRecord,
+} from "@/shared/db";
 import { vodsSearchSchema } from "../model/search-params";
 
-export type PublishedVodItem = typeof vods.$inferSelect;
+export type PublishedVodItem = VodTransportRecord;
 
 export const getPublishedVods = createServerFn({ method: "GET" })
 	.validator((data: unknown) => {

@@ -20,6 +20,7 @@ export const FIXTURE_IDS = {
 
 export const FIXTURE_VOD = {
 	durationSeconds: 960,
+	endSeconds: null,
 	heroName: "Brigitte",
 	id: FIXTURE_IDS.vod,
 	isDemo: true,
@@ -27,6 +28,7 @@ export const FIXTURE_VOD = {
 	mapName: "King's Row",
 	rankTier: "Grandmaster",
 	role: "SUPPORT" as const,
+	startSeconds: 0,
 	title: "Grandmaster Brigitte — King's Row Defense & Streets Phase",
 	youtubeVideoId: "fyorxMHfass",
 } as const;
@@ -40,6 +42,7 @@ export function getLocalFixtureVod() {
 
 export const FIXTURE_DEMO_VOD = {
 	durationSeconds: 600,
+	endSeconds: null,
 	heroName: "Ana",
 	id: FIXTURE_IDS.demoVod,
 	isDemo: true,
@@ -47,6 +50,7 @@ export const FIXTURE_DEMO_VOD = {
 	mapName: "Busan",
 	rankTier: "OWCS",
 	role: "SUPPORT" as const,
+	startSeconds: 0,
 	title: "OWCS Ana — Busan (Shu)",
 	youtubeVideoId: "PHVmqR1ANtc",
 } as const;

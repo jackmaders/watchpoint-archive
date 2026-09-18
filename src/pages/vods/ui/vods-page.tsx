@@ -8,6 +8,7 @@ import { Link } from "@tanstack/react-router";
 import { useCallback } from "react";
 import { VodFilterInputs } from "@/entities/vod";
 import { formatDuration } from "@/shared/lib/utils";
+import { getEffectiveVodDuration } from "@/shared/lib/vod-time-range";
 import { Button } from "@/shared/ui/button";
 import type { PublishedVodItem } from "@/widgets/admin-vod-editor";
 import { AppLayout } from "@/widgets/layout-main";
@@ -210,7 +211,9 @@ function VodsGrid({ vods }: { vods: PublishedVodItem[] }) {
 						</h2>
 
 						<div className="flex items-center justify-between gap-2 border-t border-border pt-3 font-mono text-xs text-muted-foreground">
-							<span>Duration: {formatDuration(vod.durationSeconds)}</span>
+							<span>
+								Duration: {formatDuration(getEffectiveVodDuration(vod))}
+							</span>
 							<span>{vod.scenarios.length} Scenarios</span>
 						</div>
 					</div>

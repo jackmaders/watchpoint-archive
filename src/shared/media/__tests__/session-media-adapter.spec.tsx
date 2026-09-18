@@ -128,6 +128,63 @@ describe("session media adapter", () => {
 		expect(result.current.currentTime).toBe(18.5);
 	});
 
+	it("seeks to the configured start and pauses at the configured end", async () => {
+		// Arrange
+		const frameController = installMockFrames();
+		const youtube = createYouTubeMock(600);
+		setYouTubeNamespace(youtube.namespace);
+		const onEvent = vi.fn();
+		const container = document.createElement("div");
+		const { result } = renderHook(() =>
+			useSessionMediaAdapter({
+				endSeconds: 120,
+				onEvent,
+				startSeconds: 90,
+				videoId: "trimmed-video",
+			}),
+		);
+
+		act(() => result.current.containerRef(container));
+		await act(async () => {
+			await Promise.resolve();
+			await Promise.resolve();
+		});
+		const player = youtube.players[0];
+
+		// Act
+		act(() => player.triggerReady());
+		player.getCurrentTime = vi.fn(() => 120);
+		act(() => {
+			player.triggerStateChange(YouTubePlayerState.PLAYING);
+			frameController.flush();
+		});
+
+		// Assert
+		expect(player.seekTo).toHaveBeenCalledWith(90, true);
+		expect(player.pauseVideo).toHaveBeenCalledTimes(1);
+		const events = onEvent.mock.calls.map(([event]) => event);
+		const boundaryEventIndex = events.findIndex(
+			(event) =>
+				event.type === "PLAYBACK_STATUS_CHANGED" &&
+				event.status === PlaybackStatus.PAUSED,
+		);
+		expect(events[boundaryEventIndex - 1]).toEqual({
+			time: 120,
+			type: "TIME_UPDATED",
+		});
+		expect(events[boundaryEventIndex]).toEqual({
+			status: PlaybackStatus.PAUSED,
+			type: "PLAYBACK_STATUS_CHANGED",
+		});
+
+		// Act
+		act(() => result.current.execute({ type: "PLAY" }));
+
+		// Assert
+		expect(player.seekTo).toHaveBeenLastCalledWith(90, true);
+		expect(player.playVideo).toHaveBeenCalledTimes(1);
+	});
+
 	it("manages volume and mute controls through adapter result", async () => {
 		// Arrange
 		const youtube = createYouTubeMock(142);

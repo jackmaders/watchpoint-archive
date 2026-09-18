@@ -205,6 +205,90 @@ describe("useSessionPlayer", () => {
 		expect(result.current.activeScenarios).toHaveLength(3);
 	});
 
+	it("starts at the VOD range start and pauses at its range end", async () => {
+		// Arrange
+		const frameController = installMockFrames();
+		const youtube = createYouTubeMock(600);
+		setYouTubeNamespace(youtube.namespace);
+		const container = document.createElement("div");
+		const { result } = renderHook(
+			() =>
+				useSessionPlayer({
+					autoplay: true,
+					initialManifest: {
+						...mockManifest,
+						endSeconds: 120,
+						scenarios: [],
+						startSeconds: 90,
+					},
+					vodId: "vod_gm_ana",
+				}),
+			{ wrapper: createWrapper() },
+		);
+
+		act(() => result.current.containerRef(container));
+		await act(async () => {
+			await Promise.resolve();
+		});
+		const player = youtube.players[0];
+
+		// Act
+		act(() => {
+			player.triggerReady();
+			player.triggerStateChange(YouTubePlayerState.PLAYING);
+		});
+		player.getCurrentTime = vi.fn(() => 120);
+		act(() => frameController.flush());
+
+		// Assert
+		expect(player.seekTo).toHaveBeenCalledWith(90, true);
+		expect(player.pauseVideo).toHaveBeenCalledTimes(1);
+		expect(result.current.state).toBe("PAUSED_USER");
+	});
+
+	it("activates a scenario exactly at the configured VOD end", async () => {
+		// Arrange
+		const frameController = installMockFrames();
+		const youtube = createYouTubeMock(600);
+		setYouTubeNamespace(youtube.namespace);
+		const container = document.createElement("div");
+		const endScenario = {
+			...mockManifest.scenarios[0],
+			timestampSeconds: 120,
+		};
+		const { result } = renderHook(
+			() =>
+				useSessionPlayer({
+					autoplay: true,
+					initialManifest: {
+						...mockManifest,
+						endSeconds: 120,
+						scenarios: [endScenario],
+						startSeconds: 90,
+					},
+					vodId: "vod_gm_ana",
+				}),
+			{ wrapper: createWrapper() },
+		);
+
+		act(() => result.current.containerRef(container));
+		await act(async () => {
+			await Promise.resolve();
+		});
+		const player = youtube.players[0];
+
+		// Act
+		act(() => {
+			player.triggerReady();
+			player.triggerStateChange(YouTubePlayerState.PLAYING);
+		});
+		player.getCurrentTime = vi.fn(() => 120);
+		act(() => frameController.flush());
+
+		// Assert
+		expect(result.current.state).toBe("SCENARIO_ACTIVE");
+	});
+
 	it("recreates the player after a media failure without resetting the playthrough", async () => {
 		// Arrange
 		const youtube = createYouTubeMock(600);

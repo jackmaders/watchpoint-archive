@@ -168,6 +168,7 @@ describe("admin-vod-editor server functions", () => {
 			expect(createVodRule).toHaveBeenCalledWith({
 				...payload,
 				actorUserId: "admin_1",
+				startSeconds: 0,
 			});
 			expect(result).toEqual({ status: "success", vod: { id: "v1" } });
 		});

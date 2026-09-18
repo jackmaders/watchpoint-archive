@@ -13,8 +13,10 @@ export interface PublicationStatusControlProps {
 	scenarios: ReadonlyArray<ScenarioItem>;
 	vod: {
 		durationSeconds: number;
+		endSeconds?: number | null;
 		id: string;
 		isPublished: boolean;
+		startSeconds?: number | null;
 		title: string;
 	};
 }
@@ -100,10 +102,14 @@ export function PublicationStatusControl({
 }: PublicationStatusControlProps) {
 	const validation = useMemo(() => {
 		return validateVodForPublishing(
-			{ durationSeconds: vod.durationSeconds },
+			{
+				durationSeconds: vod.durationSeconds,
+				endSeconds: vod.endSeconds,
+				startSeconds: vod.startSeconds,
+			},
 			scenarioList,
 		);
-	}, [scenarioList, vod.durationSeconds]);
+	}, [scenarioList, vod.durationSeconds, vod.endSeconds, vod.startSeconds]);
 
 	const handlePublish = useCallback(() => {
 		onTogglePublish(true);
