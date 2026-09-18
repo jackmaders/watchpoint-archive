@@ -4,6 +4,8 @@
  * Binds `VodsIdSessionRouteComponent` to `/vods/$id/session` while loader and search parsing
  * remain eager and presentation is delegated to `pages/vods-id-session`.
  */
+/* v8 ignore file */
+
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { VodsIdSessionRouteComponent } from "@/pages/vods-id-session";
 

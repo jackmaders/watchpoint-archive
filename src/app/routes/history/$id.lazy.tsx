@@ -4,6 +4,8 @@
  * Binds `HistoryIdRouteComponent` to `/history/$id` while data loading remains eager and
  * presentation is delegated to the `pages/history-id` slice.
  */
+/* v8 ignore file */
+
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { HistoryIdRouteComponent } from "@/pages/history-id";
 

@@ -4,6 +4,8 @@
  * Binds `AdminContentIdRouteComponent` to `/admin/content/$id` while loader execution remains
  * eager and editor presentation is delegated to `pages/admin-content-id`.
  */
+/* v8 ignore file */
+
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { AdminContentIdRouteComponent } from "@/pages/admin-content-id";
 

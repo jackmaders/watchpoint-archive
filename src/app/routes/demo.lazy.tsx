@@ -4,6 +4,8 @@
  * Binds `DemoRouteComponent` to `/demo` while keeping the demo player UI out of the eager
  * route tree and delegating presentation to the `pages/demo` slice.
  */
+/* v8 ignore file */
+
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { DemoRouteComponent } from "@/pages/demo";
 
