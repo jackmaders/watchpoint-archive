@@ -142,12 +142,3 @@ export async function isRegistrationOpen(
 export async function handleAuthRequest({ request }: { request: Request }) {
 	return getAuth().handler(request);
 }
-
-export const authApiRouteOptions = {
-	server: {
-		handlers: {
-			GET: handleAuthRequest,
-			POST: handleAuthRequest,
-		},
-	},
-};

@@ -22,6 +22,7 @@ export default defineConfig({
 				"src/**/index.ts",
 				"src/**/index.client.ts",
 				"src/**/index.server.ts",
+				"src/shared/test-fixtures/**",
 				"src/app/**",
 				"src/shared/db/**/schema.ts",
 				"src/shared/db/schema/**",

@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("@tanstack/react-router");
-vi.mock("@/shared/auth/index.server");
+vi.mock("@/shared/auth");
 vi.mock("@/shared/media");
 vi.mock("@/entities/vod");
 
 import { vodManifestApiRouteOptions } from "@/entities/vod";
-import { authApiRouteOptions } from "@/shared/auth/index.server";
+import { authApiRouteOptions } from "@/shared/auth";
 import { mediaApiRouteOptions } from "@/shared/media";
 import { Route as AuthApiRoute } from "../auth/$";
 import { Route as MediaApiRoute } from "../media/$";

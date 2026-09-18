@@ -26,10 +26,12 @@ export async function invalidateSessionState() {
 	await Promise.all(promises);
 }
 
-export const authClient = createAuthClient({
+export const authClientOptions = {
 	fetchOptions: {
 		onSuccess: async () => {
 			await invalidateSessionState();
 		},
 	},
-});
+};
+
+export const authClient = createAuthClient(authClientOptions);
