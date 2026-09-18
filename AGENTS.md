@@ -46,7 +46,7 @@ Always execute workflows using `bun run <script>` and manage packages with `bun 
 
 ## Disclosed Documentation & Pointers
 
-- **Coding Standards**: Architecture (Feature-Sliced Design, `app/` barrels, feature naming), testing (AAA structure, <50ms speed, 100% coverage), and mock isolation rules live in `CODING_STANDARDS.md`.
+- **Coding Standards**: For every implementation or refactor, read `CODING_STANDARDS.md`. It contains the repository's Durable Engineering principles, architecture rules (Feature-Sliced Design, `app/` barrels, feature naming), testing rules (AAA structure, <50ms speed, 100% coverage), and mock isolation rules.
 - **Domain Modeling & ADRs**: Domain glossary and ADR sync discipline live in `CONTEXT.md` and `docs/agents/domain.md`.
 - **Issue Tracker & Wayfinding**: Conventions for `gh` CLI issue management and Wayfinder maps live in `docs/agents/issue-tracker.md`.
 - **Triage & State Labels**: Canonical 5-role triage vocabulary and GHA automation triggers live in `docs/agents/triage-labels.md`.
