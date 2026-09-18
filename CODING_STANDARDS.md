@@ -5,6 +5,32 @@ Developer and Reviewer agent skills deleted in #50 — the parts that describe h
 *should* be written, independent of any specific ticket's requirements. The Spec axis
 (does this PR do what the issue asked?) is judged against the issue, not this file.
 
+## Durable Engineering
+
+Write code for the next change, not only for today's runtime. A change must
+remain understandable, testable, and maintainable in its production context.
+
+For every code change:
+
+1. State the problem and the boundary being changed.
+2. Read the relevant domain, architecture, and existing call sites before
+   introducing a new abstraction.
+3. Prefer the simplest design that preserves the domain model.
+4. Make side effects, dependencies, state changes, and failure modes visible.
+5. Give names enough meaning that a reader does not need implementation details
+   to understand the intent.
+6. Keep each function and module focused on one coherent responsibility.
+7. Introduce abstractions only when a real repeated problem or change boundary
+   justifies them.
+8. Explain non-obvious constraints and trade-offs in comments or module
+   documentation.
+9. Trace every changed interface through its production callers and tests.
+10. Run the narrowest relevant validation, followed by the repository's
+    required quality gate.
+
+A change is complete only when its implementation, callers, tests, documentation,
+and validation results agree with one another.
+
 ## Feature-Sliced Design (Pages-First)
 
 - Keep UI components, business logic, and server actions inside the relevant
@@ -241,5 +267,4 @@ absorb everything a slice needs.
 - Query operations return `data: null` or `data: []` on missing records and only return failures on genuine D1 infrastructure errors.
 - Mutation operations catch constraint violations to distinguish predictable conflicts (e.g. unique constraint collision) from fatal infrastructure failures.
 - Server-side error monitoring (Sentry) and client-side UI error notifications (Toasts) are isolated at server function (`server-fns.ts`) and client mutation boundaries (`MutationCache` / `QueryCache`).
-
 
