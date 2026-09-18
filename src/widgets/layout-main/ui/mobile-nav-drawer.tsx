@@ -27,7 +27,7 @@ export function MobileNavDrawer({
 	return (
 		<Dialog onOpenChange={onOpenChange} open={open}>
 			<DialogContent
-				className="fixed inset-y-0 left-0 top-0 z-50 h-full w-72 max-w-[80vw] translate-x-0 translate-y-0 rounded-none border-r border-border bg-card p-0 shadow-2xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-xs"
+				className="fixed inset-y-0 left-0 top-0 z-50 flex h-full w-72 max-w-[80vw] flex-col justify-start gap-0 translate-x-0 translate-y-0 rounded-none border-r border-border bg-card p-0 shadow-2xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-xs"
 				showCloseButton={false}
 			>
 				<DialogTitle className="sr-only">Mobile Navigation</DialogTitle>
@@ -46,7 +46,7 @@ export function MobileNavDrawer({
 					</Button>
 				</div>
 				<Sidebar
-					className="static h-[calc(100%-4rem)] w-full border-r-0 bg-transparent"
+					className="static min-h-0 flex-1 w-full overflow-y-auto border-r-0 bg-transparent"
 					onNavClick={onClose}
 					showCollapseToggle={false}
 					user={user}
