@@ -94,7 +94,7 @@
 		"storybook:check:completeness": "bun scripts/check-storybook-completeness.ts",
 		"test:coverage": "vitest run --coverage",
 		"test:coverage:merge": "vitest run --merge-reports --coverage",
-		"test:coverage:shard": "vitest run --coverage --reporter=blob --coverage.thresholds.lines=0 --coverage.thresholds.functions=0 --coverage.thresholds.branches=0 --coverage.thresholds.statements=0",
+		"test:coverage:shard": "vitest run --coverage --reporter=default --reporter=blob --coverage.thresholds.lines=0 --coverage.thresholds.functions=0 --coverage.thresholds.branches=0 --coverage.thresholds.statements=0",
 		"test:e2e": "playwright test",
 		"test:routes": "vitest run src/app/routes",
 		"test:unit": "vitest run",

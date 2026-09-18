@@ -1,3 +1,10 @@
+/**
+ * Protects the performance audit's metric calculations and CI sampling policy from regression.
+ *
+ * Exercises the public audit helpers with deterministic route metrics, environment settings, and
+ * loopback server responses so the budget checker can evolve without reintroducing flaky policy
+ * defaults or losing coverage for its failure-safe boundaries.
+ */
 import http from "node:http";
 import type { AddressInfo } from "node:net";
 import { pathToFileURL } from "node:url";
@@ -8,8 +15,55 @@ import {
 	isServerReachable,
 	type RouteAuditRunMetrics,
 	type RouteAuditSummary,
+	resolvePerformanceAuditSettings,
 	summarizeRouteMetrics,
 } from "../check-perf-budgets";
+
+describe("Performance Audit Sampling Settings", () => {
+	it("uses repeated samples and a warm-up navigation in CI", () => {
+		// Arrange
+		const environment = { CI: "true" };
+
+		// Act
+		const settings = resolvePerformanceAuditSettings(environment);
+
+		// Assert
+		expect(settings).toEqual({ passCount: 3, warmupCount: 1 });
+	});
+
+	it("uses the faster local defaults outside CI", () => {
+		// Arrange
+		const environment = {};
+
+		// Act
+		const settings = resolvePerformanceAuditSettings(environment);
+
+		// Assert
+		expect(settings).toEqual({ passCount: 2, warmupCount: 0 });
+	});
+
+	it("honors valid overrides while rejecting unsafe values", () => {
+		// Arrange
+		const environment = {
+			CI: "true",
+			PERF_PASSES: "5",
+			PERF_WARMUPS: "2",
+		};
+		const invalidEnvironment = {
+			CI: "true",
+			PERF_PASSES: "0",
+			PERF_WARMUPS: "-1",
+		};
+
+		// Act
+		const overridden = resolvePerformanceAuditSettings(environment);
+		const fallback = resolvePerformanceAuditSettings(invalidEnvironment);
+
+		// Assert
+		expect(overridden).toEqual({ passCount: 5, warmupCount: 2 });
+		expect(fallback).toEqual({ passCount: 3, warmupCount: 1 });
+	});
+});
 
 describe("Performance Budget Audit Summary and Median Calculations", () => {
 	it("calculates the median metric correctly for odd and even number of samples", () => {
