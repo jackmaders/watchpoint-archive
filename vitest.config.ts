@@ -20,6 +20,7 @@ export default defineConfig({
 			},
 		},
 		environment: "happy-dom",
+		globals: true,
 		include: ["**/*.spec.{ts,tsx}"],
 		setupFiles: ["./vitest/setup.ts"],
 		testTimeout: process.env.CI ? 500 : 1500,
