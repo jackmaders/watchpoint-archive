@@ -5,7 +5,7 @@ import {
 	getVodById as dbGetVodById,
 	queryScenarios,
 	queryVods,
-} from "@/shared/db";
+} from "@/shared/db/index.server";
 import * as recordAttemptModule from "../record-attempt";
 import {
 	completePlaythrough,
@@ -18,7 +18,7 @@ import {
 } from "../server-fns";
 
 vi.mock("@tanstack/react-start");
-vi.mock("@/shared/db");
+vi.mock("@/shared/db/index.server");
 vi.mock("@/shared/auth/index.server");
 vi.mock("../record-attempt");
 

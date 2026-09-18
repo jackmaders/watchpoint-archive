@@ -9,7 +9,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { type auditEntries, queryAuditEntries } from "@/shared/db";
+import { type auditEntries, queryAuditEntries } from "@/shared/db/index.server";
 import { requirePermission } from "./permissions";
 
 export type AuditEntryItem = typeof auditEntries.$inferSelect;

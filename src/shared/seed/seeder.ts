@@ -9,18 +9,20 @@
 
 import { createLocalAccountIssuer } from "better-auth";
 import { hashPassword } from "better-auth/crypto";
-import type { createDbClient } from "../client";
-import { accounts } from "../schema/account";
-import { attemptRecords } from "../schema/attempt-record";
-import { auditEntries } from "../schema/audit";
-import { playthroughs } from "../schema/playthrough";
-import { playthroughCompletions } from "../schema/playthrough-completion";
-import { playthroughModuleSelections } from "../schema/playthrough-module-selection";
-import { scenarios } from "../schema/scenario";
-import { scenarioSnapshots } from "../schema/scenario-snapshot";
-import { sessions } from "../schema/session";
-import { users } from "../schema/user";
-import { vods } from "../schema/vod";
+import {
+	accounts,
+	attemptRecords,
+	auditEntries,
+	type createDbClient,
+	playthroughCompletions,
+	playthroughModuleSelections,
+	playthroughs,
+	scenarioSnapshots,
+	scenarios,
+	sessions,
+	users,
+	vods,
+} from "@/shared/db/index.server";
 import {
 	FIXTURE_IDS,
 	getLocalDemoFixtureScenarios,

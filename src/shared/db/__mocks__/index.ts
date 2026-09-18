@@ -7,6 +7,17 @@
  */
 
 import { vi } from "vitest";
+import {
+	FIXTURE_DEMO_VOD,
+	FIXTURE_IDS,
+	FIXTURE_VOD,
+	getLocalDemoFixtureScenarios,
+	getLocalDemoFixtureVod,
+	getLocalFixtureScenarios,
+	getLocalFixtureVod,
+} from "../../seed/fixtures";
+import { assertLocalSeedTarget, getSeedCredentials } from "../../seed/policy";
+import { executeSeed } from "../../seed/seeder";
 import { accounts } from "../schema/account";
 import { attemptRecords } from "../schema/attempt-record";
 import { auditEntries } from "../schema/audit";
@@ -20,17 +31,6 @@ import { sessions } from "../schema/session";
 import { userRoleEnum, users } from "../schema/user";
 import { verifications } from "../schema/verification";
 import { heroRoleEnum, vods } from "../schema/vod";
-import {
-	FIXTURE_DEMO_VOD,
-	FIXTURE_IDS,
-	FIXTURE_VOD,
-	getLocalDemoFixtureScenarios,
-	getLocalDemoFixtureVod,
-	getLocalFixtureScenarios,
-	getLocalFixtureVod,
-} from "../seed/fixtures";
-import { assertLocalSeedTarget, getSeedCredentials } from "../seed/policy";
-import { executeSeed } from "../seed/seeder";
 
 // Audit domain queries
 export const queryAuditEntries = vi.fn(async () => []);

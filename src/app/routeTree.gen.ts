@@ -37,12 +37,12 @@ const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any).lazy(() => import('./routes/admin.lazy').then((d) => d.Route))
 const DemoRoute = DemoRouteImport.update({
   id: '/demo',
   path: '/demo',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any).lazy(() => import('./routes/demo.lazy').then((d) => d.Route))
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
@@ -57,27 +57,27 @@ const AdminAuditRoute = AdminAuditRouteImport.update({
   id: '/audit',
   path: '/audit',
   getParentRoute: () => AdminRoute,
-} as any)
+} as any).lazy(() => import('./routes/admin/audit.lazy').then((d) => d.Route))
 const AdminContentRoute = AdminContentRouteImport.update({
   id: '/content',
   path: '/content',
   getParentRoute: () => AdminRoute,
-} as any)
+} as any).lazy(() => import('./routes/admin/content.lazy').then((d) => d.Route))
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
   getParentRoute: () => AdminRoute,
-} as any)
+} as any).lazy(() => import('./routes/admin/users.lazy').then((d) => d.Route))
 const HistoryIndexRoute = HistoryIndexRouteImport.update({
   id: '/history/',
   path: '/history/',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any).lazy(() => import('./routes/history/index.lazy').then((d) => d.Route))
 const HistoryIdRoute = HistoryIdRouteImport.update({
   id: '/history/$id',
   path: '/history/$id',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any).lazy(() => import('./routes/history/$id.lazy').then((d) => d.Route))
 const VodsIndexRoute = VodsIndexRouteImport.update({
   id: '/vods/',
   path: '/vods/',
@@ -92,12 +92,16 @@ const AdminContentIdRoute = AdminContentIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => AdminContentRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/admin/content/$id.lazy').then((d) => d.Route),
+)
 const AdminContentNewRoute = AdminContentNewRouteImport.update({
   id: '/new',
   path: '/new',
   getParentRoute: () => AdminContentRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/admin/content/new.lazy').then((d) => d.Route),
+)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -112,7 +116,9 @@ const VodsIdSessionRoute = VodsIdSessionRouteImport.update({
   id: '/session',
   path: '/session',
   getParentRoute: () => VodsIdRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/vods/$id.session.lazy').then((d) => d.Route),
+)
 const ApiVodsIdManifestRoute = ApiVodsIdManifestRouteImport.update({
   id: '/api/vods/$id/manifest',
   path: '/api/vods/$id/manifest',

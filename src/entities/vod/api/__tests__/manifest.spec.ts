@@ -1,9 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getCurrentUser } from "@/shared/auth/index.server";
-import { createDbClient, getVodById, queryScenarios } from "@/shared/db";
+import {
+	createDbClient,
+	getVodById,
+	queryScenarios,
+} from "@/shared/db/index.server";
 import { handleGetVodManifest, handleVodManifestRequest } from "../manifest";
 
-vi.mock("@/shared/db");
+vi.mock("@/shared/db/index.server");
 vi.mock("@/shared/auth/index.server");
 
 describe("GET /api/vods/[id]/manifest handler", () => {

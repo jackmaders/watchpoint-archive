@@ -13,7 +13,7 @@ import {
 	type JsonValue,
 	queryScenarios,
 	updateVod,
-} from "@/shared/db";
+} from "@/shared/db/index.server";
 import type {
 	BulkDeleteVodsPayload,
 	BulkDeleteVodsResult,

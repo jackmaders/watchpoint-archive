@@ -7,11 +7,14 @@
  */
 
 import { index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { playthroughStatusEnum } from "../database-contracts";
 import { users } from "./user";
 import { vods } from "./vod";
 
-export const playthroughStatusEnum = ["IN_PROGRESS", "COMPLETED"] as const;
-export type PlaythroughStatus = (typeof playthroughStatusEnum)[number];
+export {
+	type PlaythroughStatus,
+	playthroughStatusEnum,
+} from "../database-contracts";
 
 export const playthroughs = sqliteTable(
 	"playthrough",

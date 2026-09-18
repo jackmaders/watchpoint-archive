@@ -7,14 +7,14 @@
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("@/shared/db");
+vi.mock("@/shared/db/index.server");
 
 import {
 	createAuditEntry,
 	getUserById,
 	queryUsers,
 	updateUser,
-} from "@/shared/db";
+} from "@/shared/db/index.server";
 import { updateUserRoleRule } from "../update-user-role";
 
 describe("updateUserRoleRule", () => {

@@ -4,7 +4,11 @@
  * Implements `getAdminVodsRule` and `getAdminVodByIdRule` using database query helpers.
  */
 
-import { getVodById, queryScenarios, queryVods } from "@/shared/db";
+import {
+	getVodById,
+	queryScenarios,
+	queryVods,
+} from "@/shared/db/index.server";
 import type {
 	AdminVodItem,
 	GetAdminVodByIdPayload,

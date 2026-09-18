@@ -12,7 +12,7 @@ import {
 	getPlaythroughById,
 	queryAttemptRecords,
 	queryPlaythroughs,
-} from "@/shared/db";
+} from "@/shared/db/index.server";
 import {
 	completePlaythroughAction,
 	type StartPlaythroughInput,

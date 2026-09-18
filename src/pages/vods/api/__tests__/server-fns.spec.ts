@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createDbClient, queryVods } from "@/shared/db";
+import { createDbClient, queryVods } from "@/shared/db/index.server";
 import { getPublishedVods } from "../server-fns";
 
 vi.mock("@tanstack/react-start");
-vi.mock("@/shared/db");
+vi.mock("@/shared/db/index.server");
 
 describe("vods server-fns", () => {
 	beforeEach(() => {

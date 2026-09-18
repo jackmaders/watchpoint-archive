@@ -8,8 +8,7 @@
  * Tracking, and Spatial Awareness) with polymorphic configurations.
  */
 
-import type { ModuleType } from "../schema/scenario";
-import type { JsonValue } from "../types";
+import type { JsonValue, ModuleType } from "@/shared/db";
 
 export const FIXTURE_IDS = {
 	adminUser: "usr_local_admin",

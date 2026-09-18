@@ -27,9 +27,10 @@ export default defineConfig({
 		viteReact(),
 		tailwindcss(),
 		visualizer({
+			emitFile: true,
 			filename: "stats.json",
 			gzipSize: true,
-			template: "raw-data", // Outputs structured JSON instead of HTML
+			template: "raw-data",
 		}),
 	],
 	resolve: {

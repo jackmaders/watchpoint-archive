@@ -4,7 +4,7 @@
  * Implements `HomePage` wrapped in `AppLayout`, composing benefit-driven marketing sections
  * including hero value statements, learning methodology, interactive UI preview, and action triggers.
  */
-import { FIXTURE_IDS } from "@/shared/db";
+import { FIXTURE_IDS } from "@/shared/seed";
 import { AppLayout } from "@/widgets/layout-main";
 import type { PublishedVodItem } from "../model/types";
 import { CtaSection } from "./cta-section";

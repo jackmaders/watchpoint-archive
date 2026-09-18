@@ -7,7 +7,11 @@
  */
 
 import { getCurrentUser } from "@/shared/auth/index.server";
-import { createDbClient, getVodById, queryScenarios } from "@/shared/db";
+import {
+	createDbClient,
+	getVodById,
+	queryScenarios,
+} from "@/shared/db/index.server";
 import { isWithinVodTimeRange } from "@/shared/lib/vod-time-range";
 import type { SessionManifest } from "../model/types";
 import { normalizeSessionManifestModules } from "./session-manifest-query";

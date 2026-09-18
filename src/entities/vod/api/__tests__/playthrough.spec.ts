@@ -8,13 +8,13 @@ import {
 	createScenarioSnapshots,
 	getPlaythroughById,
 	updatePlaythrough,
-} from "@/shared/db";
+} from "@/shared/db/index.server";
 import {
 	completePlaythroughAction,
 	startPlaythroughAction,
 } from "../playthrough";
 
-vi.mock("@/shared/db");
+vi.mock("@/shared/db/index.server");
 vi.mock("@/shared/auth/index.server");
 
 const input: import("../playthrough").StartPlaythroughInput = {

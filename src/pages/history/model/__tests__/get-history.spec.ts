@@ -7,7 +7,7 @@
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("@/shared/db");
+vi.mock("@/shared/db/index.server");
 vi.mock("@/shared/auth/index.server");
 
 import { getCurrentUser } from "@/shared/auth/index.server";
@@ -20,7 +20,7 @@ import {
 	queryPlaythroughModuleSelections,
 	queryPlaythroughs,
 	queryScenarioSnapshots,
-} from "@/shared/db";
+} from "@/shared/db/index.server";
 import { getHistoryRule } from "../get-history";
 
 describe("getHistoryRule", () => {

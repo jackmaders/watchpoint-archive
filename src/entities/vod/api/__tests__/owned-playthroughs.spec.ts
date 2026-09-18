@@ -5,7 +5,7 @@ import {
 	getPlaythroughById,
 	queryAttemptRecords,
 	queryPlaythroughs,
-} from "@/shared/db";
+} from "@/shared/db/index.server";
 import {
 	completeOwnedPlaythrough,
 	createOwnedPlaythrough,
@@ -15,7 +15,7 @@ import {
 } from "../owned-playthroughs";
 import * as playthroughActions from "../playthrough";
 
-vi.mock("@/shared/db");
+vi.mock("@/shared/db/index.server");
 vi.mock("@/shared/auth/index.server");
 
 describe("owned playthrough server boundary", () => {

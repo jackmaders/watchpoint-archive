@@ -1,10 +1,7 @@
 /**
  * Route options configuration for creating a new VOD training session.
  *
- * Configures `adminContentNewRouteOptions` binding `AdminContentNewRouteComponent` for the `/admin/content/new` route.
+ * Keeps the eager `/admin/content/new` route configuration empty because its presentation loads lazily.
  */
-import { AdminContentNewRouteComponent } from "../ui/admin-content-new-route";
 
-export const adminContentNewRouteOptions = {
-	component: AdminContentNewRouteComponent,
-};
+export const adminContentNewRouteOptions = {};
