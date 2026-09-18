@@ -1,3 +1,10 @@
+/**
+ * Audits the user-facing route inventory against the repository's Core Web Vitals budgets.
+ *
+ * Starts or reuses the preview server, authenticates isolated Playwright browser contexts for
+ * each access state, warms each route before measurement, and evaluates the median of repeated
+ * samples so shared CI runner variance does not turn one transient navigation into a failure.
+ */
 import { type ChildProcess, spawn } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import http from "node:http";
@@ -33,6 +40,31 @@ export interface RouteAuditSummary {
 	medianMetrics: RouteAuditRunMetrics;
 	passed: boolean;
 	route: string;
+}
+
+export interface PerformanceAuditSettings {
+	passCount: number;
+	warmupCount: number;
+}
+
+function parseCount(
+	value: string | undefined,
+	fallback: number,
+	minimum: number,
+): number {
+	if (value === undefined) return fallback;
+	const parsed = Number(value);
+	return Number.isInteger(parsed) && parsed >= minimum ? parsed : fallback;
+}
+
+export function resolvePerformanceAuditSettings(
+	env: Record<string, string | undefined> = process.env,
+): PerformanceAuditSettings {
+	const isCi = Boolean(env.CI);
+	return {
+		passCount: parseCount(env.PERF_PASSES, isCi ? 3 : 2, 1),
+		warmupCount: parseCount(env.PERF_WARMUPS, isCi ? 1 : 0, 0),
+	};
 }
 
 export function calculateMedianMetric(samples: readonly number[]): number {
@@ -184,6 +216,15 @@ export async function measurePageWebVitals(
 	}
 }
 
+async function warmUpPage(context: BrowserContext, url: string): Promise<void> {
+	const page = await context.newPage();
+	try {
+		await page.goto(url, { waitUntil: "domcontentloaded" });
+	} finally {
+		await page.close();
+	}
+}
+
 export function loadPerfExceptions(root = process.cwd()): {
 	errors: string[];
 	exceptions: PerfBudgetException[];
@@ -282,8 +323,11 @@ async function auditRouteForState(
 		activeContext = contexts.adminContext;
 	}
 
-	const passCount = Number(process.env.PERF_PASSES || (process.env.CI ? 1 : 2));
+	const { passCount, warmupCount } = resolvePerformanceAuditSettings();
 	const runs: RouteAuditRunMetrics[] = [];
+	for (let warmup = 0; warmup < warmupCount; warmup++) {
+		await warmUpPage(activeContext, fullUrl);
+	}
 	for (let pass = 1; pass <= passCount; pass++) {
 		const metrics = await measurePageWebVitals(activeContext, fullUrl);
 		runs.push(metrics);
@@ -308,6 +352,10 @@ export async function runPerformanceAudits(
 	}
 
 	const contexts = await prepareAuthStates(baseUrl);
+	const settings = resolvePerformanceAuditSettings();
+	console.log(
+		`Sampling each route ${settings.passCount} times after ${settings.warmupCount} warm-up navigation${settings.warmupCount === 1 ? "" : "s"}.`,
+	);
 	const userFacingRoutes = DEFAULT_ROUTE_INVENTORY.filter(
 		(entry) => entry.isUserFacing,
 	);
