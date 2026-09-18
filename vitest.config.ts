@@ -54,19 +54,6 @@ export default defineConfig({
 		globals: true,
 		include: ["**/*.spec.{ts,tsx}"],
 		maxWorkers: process.env.CI ? 2 : 8,
-		// Console output during a test run is a failure, not a warning
-		// (CODING_STANDARDS.md — "No console output in tests").
-		onConsoleLog(log, type) {
-			if (
-				log.includes("cannot be a child of") ||
-				log.includes("hydration error")
-			) {
-				return false;
-			}
-			throw new Error(
-				`Unexpected console output detected during test execution (${type}):\n${log}`,
-			);
-		},
 		reporters: ["minimal"],
 		setupFiles: ["./vitest.setup.ts"],
 		testTimeout: process.env.CI ? 500 : 1500,

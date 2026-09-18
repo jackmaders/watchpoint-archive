@@ -1,42 +1,25 @@
+import { cloudflare } from "@cloudflare/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig } from "vite";
 
+const ANALYZE = process.env.ANALYZE;
+
 export default defineConfig({
-	build: {
-		rollupOptions: {
-			external: ["cloudflare:workers"],
-			onwarn(warning, defaultHandler) {
-				if (
-					warning.message?.includes(
-						"has been externalized for browser compatibility",
-					)
-				) {
-					return;
-				}
-				defaultHandler(warning);
-			},
-		},
-	},
 	plugins: [
+		cloudflare({
+			viteEnvironment: { name: "ssr" },
+		}),
+		tailwindcss(),
 		tanstackStart({
 			srcDirectory: "src/app",
 		}),
 		viteReact(),
-		tailwindcss(),
-		visualizer({
-			emitFile: true,
-			filename: "stats.json",
-			gzipSize: true,
-			template: "raw-data",
-		}),
+		...(ANALYZE ? [visualizer()] : []),
 	],
 	resolve: {
 		tsconfigPaths: true,
-	},
-	server: {
-		port: 3000,
 	},
 });
