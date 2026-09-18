@@ -4,10 +4,10 @@ import type {
 	MediaFailure,
 	MediaFailureCategory,
 	PlaybackRate,
-	PlaybackStatus,
 	VodContainerRef,
 	VodPlayerResult,
 } from "./types";
+import { PlaybackStatus } from "./types";
 import { useVodPlayer } from "./use-vod-player";
 
 export type SessionMediaEvent =
@@ -45,9 +45,11 @@ export type SessionMediaCommand =
 
 export interface SessionMediaAdapterOptions {
 	autoplay?: boolean;
+	endSeconds?: number;
 	generation?: number;
 	onEvent?: (event: SessionMediaEvent) => void;
 	onDiagnostics?: (diagnostic: MediaDiagnostic) => void;
+	startSeconds?: number;
 	videoId: string;
 }
 
@@ -94,10 +96,17 @@ function shouldCompleteRecovery(
 	return failureCategory !== "buffering" || !autoplay;
 }
 
+interface SessionPlaybackRange {
+	endSeconds?: number;
+	startSeconds: number;
+}
+
 export function executeSessionMediaCommand(
 	command: SessionMediaCommand,
 	controls: SessionMediaControls,
+	range: SessionPlaybackRange = { startSeconds: 0 },
 ): void {
+	const startSeconds = Math.max(0, range.startSeconds);
 	switch (command.type) {
 		case "PAUSE":
 			controls.pause();
@@ -106,16 +115,25 @@ export function executeSessionMediaCommand(
 			controls.play();
 			return;
 		case "SEEK":
-			controls.seekTo(Math.max(0, command.positionSeconds), true);
+			controls.seekTo(
+				Math.min(
+					range.endSeconds ?? Number.POSITIVE_INFINITY,
+					Math.max(startSeconds, command.positionSeconds),
+				),
+				true,
+			);
 			return;
 		case "REPLAY_CONTEXT":
-			controls.seekTo(Math.max(0, command.timestampSeconds - 10), true);
+			controls.seekTo(
+				Math.max(startSeconds, command.timestampSeconds - 10),
+				true,
+			);
 			controls.play();
 			return;
 		case "RECOVER":
 			return;
 		case "RESTART":
-			controls.seekTo(0, true);
+			controls.seekTo(startSeconds, true);
 			if (command.autoplay) controls.play();
 			return;
 		case "SET_PLAYBACK_RATE":
@@ -139,9 +157,11 @@ export function executeSessionMediaCommand(
 // biome-ignore lint/complexity/noExcessiveLinesPerFunction: this hook coordinates the adapter lifecycle and remains the public media seam.
 export function useSessionMediaAdapter({
 	autoplay = false,
+	endSeconds,
 	generation,
 	onEvent,
 	onDiagnostics,
+	startSeconds = 0,
 	videoId,
 }: SessionMediaAdapterOptions): SessionMediaAdapterResult {
 	const controlsRef = useRef<SessionMediaControls | null>(null);
@@ -152,6 +172,7 @@ export function useSessionMediaAdapter({
 	const recoveringRef = useRef(false);
 	const recoveryAutoplayRef = useRef(false);
 	const recoveryFailureCategoryRef = useRef<MediaFailureCategory>("readiness");
+	const boundaryReachedRef = useRef(false);
 	const completeRecovery = useCallback(() => {
 		recoveringRef.current = false;
 		onDiagnostics?.({
@@ -179,8 +200,12 @@ export function useSessionMediaAdapter({
 			onEvent?.(addGeneration({ duration, type: "READY" }, eventGeneration));
 			const pendingCommand = pendingCommandRef.current;
 			const controls = controlsRef.current;
-			if (recoveringRef.current && controls) {
-				controls.seekTo(Math.max(0, recoveryPositionRef.current), true);
+			const wasRecovering = recoveringRef.current;
+			if (wasRecovering && controls) {
+				controls.seekTo(
+					Math.max(startSeconds, recoveryPositionRef.current),
+					true,
+				);
 				// c8 ignore next -- active session recovery explicitly supplies autoplay.
 				if (recoveryAutoplayRef.current) controls.play();
 				if (
@@ -192,12 +217,18 @@ export function useSessionMediaAdapter({
 					completeRecovery();
 				}
 			}
+			if (!wasRecovering && !pendingCommand && controls) {
+				controls.seekTo(startSeconds, true);
+			}
 			if (pendingCommand && controls) {
 				pendingCommandRef.current = null;
-				executeSessionMediaCommand(pendingCommand, controls);
+				executeSessionMediaCommand(pendingCommand, controls, {
+					endSeconds,
+					startSeconds,
+				});
 			}
 		},
-		[completeRecovery, generation, onEvent],
+		[completeRecovery, endSeconds, generation, onEvent, startSeconds],
 	);
 	const onStatusChange = useCallback(
 		(status: PlaybackStatus, _lifecycleKey?: number) =>
@@ -217,8 +248,25 @@ export function useSessionMediaAdapter({
 				completeRecovery();
 			}
 			onEvent?.(addGeneration({ time, type: "TIME_UPDATED" }, generation));
+			if (endSeconds !== undefined && time >= endSeconds) {
+				if (!boundaryReachedRef.current) {
+					boundaryReachedRef.current = true;
+					controlsRef.current?.pause();
+					onEvent?.(
+						addGeneration(
+							{
+								status: PlaybackStatus.PAUSED,
+								type: "PLAYBACK_STATUS_CHANGED",
+							},
+							generation,
+						),
+					);
+				}
+			} else {
+				boundaryReachedRef.current = false;
+			}
 		},
-		[completeRecovery, generation, onEvent],
+		[completeRecovery, endSeconds, generation, onEvent],
 	);
 	const onError = useCallback(
 		(failure: MediaFailure) => {
@@ -269,12 +317,20 @@ export function useSessionMediaAdapter({
 				return;
 			}
 			if (command.type === "RESTART") {
+				boundaryReachedRef.current = false;
 				pendingCommandRef.current = command;
 				return;
 			}
-			executeSessionMediaCommand(command, player);
+			if (command.type === "PLAY" && boundaryReachedRef.current) {
+				boundaryReachedRef.current = false;
+				player.seekTo(startSeconds, true);
+			}
+			executeSessionMediaCommand(command, player, {
+				endSeconds,
+				startSeconds,
+			});
 		},
-		[player],
+		[endSeconds, player, startSeconds],
 	);
 
 	return {

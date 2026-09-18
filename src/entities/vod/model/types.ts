@@ -7,12 +7,12 @@ import type {
 	InputType,
 	ModuleType,
 	scenarios,
-	vods,
+	VodTransportRecord,
 } from "@/shared/db";
 
 export type { HeroRole, InputType, ModuleType };
 
-export type VodItem = typeof vods.$inferSelect;
+export type VodItem = VodTransportRecord;
 export type ScenarioItem = typeof scenarios.$inferSelect;
 
 export type PublishedVodItem = VodItem & {

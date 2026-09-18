@@ -16,6 +16,10 @@ import {
 } from "@/entities/vod";
 import { formatDuration } from "@/shared/lib/utils";
 import {
+	getEffectiveVodDuration,
+	getVodStartSeconds,
+} from "@/shared/lib/vod-time-range";
+import {
 	PLAYBACK_RATES,
 	type PlaybackRate,
 	type VodContainerRef,
@@ -110,6 +114,7 @@ interface SessionPlayerControlsProps {
 	activeScenarios: ScenarioItem[];
 	currentTime: number;
 	duration: number;
+	startSeconds: number;
 	isMuted: boolean;
 	isPlaying: boolean;
 	onMuteToggle: () => void;
@@ -211,6 +216,7 @@ function SessionPlayerControls({
 	activeScenarios,
 	currentTime,
 	duration,
+	startSeconds,
 	isMuted,
 	isPlaying,
 	onMuteToggle,
@@ -224,8 +230,12 @@ function SessionPlayerControls({
 }: SessionPlayerControlsProps) {
 	const progressPercent =
 		duration > 0
-			? Math.min(100, Math.max(0, (currentTime / duration) * 100))
+			? Math.min(
+					100,
+					Math.max(0, ((currentTime - startSeconds) / duration) * 100),
+				)
 			: 0;
+	const elapsedTime = Math.max(0, currentTime - startSeconds);
 
 	return (
 		<div className="rounded-lg border border-border bg-card p-4 shadow-sm space-y-3">
@@ -236,7 +246,9 @@ function SessionPlayerControls({
 				/>
 				{activeScenarios.map((sc) => {
 					const markerPos =
-						duration > 0 ? (sc.timestampSeconds / duration) * 100 : 0;
+						duration > 0
+							? ((sc.timestampSeconds - startSeconds) / duration) * 100
+							: 0;
 					const modDef = MODULE_MAP[sc.moduleType];
 					return (
 						<div
@@ -292,7 +304,7 @@ function SessionPlayerControls({
 
 				<div className="flex items-center gap-4 text-xs font-mono font-medium text-muted-foreground">
 					<span>
-						{formatDuration(currentTime)} / {formatDuration(duration)}
+						{formatDuration(elapsedTime)} / {formatDuration(duration)}
 					</span>
 				</div>
 			</div>
@@ -452,8 +464,8 @@ function useSessionPlayerClientState({
 		vodId: vod.id,
 	});
 
-	const effectiveDuration =
-		player.duration > 0 ? player.duration : vod.durationSeconds;
+	const effectiveDuration = getEffectiveVodDuration(vod);
+	const startSeconds = getVodStartSeconds(vod);
 	const overlayScenarioData = useMemo(
 		() => toScenarioOverlayData(player.currentScenario),
 		[player.currentScenario],
@@ -472,6 +484,7 @@ function useSessionPlayerClientState({
 		isOverlayVisible,
 		overlayScenarioData,
 		player,
+		startSeconds,
 	};
 }
 
@@ -484,6 +497,7 @@ export function SessionPlayerClient(props: SessionPlayerClientProps) {
 		isOverlayVisible,
 		overlayScenarioData,
 		player,
+		startSeconds,
 	} = useSessionPlayerClientState(props);
 
 	return (
@@ -533,6 +547,7 @@ export function SessionPlayerClient(props: SessionPlayerClientProps) {
 					onReplayContext={player.replayContext}
 					onVolumeChange={player.setVolume}
 					playbackRate={player.playbackRate}
+					startSeconds={startSeconds}
 					volume={player.volume}
 				/>
 			) : null}

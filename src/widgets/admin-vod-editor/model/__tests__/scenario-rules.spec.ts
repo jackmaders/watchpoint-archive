@@ -18,6 +18,7 @@ describe("scenario-rules", () => {
 	const sampleVod = {
 		createdAt: new Date(),
 		durationSeconds: 300,
+		endSeconds: null,
 		heroName: "Ana",
 		id: "vod-1",
 		isDemo: false,
@@ -25,6 +26,7 @@ describe("scenario-rules", () => {
 		mapName: "Dorado",
 		rankTier: "Diamond",
 		role: "SUPPORT" as const,
+		startSeconds: 0,
 		title: "Ana VOD",
 		youtubeVideoId: "yt-1",
 	};
@@ -124,6 +126,50 @@ describe("scenario-rules", () => {
 			// Assert
 			expect(result).toEqual({
 				reason: "Scenario timestamp (45.5s) exceeds VOD duration (30s)",
+				status: "rejected",
+			});
+		});
+
+		it("rejects a scenario outside a trimmed VOD range", async () => {
+			// Arrange
+			vi.spyOn(validationModule, "validateScenarioConfig").mockReturnValueOnce({
+				valid: true,
+			});
+			vi.spyOn(dbQueries, "getVodById").mockResolvedValueOnce({
+				...sampleVod,
+				endSeconds: 180,
+				startSeconds: 90,
+			});
+
+			// Act
+			const result = await createScenarioRule({
+				...sampleScenario,
+				timestampSeconds: 60,
+			});
+
+			// Assert
+			expect(result).toEqual({
+				reason: "Scenario timestamp (60s) precedes VOD start (90s)",
+				status: "rejected",
+			});
+		});
+
+		it("rejects scenarios when the VOD range is invalid", async () => {
+			// Arrange
+			vi.spyOn(validationModule, "validateScenarioConfig").mockReturnValueOnce({
+				valid: true,
+			});
+			vi.spyOn(dbQueries, "getVodById").mockResolvedValueOnce({
+				...sampleVod,
+				startSeconds: 301,
+			});
+
+			// Act
+			const result = await createScenarioRule(sampleScenario);
+
+			// Assert
+			expect(result).toEqual({
+				reason: "VOD start offset (301s) exceeds VOD duration (300s)",
 				status: "rejected",
 			});
 		});
@@ -278,6 +324,7 @@ describe("scenario-rules", () => {
 			vi.spyOn(dbQueries, "queryScenarios").mockResolvedValueOnce([
 				sampleScenario,
 			]);
+			vi.spyOn(dbQueries, "getVodById").mockResolvedValueOnce(sampleVod);
 			vi.spyOn(validationModule, "validateScenarioConfig").mockReturnValueOnce({
 				valid: true,
 			});
@@ -320,6 +367,7 @@ describe("scenario-rules", () => {
 			vi.spyOn(dbQueries, "queryScenarios").mockResolvedValueOnce([
 				sampleScenario,
 			]);
+			vi.spyOn(dbQueries, "getVodById").mockResolvedValueOnce(sampleVod);
 			vi.spyOn(validationModule, "validateScenarioConfig").mockReturnValueOnce({
 				valid: true,
 			});
@@ -333,6 +381,76 @@ describe("scenario-rules", () => {
 			// Assert
 			expect(result).toEqual({
 				reason: "Failed to update scenario",
+				status: "rejected",
+			});
+		});
+
+		it("rejects an update when the VOD range is invalid", async () => {
+			// Arrange
+			vi.spyOn(dbQueries, "queryScenarios").mockResolvedValueOnce([
+				sampleScenario,
+			]);
+			vi.spyOn(dbQueries, "getVodById").mockResolvedValueOnce({
+				...sampleVod,
+				startSeconds: 301,
+			});
+			vi.spyOn(validationModule, "validateScenarioConfig").mockReturnValueOnce({
+				valid: true,
+			});
+
+			// Act
+			const result = await updateScenarioRule({ id: "sc-1" });
+
+			// Assert
+			expect(result).toEqual({
+				reason: "VOD start offset (301s) exceeds VOD duration (300s)",
+				status: "rejected",
+			});
+		});
+
+		it("rejects an update when its VOD is missing", async () => {
+			// Arrange
+			vi.spyOn(dbQueries, "queryScenarios").mockResolvedValueOnce([
+				sampleScenario,
+			]);
+			vi.spyOn(dbQueries, "getVodById").mockResolvedValueOnce(undefined);
+			vi.spyOn(validationModule, "validateScenarioConfig").mockReturnValueOnce({
+				valid: true,
+			});
+
+			// Act
+			const result = await updateScenarioRule({ id: "sc-1" });
+
+			// Assert
+			expect(result).toEqual({
+				reason: "VOD not found",
+				status: "rejected",
+			});
+		});
+
+		it("rejects an update outside the trimmed VOD range", async () => {
+			// Arrange
+			vi.spyOn(dbQueries, "queryScenarios").mockResolvedValueOnce([
+				sampleScenario,
+			]);
+			vi.spyOn(dbQueries, "getVodById").mockResolvedValueOnce({
+				...sampleVod,
+				endSeconds: 180,
+				startSeconds: 90,
+			});
+			vi.spyOn(validationModule, "validateScenarioConfig").mockReturnValueOnce({
+				valid: true,
+			});
+
+			// Act
+			const result = await updateScenarioRule({
+				id: "sc-1",
+				timestampSeconds: 60,
+			});
+
+			// Assert
+			expect(result).toEqual({
+				reason: "Scenario timestamp (60s) precedes VOD start (90s)",
 				status: "rejected",
 			});
 		});
@@ -490,6 +608,30 @@ describe("scenario-rules", () => {
 				}),
 				undefined,
 			);
+		});
+
+		it("rejects reordered scenarios outside the trimmed VOD range", async () => {
+			// Arrange
+			vi.spyOn(dbQueries, "getVodById").mockResolvedValueOnce({
+				...sampleVod,
+				endSeconds: 180,
+				startSeconds: 90,
+			});
+			vi.spyOn(dbQueries, "queryScenarios").mockResolvedValueOnce([
+				sampleScenario,
+			]);
+
+			// Act
+			const result = await reorderScenariosRule({
+				scenarioOrders: [{ id: "sc-1", timestampSeconds: 200 }],
+				vodId: "vod-1",
+			});
+
+			// Assert
+			expect(result).toEqual({
+				reason: "Scenario timestamp (200s) exceeds playable VOD end (180s)",
+				status: "rejected",
+			});
 		});
 	});
 });

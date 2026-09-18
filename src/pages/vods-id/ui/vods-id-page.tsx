@@ -7,6 +7,7 @@
 import { Link } from "@tanstack/react-router";
 import { extractHeroFromTitle, type SessionManifest } from "@/entities/vod";
 import { formatDuration } from "@/shared/lib/utils";
+import { getEffectiveVodDuration } from "@/shared/lib/vod-time-range";
 import { AppLayout } from "@/widgets/layout-main";
 import { VodsIdClient } from "./vods-id-client";
 
@@ -77,7 +78,9 @@ export function VodsIdPage({
 						</div>
 
 						<div className="text-right md:text-left text-xs text-muted-foreground font-mono space-y-1">
-							<div>Duration: {formatDuration(vod.durationSeconds)}</div>
+							<div>
+								Duration: {formatDuration(getEffectiveVodDuration(vod))}
+							</div>
 							<div>Total Scenarios: {vod.scenarios.length}</div>
 						</div>
 					</header>

@@ -159,10 +159,12 @@ interface VodCreateViewProps {
 	onCancel: () => void;
 	onCreate: (values: {
 		durationSeconds: number;
+		endSeconds?: number | null;
 		heroName: string;
 		mapName: string;
 		rankTier: string;
 		role: HeroRole;
+		startSeconds?: number;
 		title: string;
 		youtubeVideoId: string;
 	}) => void;
@@ -273,10 +275,12 @@ interface VodEditorBodyProps {
 	onSelectScenario: (s: ScenarioItem) => void;
 	onUpdateMetadata: (values: {
 		durationSeconds: number;
+		endSeconds?: number | null;
 		heroName: string;
 		mapName: string;
 		rankTier: string;
 		role: HeroRole;
+		startSeconds?: number;
 		title: string;
 		youtubeVideoId: string;
 	}) => void;

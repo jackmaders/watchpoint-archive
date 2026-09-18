@@ -28,14 +28,18 @@ import type {
 	UpdateVodPayload,
 	UpdateVodResult,
 } from "./types";
-import { validateVodForPublishing } from "./validation";
+import { validateVodForPublishing, validateVodTimeRange } from "./validation";
+
+type CreateVodRuleInput = Omit<CreateVodPayload, "startSeconds"> & {
+	startSeconds?: number;
+};
 
 export interface ActorContext {
 	actorUserId?: string | null;
 }
 
 export async function createVodRule(
-	input: CreateVodPayload & ActorContext,
+	input: CreateVodRuleInput & ActorContext,
 	db?: Parameters<typeof createVod>[1],
 ): Promise<CreateVodResult> {
 	if ((input as { isPublished?: boolean }).isPublished === true) {
@@ -44,15 +48,25 @@ export async function createVodRule(
 			status: "rejected",
 		};
 	}
+	const rangeValidation = validateVodTimeRange({
+		durationSeconds: input.durationSeconds,
+		endSeconds: input.endSeconds,
+		startSeconds: input.startSeconds,
+	});
+	if (rangeValidation) {
+		return { reason: rangeValidation, status: "rejected" };
+	}
 
 	const created = await createVod(
 		{
 			durationSeconds: input.durationSeconds,
+			endSeconds: input.endSeconds ?? null,
 			heroName: input.heroName,
 			isPublished: false,
 			mapName: input.mapName,
 			rankTier: input.rankTier,
 			role: input.role,
+			startSeconds: input.startSeconds ?? 0,
 			title: input.title,
 			youtubeVideoId: input.youtubeVideoId,
 		},
@@ -71,11 +85,13 @@ export async function createVodRule(
 			entityType: "VOD",
 			metadata: {
 				durationSeconds: created.durationSeconds,
+				endSeconds: created.endSeconds ?? null,
 				heroName: created.heroName,
 				isPublished: created.isPublished,
 				mapName: created.mapName,
 				rankTier: created.rankTier,
 				role: created.role,
+				startSeconds: created.startSeconds,
 				title: created.title,
 				youtubeVideoId: created.youtubeVideoId,
 			},
@@ -95,12 +111,29 @@ function getVodUpdateValues(
 		values.youtubeVideoId = input.youtubeVideoId;
 	if (input.durationSeconds !== undefined)
 		values.durationSeconds = input.durationSeconds;
+	if (input.endSeconds !== undefined) values.endSeconds = input.endSeconds;
 	if (input.mapName !== undefined) values.mapName = input.mapName;
 	if (input.rankTier !== undefined) values.rankTier = input.rankTier;
 	if (input.heroName !== undefined) values.heroName = input.heroName;
 	if (input.role !== undefined) values.role = input.role;
 	if (input.isPublished !== undefined) values.isPublished = input.isPublished;
+	if (input.startSeconds !== undefined)
+		values.startSeconds = input.startSeconds;
 	return values;
+}
+
+async function validateVodPublication(
+	shouldPublish: boolean,
+	vodRange: Parameters<typeof validateVodForPublishing>[0],
+	vodId: string,
+	db?: Parameters<typeof queryScenarios>[1],
+): Promise<string | null> {
+	if (!shouldPublish) return null;
+	const scenariosList = await queryScenarios({ filter: { vodId } }, db);
+	const validation = validateVodForPublishing(vodRange, scenariosList);
+	return validation.valid
+		? null
+		: (validation.error ?? "Invalid publishing state");
 }
 
 async function recordVodUpdateAudits(
@@ -157,22 +190,28 @@ export async function updateVodRule(
 	}
 
 	const willBePublished = input.isPublished ?? existing.isPublished;
-	if (willBePublished) {
-		const targetDuration = input.durationSeconds ?? existing.durationSeconds;
-		const scenariosList = await queryScenarios(
-			{ filter: { vodId: input.id } },
-			db,
-		);
-		const validation = validateVodForPublishing(
-			{ durationSeconds: targetDuration },
-			scenariosList,
-		);
-		if (!validation.valid) {
-			return {
-				reason: validation.error ?? "Invalid publishing state",
-				status: "rejected",
-			};
-		}
+	const targetVodRange = {
+		durationSeconds: input.durationSeconds ?? existing.durationSeconds,
+		endSeconds:
+			input.endSeconds !== undefined ? input.endSeconds : existing.endSeconds,
+		startSeconds:
+			input.startSeconds !== undefined
+				? input.startSeconds
+				: existing.startSeconds,
+	};
+	const rangeValidation = validateVodTimeRange(targetVodRange);
+	if (rangeValidation) {
+		return { reason: rangeValidation, status: "rejected" };
+	}
+
+	const publicationError = await validateVodPublication(
+		willBePublished,
+		targetVodRange,
+		input.id,
+		db,
+	);
+	if (publicationError) {
+		return { reason: publicationError, status: "rejected" };
 	}
 
 	const updateValues = getVodUpdateValues(input);

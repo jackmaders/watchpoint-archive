@@ -2,10 +2,10 @@
  * Type definitions and contracts for the admin content catalog slice.
  */
 
-import type { HeroRole, vods } from "@/shared/db";
+import type { HeroRole, VodTransportRecord } from "@/shared/db";
 
 export type { HeroRole };
 
-export type AdminVodItem = typeof vods.$inferSelect & {
+export type AdminVodItem = VodTransportRecord & {
 	scenarios: Array<{ id: string }>;
 };

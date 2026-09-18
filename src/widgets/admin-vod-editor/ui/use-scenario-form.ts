@@ -1,19 +1,26 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import {
+	getVodEndSeconds,
+	getVodStartSeconds,
+} from "@/shared/lib/vod-time-range";
 import type { InputType, ModuleType, ScenarioItem } from "../model";
 import {
 	type ScenarioEditorFormProps,
 	validateScenarioForm,
 } from "./scenario-editor-form";
 
-export function useScenarioFormInit(scenario: ScenarioItem | null | undefined) {
+export function useScenarioFormInit(
+	scenario: ScenarioItem | null | undefined,
+	initialTimestampSeconds = 0,
+) {
 	const [promptText, setPromptText] = useState(scenario?.promptText ?? "");
 	const [explanationText, setExplanationText] = useState(
 		scenario?.explanationText ?? "",
 	);
 	const [timestampSeconds, setTimestampSeconds] = useState<number | string>(
-		scenario?.timestampSeconds ?? 0,
+		scenario?.timestampSeconds ?? initialTimestampSeconds,
 	);
 	const [timeLimitSeconds, setTimeLimitSeconds] = useState<number | string>(
 		scenario?.timeLimitSeconds ?? "",
@@ -42,14 +49,14 @@ export function useScenarioFormInit(scenario: ScenarioItem | null | undefined) {
 		} else {
 			setPromptText("");
 			setExplanationText("");
-			setTimestampSeconds(0);
+			setTimestampSeconds(initialTimestampSeconds);
 			setTimeLimitSeconds("");
 			setModuleType("STRATEGY");
 			setInputType("MULTIPLE_CHOICE");
 			setImageUrl("");
 			setInputConfig({});
 		}
-	}, [scenario]);
+	}, [initialTimestampSeconds, scenario]);
 
 	return {
 		explanationText,
@@ -125,6 +132,8 @@ export function useScenarioFormHandlers(
 				state.explanationText,
 				state.timestampSeconds,
 				vod.durationSeconds,
+				getVodStartSeconds(vod),
+				getVodEndSeconds(vod),
 			);
 			if (validationErr) {
 				setError(validationErr);
@@ -145,7 +154,7 @@ export function useScenarioFormHandlers(
 				vodId: vod.id,
 			});
 		},
-		[onSave, scenario?.id, state, vod.durationSeconds, vod.id],
+		[onSave, scenario?.id, state, vod.durationSeconds, vod.id, vod],
 	);
 
 	return {

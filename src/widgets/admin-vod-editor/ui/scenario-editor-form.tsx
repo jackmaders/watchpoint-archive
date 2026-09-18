@@ -1,6 +1,10 @@
 "use client";
 
 import { useId } from "react";
+import {
+	getVodEndSeconds,
+	getVodStartSeconds,
+} from "@/shared/lib/vod-time-range";
 import { Alert, AlertDescription } from "@/shared/ui/alert";
 import { Button } from "@/shared/ui/button";
 import { FieldDescription, FieldLabel } from "@/shared/ui/field";
@@ -40,7 +44,8 @@ export interface ScenarioEditorFormProps {
 		vodId: string;
 	}) => void;
 	scenario?: ScenarioItem | null;
-	vod: Pick<VodItem, "durationSeconds" | "id">;
+	vod: Pick<VodItem, "durationSeconds" | "id"> &
+		Partial<Pick<VodItem, "endSeconds" | "startSeconds">>;
 }
 
 export function validateScenarioForm(
@@ -48,14 +53,20 @@ export function validateScenarioForm(
 	explanationText: string,
 	timestampSeconds: number | string,
 	vodDurationSeconds: number,
+	vodStartSeconds = 0,
+	vodEndSeconds?: number | null,
 ): string | null {
 	if (!promptText.trim()) return "Prompt text is required";
 	if (!explanationText.trim()) return "Explanation text is required";
 	const ts = Number(timestampSeconds);
-	if (Number.isNaN(ts) || ts < 0) {
+	if (!Number.isFinite(ts) || ts < 0) {
 		return "Timestamp must be a non-negative number of seconds";
 	}
-	if (vodDurationSeconds && ts > vodDurationSeconds) {
+	const endSeconds = vodEndSeconds ?? vodDurationSeconds;
+	if (ts < vodStartSeconds) {
+		return `Timestamp (${ts}s) precedes VOD start (${vodStartSeconds}s)`;
+	}
+	if (ts > endSeconds) {
 		return `Timestamp (${ts}s) exceeds VOD duration (${vodDurationSeconds}s)`;
 	}
 	return null;
@@ -85,7 +96,8 @@ interface ScenarioFormFieldsProps {
 	timeLimitSeconds: number | string;
 	timestampId: string;
 	timestampSeconds: number | string;
-	vodDuration: number;
+	vodEnd: number;
+	vodStart: number;
 }
 
 function ScenarioFormFields({
@@ -112,7 +124,8 @@ function ScenarioFormFields({
 	timeLimitSeconds,
 	timestampId,
 	timestampSeconds,
-	vodDuration,
+	vodEnd,
+	vodStart,
 }: ScenarioFormFieldsProps) {
 	return (
 		<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -154,14 +167,14 @@ function ScenarioFormFields({
 					className="mt-1 font-mono"
 					disabled={disabled || isSubmitting}
 					id={timestampId}
-					min={0}
+					min={vodStart}
 					onChange={onTimestampChange}
 					placeholder="0"
 					type="number"
 					value={timestampSeconds}
 				/>
 				<FieldDescription className="text-[11px] mt-0.5">
-					Point in VOD when this triggers (Max: {vodDuration}s).
+					Point in VOD when this triggers ({vodStart}s–{vodEnd}s).
 				</FieldDescription>
 			</div>
 
@@ -306,7 +319,7 @@ export function ScenarioEditorForm({
 	const inputTypeId = `${baseId}-inputtype`;
 	const imageId = `${baseId}-image`;
 
-	const state = useScenarioFormInit(scenario);
+	const state = useScenarioFormInit(scenario, getVodStartSeconds(vod));
 	const {
 		error,
 		handleExplanationChange,
@@ -370,7 +383,8 @@ export function ScenarioEditorForm({
 				timeLimitSeconds={state.timeLimitSeconds}
 				timestampId={timestampId}
 				timestampSeconds={state.timestampSeconds}
-				vodDuration={vod.durationSeconds}
+				vodEnd={getVodEndSeconds(vod)}
+				vodStart={getVodStartSeconds(vod)}
 			/>
 
 			<div className="border-t border-border pt-4">

@@ -10,6 +10,7 @@ describe("get-admin-vods rules", () => {
 	const sampleVod = {
 		createdAt: new Date(),
 		durationSeconds: 300,
+		endSeconds: null,
 		heroName: "Ana",
 		id: "vod-1",
 		isDemo: false,
@@ -17,6 +18,7 @@ describe("get-admin-vods rules", () => {
 		mapName: "Dorado",
 		rankTier: "Diamond",
 		role: "SUPPORT" as const,
+		startSeconds: 0,
 		title: "Ana VOD",
 		youtubeVideoId: "yt-1",
 	};

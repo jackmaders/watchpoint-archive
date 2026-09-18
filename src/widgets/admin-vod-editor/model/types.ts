@@ -10,7 +10,7 @@ import {
 	inputTypeEnum,
 	moduleTypeEnum,
 	type scenarios,
-	type vods,
+	type VodTransportRecord,
 } from "@/shared/db";
 
 export {
@@ -18,12 +18,16 @@ export {
 	inputTypeEnum,
 	moduleTypeEnum,
 } from "@/shared/db";
-export { validateVodForPublishing } from "./validation";
+export {
+	getScenarioRangeError,
+	validateVodForPublishing,
+	validateVodTimeRange,
+} from "./validation";
 export type HeroRole = (typeof heroRoleEnum)[number];
 export type ModuleType = (typeof moduleTypeEnum)[number];
 export type InputType = (typeof inputTypeEnum)[number];
 
-export type VodItem = typeof vods.$inferSelect;
+export type VodItem = VodTransportRecord;
 export type ScenarioItem = typeof scenarios.$inferSelect;
 
 export interface AuditEntryItem {
@@ -70,10 +74,12 @@ export type GetAdminVodByIdPayload = z.infer<typeof GetAdminVodByIdSchema>;
 
 export const CreateVodSchema = z.object({
 	durationSeconds: z.number().int().positive(),
+	endSeconds: z.number().int().positive().nullable().optional(),
 	heroName: z.string().min(1),
 	mapName: z.string().min(1),
 	rankTier: z.string().min(1),
 	role: z.enum(heroRoleEnum),
+	startSeconds: z.number().int().nonnegative().default(0),
 	title: z.string().min(1),
 	youtubeVideoId: z.string().min(1),
 });
@@ -81,12 +87,14 @@ export type CreateVodPayload = z.infer<typeof CreateVodSchema>;
 
 export const UpdateVodSchema = z.object({
 	durationSeconds: z.number().int().positive().optional(),
+	endSeconds: z.number().int().positive().nullable().optional(),
 	heroName: z.string().min(1).optional(),
 	id: z.string().min(1),
 	isPublished: z.boolean().optional(),
 	mapName: z.string().min(1).optional(),
 	rankTier: z.string().min(1).optional(),
 	role: z.enum(heroRoleEnum).optional(),
+	startSeconds: z.number().int().nonnegative().optional(),
 	title: z.string().min(1).optional(),
 	youtubeVideoId: z.string().min(1).optional(),
 });

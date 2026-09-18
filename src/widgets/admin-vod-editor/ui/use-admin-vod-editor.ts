@@ -53,10 +53,12 @@ function useVodUpdatePublish(
 	const handleUpdateVodMetadata = useCallback(
 		async (values: {
 			durationSeconds: number;
+			endSeconds?: number | null;
 			heroName: string;
 			mapName: string;
 			rankTier: string;
 			role: HeroRole;
+			startSeconds?: number;
 			title: string;
 			youtubeVideoId: string;
 		}) => {
@@ -120,10 +122,12 @@ export function useVodMutations(initialVod: VodItem | null) {
 	const handleCreateVod = useCallback(
 		async (values: {
 			durationSeconds: number;
+			endSeconds?: number | null;
 			heroName: string;
 			mapName: string;
 			rankTier: string;
 			role: HeroRole;
+			startSeconds?: number;
 			title: string;
 			youtubeVideoId: string;
 		}) => {
