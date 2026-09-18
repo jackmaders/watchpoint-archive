@@ -7,8 +7,8 @@
 import type { QueryClient } from "@tanstack/react-query";
 import { queryOptions } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
-import { queryKeys } from "@/shared/api";
 import { isRegistrationOpen } from "@/shared/auth/index.server";
+import { queryKeys } from "@/shared/db";
 
 export const fetchPrivacyPage = createServerFn({ method: "GET" }).handler(
 	async () => {

@@ -24,7 +24,7 @@ export interface UseAdminContentOptions {
 	searchParams?: ContentSearchParams;
 }
 
-export function useContentFilterControls(
+function useContentFilterControls(
 	searchParams: ContentSearchParams,
 	onFilterChange?: (newParams: ContentSearchParams) => void,
 ) {

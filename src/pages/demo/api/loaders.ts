@@ -5,8 +5,8 @@
  * and providing the curated unauthenticated demo manifest fixture.
  */
 import { queryOptions } from "@tanstack/react-query";
-import { queryKeys } from "@/shared/api";
 import { getRegistrationStatus } from "@/shared/auth";
+import { queryKeys } from "@/shared/db";
 import { DEMO_VOD_MANIFEST } from "../model/fixtures";
 
 export const demoPageQueryOptions = () =>

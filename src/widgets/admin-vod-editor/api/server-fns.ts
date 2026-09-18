@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { requirePermission } from "@/shared/lib/permissions";
+import { requirePermission } from "@/shared/auth/index.server";
 import {
 	type AdminVodItem,
 	type BulkDeleteVodsResult,

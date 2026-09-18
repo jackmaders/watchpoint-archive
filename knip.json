@@ -1,0 +1,27 @@
+{
+	"$schema": "https://unpkg.com/knip@5/schema.json",
+	"entry": [
+		"src/app/client.tsx",
+		"src/app/ssr.tsx",
+		"src/app/router.tsx",
+		"src/app/routeTree.gen.ts",
+		"src/app/routes/**/*.{ts,tsx}",
+		"src/**/index.ts",
+		"src/**/index.tsx",
+		"src/**/index.server.ts",
+		"src/**/__stories__/**/*.stories.{ts,tsx}",
+		"scripts/*.ts",
+		".storybook/**/*.ts",
+		"storybook/**/*.ts",
+		"steiger.config.ts"
+	],
+	"ignoreDependencies": ["cloudflare"],
+	"project": [
+		"src/**/*.{ts,tsx}",
+		"scripts/**/*.{ts,tsx}",
+		".storybook/**/*.ts",
+		"storybook/**/*.ts",
+		"*.{ts,tsx}",
+		"src/**/*.css"
+	]
+}

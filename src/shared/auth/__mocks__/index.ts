@@ -4,5 +4,6 @@
  * Keeps Vitest's automatic module replacement aligned with the runtime boundary exposed by `src/shared/auth/index.ts`.
  */
 
+export * from "../model/permissions";
 export * from "./api";
 export * from "./auth-client";

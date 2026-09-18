@@ -3,7 +3,7 @@ import { act, renderHook } from "@testing-library/react";
 import type React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import * as entitiesVod from "@/entities/vod";
-import * as sentry from "@/shared/lib/sentry";
+import * as sentry from "@/shared/logging";
 import {
 	calculateBackoffDelay,
 	executeRecordAttempt,

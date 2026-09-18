@@ -9,8 +9,8 @@
  */
 import type { QueryClient } from "@tanstack/react-query";
 import { queryOptions } from "@tanstack/react-query";
-import { queryKeys } from "@/shared/api";
-import { getAdminAuditLogs } from "@/shared/lib/audit";
+import { queryKeys } from "@/shared/db";
+import { getAdminAuditLogs } from "@/shared/logging/index.server";
 import type { AuditSearchParams } from "../model/search-params";
 import { toGetAdminAuditLogsQuery } from "../model/search-params";
 

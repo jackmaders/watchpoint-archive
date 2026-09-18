@@ -2,7 +2,7 @@ import {
 	GetAdminAuditLogsSchema as BaseSchema,
 	getAdminAuditLogs as baseServerFn,
 	type GetAdminAuditLogsPayload,
-} from "@/shared/lib/audit";
+} from "@/shared/logging/index.server";
 
 export const getAdminAuditLogs = baseServerFn;
 export const GetAdminAuditLogsSchema = BaseSchema;

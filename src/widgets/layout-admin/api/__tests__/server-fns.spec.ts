@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@tanstack/react-start");
-vi.mock("@/shared/lib/permissions");
+vi.mock("@/shared/auth/index.server");
 
-import { requirePermission } from "@/shared/lib/permissions";
+import { requirePermission } from "@/shared/auth/index.server";
 import { checkAdminAccess } from "../server-fns";
 
 describe("admin layout server-fns", () => {

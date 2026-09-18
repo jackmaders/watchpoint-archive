@@ -7,7 +7,7 @@ import {
 	type MockInstance,
 	vi,
 } from "vitest";
-import type { AuthenticatedUser } from "@/shared/lib/permissions";
+import type { AuthenticatedUser } from "@/shared/auth";
 import type { AdminVodItem } from "@/widgets/admin-vod-editor";
 import * as adminVodEditor from "@/widgets/admin-vod-editor";
 import { AdminContentPage } from "../admin-content-page";

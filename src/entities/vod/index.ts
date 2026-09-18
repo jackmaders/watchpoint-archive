@@ -71,6 +71,13 @@ export {
 	type ModuleDefinition,
 } from "./model/modules";
 export { vodManifestApiRouteOptions } from "./model/route-options";
+export {
+	getEffectiveVodDuration,
+	getVodEndSeconds,
+	getVodStartSeconds,
+	isWithinVodTimeRange,
+	type VodTimeRangeInput,
+} from "./model/time-range";
 export type {
 	HeroRole,
 	InputType,

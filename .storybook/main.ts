@@ -7,7 +7,10 @@ const config: StorybookConfig = {
 		name: "@storybook/react-vite",
 		options: {},
 	},
-	stories: ["../src/shared/ui/__stories__/**/*.stories.@(ts|tsx)"],
+	stories: [
+		"../src/shared/ui/__stories__/**/*.stories.@(ts|tsx)",
+		"../src/widgets/layout-main/ui/__stories__/**/*.stories.@(ts|tsx)",
+	],
 	viteFinal: async (config) => ({
 		...config,
 		plugins: filterTanStackPlugins(config.plugins),

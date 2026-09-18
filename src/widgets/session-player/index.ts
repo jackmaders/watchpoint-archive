@@ -36,6 +36,7 @@ export {
 	resolveNewStatusState,
 	type SessionAttemptOutcome,
 	type SessionPlayerSession,
+	type SessionPlayerState,
 	type SessionPlayerState as PlaythroughPlayerState,
 	type SessionPlaythroughAction,
 	type SessionPlaythroughEffect,
@@ -52,7 +53,6 @@ export {
 export {
 	type ManifestVod,
 	type ScenarioItem,
-	type SessionPlayerState,
 	useSessionPlayer,
 } from "./model/use-session-player";
 export {

@@ -21,7 +21,7 @@ import {
 import {
 	calculateAccuracy,
 	calculateMedianActiveLatency,
-} from "@/shared/lib/metrics";
+} from "@/shared/logging";
 import type {
 	GetHistoryInput,
 	GetHistoryResult,

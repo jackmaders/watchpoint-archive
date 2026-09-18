@@ -7,7 +7,7 @@
 
 import type { QueryClient } from "@tanstack/react-query";
 import { queryOptions } from "@tanstack/react-query";
-import { queryKeys } from "@/shared/api";
+import { queryKeys } from "@/shared/db";
 import { getPlaythroughHistoryDetail } from "./server-fns";
 
 export const historyDetailQueryOptions = (id: string) =>

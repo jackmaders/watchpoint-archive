@@ -15,7 +15,7 @@ import {
 } from "@/shared/db/index.server";
 import type { UserItem } from "./types";
 
-export const updateUserRoleSchema = z.object({
+const updateUserRoleSchema = z.object({
 	actorUserId: z.string().min(1),
 	newRole: z.enum(userRoleEnum),
 	targetUserId: z.string().min(1),

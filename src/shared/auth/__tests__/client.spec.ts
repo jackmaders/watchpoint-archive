@@ -5,7 +5,7 @@ import {
 	getSessionSyncTarget,
 	invalidateSessionState,
 	registerSessionSync,
-} from "../client";
+} from "../api/auth-client";
 
 describe("browser authentication client", () => {
 	beforeEach(() => {

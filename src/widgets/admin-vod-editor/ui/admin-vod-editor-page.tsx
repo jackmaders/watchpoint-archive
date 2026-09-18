@@ -3,7 +3,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, FileText, History, Layers, Trash2 } from "lucide-react";
 import { useCallback, useState } from "react";
-import type { AuthenticatedUser } from "@/shared/lib/permissions";
+import type { AuthenticatedUser } from "@/shared/auth";
 import { Alert, AlertDescription } from "@/shared/ui/alert";
 import { Button } from "@/shared/ui/button";
 import type {

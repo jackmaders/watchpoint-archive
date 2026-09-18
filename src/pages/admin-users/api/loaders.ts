@@ -10,7 +10,7 @@ import {
 	useMutation,
 	useQueryClient,
 } from "@tanstack/react-query";
-import { queryKeys } from "@/shared/api";
+import { queryKeys } from "@/shared/db";
 import type { UserRole } from "../model/types";
 import { getAdminUsers, updateUserRole } from "./server-fns";
 

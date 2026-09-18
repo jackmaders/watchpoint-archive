@@ -1,0 +1,60 @@
+/**
+ * Defines role-based access control (RBAC) capabilities, role mappings, and authorization guards
+ * protecting administrative operations and sensitive catalog mutations.
+ *
+ * Exports `PERMISSIONS` constants, `ROLE_PERMISSIONS` mappings, pure evaluation helpers `hasPermission`
+ * and `getUserPermissions`, and the async `requirePermission` guard which validates request headers
+ * against `getCurrentUser` and throws standard 401/403 HTTP responses on authorization failure.
+ */
+
+import type { UserRole } from "@/shared/db";
+
+export const PERMISSIONS = {
+	ADMIN_ACCESS: "admin:access",
+	AUDIT_VIEW: "audit:view",
+	CATALOG_MANAGE: "catalog:manage",
+	CATALOG_PUBLISH: "catalog:publish",
+	USERS_MANAGE_ROLES: "users:manage-roles",
+	USERS_VIEW: "users:view",
+} as const;
+
+export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
+
+export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
+	ADMIN: [
+		PERMISSIONS.ADMIN_ACCESS,
+		PERMISSIONS.USERS_MANAGE_ROLES,
+		PERMISSIONS.USERS_VIEW,
+		PERMISSIONS.AUDIT_VIEW,
+		PERMISSIONS.CATALOG_MANAGE,
+		PERMISSIONS.CATALOG_PUBLISH,
+	],
+	PLAYER: [],
+};
+
+export function hasPermission(
+	role: UserRole | string | undefined | null,
+	permission: Permission,
+): boolean {
+	if (!role || !(role in ROLE_PERMISSIONS)) {
+		return false;
+	}
+	const rolePermissions = ROLE_PERMISSIONS[role as UserRole];
+	return rolePermissions.includes(permission);
+}
+
+export function getUserPermissions(
+	role: UserRole | string | undefined | null,
+): Permission[] {
+	if (!role || !(role in ROLE_PERMISSIONS)) {
+		return [];
+	}
+	return [...ROLE_PERMISSIONS[role as UserRole]];
+}
+
+export interface AuthenticatedUser {
+	email?: string;
+	id: string;
+	name?: string;
+	role: UserRole;
+}

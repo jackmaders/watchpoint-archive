@@ -7,7 +7,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requirePermission } from "@/shared/lib/permissions";
+import { requirePermission } from "@/shared/auth/index.server";
 import { getAdminUsersRule } from "../model/get-admin-users";
 import type { UserItem } from "../model/types";
 import {
@@ -15,19 +15,15 @@ import {
 	updateUserRoleRule,
 } from "../model/update-user-role";
 
-export const GetAdminUsersSchema = z.object({
+const GetAdminUsersSchema = z.object({
 	role: z.enum(["PLAYER", "ADMIN"]).optional(),
 	search: z.string().optional(),
 });
 
-export type GetAdminUsersPayload = z.infer<typeof GetAdminUsersSchema>;
-
-export const UpdateUserRoleSchema = z.object({
+const UpdateUserRoleSchema = z.object({
 	newRole: z.enum(["PLAYER", "ADMIN"]),
 	targetUserId: z.string().min(1),
 });
-
-export type UpdateUserRolePayload = z.infer<typeof UpdateUserRoleSchema>;
 
 export const getAdminUsers = createServerFn({ method: "GET" })
 	.validator((data: unknown) => {

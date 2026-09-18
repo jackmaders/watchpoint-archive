@@ -5,9 +5,12 @@
  * and mounting `VodsIdClient` with interactive module filter pills.
  */
 import { Link } from "@tanstack/react-router";
-import { extractHeroFromTitle, type SessionManifest } from "@/entities/vod";
-import { formatDuration } from "@/shared/lib/utils";
-import { getEffectiveVodDuration } from "@/shared/lib/vod-time-range";
+import {
+	extractHeroFromTitle,
+	getEffectiveVodDuration,
+	type SessionManifest,
+} from "@/entities/vod";
+import { formatDuration } from "@/shared/lib";
 import { AppLayout } from "@/widgets/layout-main";
 import { VodsIdClient } from "./vods-id-client";
 

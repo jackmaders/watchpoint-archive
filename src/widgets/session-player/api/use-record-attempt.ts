@@ -6,7 +6,7 @@
  */
 import { useMutation } from "@tanstack/react-query";
 import { recordAttempt } from "@/entities/vod";
-import { captureException } from "@/shared/lib/sentry";
+import { captureException } from "@/shared/logging";
 import type {
 	AttemptOutcome,
 	RecordAttemptInput,

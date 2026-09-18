@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { GetAdminAuditLogsSchema, getAdminAuditLogs } from "@/shared/lib/audit";
+import {
+	GetAdminAuditLogsSchema,
+	getAdminAuditLogs,
+} from "@/shared/logging/index.server";
 import {
 	GetAdminAuditLogsSchema as ReExportedSchema,
 	getAdminAuditLogs as reExportedGetAdminAuditLogs,

@@ -2,9 +2,9 @@
  * Type definitions and contracts for the admin audit log page slice.
  */
 
-import type { AuditEntryItem } from "@/shared/lib/audit";
+import type { AuditEntryItem } from "@/shared/logging";
 
-export interface UserSummaryItem {
+interface UserSummaryItem {
 	email: string;
 	id: string;
 	name: string | null;

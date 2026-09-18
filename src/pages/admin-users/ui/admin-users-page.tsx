@@ -7,7 +7,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import type { AuthenticatedUser } from "@/shared/lib/permissions";
+import type { AuthenticatedUser } from "@/shared/auth";
 import { Alert, AlertDescription } from "@/shared/ui/alert";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";

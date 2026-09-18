@@ -35,7 +35,7 @@ export function formatTime(seconds: number): string {
 	return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
 }
 
-export function getModuleTypeBadge(moduleType: ModuleType) {
+function getModuleTypeBadge(moduleType: ModuleType) {
 	switch (moduleType) {
 		case "STRATEGY":
 			return {
@@ -64,7 +64,7 @@ export function getModuleTypeBadge(moduleType: ModuleType) {
 	}
 }
 
-export function getInputTypeBadge(inputType: InputType) {
+function getInputTypeBadge(inputType: InputType) {
 	switch (inputType) {
 		case "MULTIPLE_CHOICE":
 			return {

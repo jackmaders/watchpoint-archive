@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@tanstack/react-start");
-vi.mock("@/shared/lib/permissions");
+vi.mock("@/shared/auth/index.server");
 vi.mock("../../model/get-admin-users");
 vi.mock("../../model/update-user-role");
 
-import { requirePermission } from "@/shared/lib/permissions";
+import { requirePermission } from "@/shared/auth/index.server";
 import { getAdminUsersRule } from "../../model/get-admin-users";
 import { updateUserRoleRule } from "../../model/update-user-role";
 import { getAdminUsers, updateUserRole } from "../server-fns";

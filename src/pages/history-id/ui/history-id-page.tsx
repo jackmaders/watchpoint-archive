@@ -5,8 +5,8 @@
  * to render accuracy metrics, median active-response latency, and chronological scenario breakdowns.
  */
 import { Link } from "@tanstack/react-router";
-import { formatAccuracy, formatLatency } from "@/shared/lib/metrics";
-import { formatDuration } from "@/shared/lib/utils";
+import { formatDuration } from "@/shared/lib";
+import { formatAccuracy, formatLatency } from "@/shared/logging";
 import { Button } from "@/shared/ui/button";
 import { AppLayout } from "@/widgets/layout-main";
 import type { PlayerHistoryItem } from "../model/types";

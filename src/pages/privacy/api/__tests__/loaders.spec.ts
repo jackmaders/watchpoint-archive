@@ -4,8 +4,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("@tanstack/react-start");
 vi.mock("@/shared/auth/index.server");
 
-import { queryKeys } from "@/shared/api";
 import { isRegistrationOpen } from "@/shared/auth/index.server";
+import { queryKeys } from "@/shared/db";
 import {
 	fetchPrivacyPage,
 	loadPrivacyPage,

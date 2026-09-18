@@ -8,12 +8,12 @@
  */
 
 import { z } from "zod";
-import type { inputTypeEnum, scenarios } from "@/shared/db";
 import {
 	getVodEndSeconds,
 	getVodStartSeconds,
 	type VodTimeRangeInput,
-} from "@/shared/lib/vod-time-range";
+} from "@/entities/vod";
+import type { inputTypeEnum, scenarios } from "@/shared/db";
 
 export const multipleChoiceOptionSchema = z.object({
 	id: z.string().min(1),

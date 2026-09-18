@@ -5,7 +5,7 @@
  * median active-response latency, and map/rank badges.
  */
 import { Link } from "@tanstack/react-router";
-import { formatAccuracy, formatLatency } from "@/shared/lib/metrics";
+import { formatAccuracy, formatLatency } from "@/shared/logging";
 import type { PlayerHistoryItem } from "../model/types";
 import { MODULE_LABEL_MAP } from "./history-filter-bar";
 

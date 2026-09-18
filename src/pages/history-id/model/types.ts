@@ -7,7 +7,7 @@
 
 import type { JsonValue, ModuleType, PlaythroughStatus } from "@/shared/db";
 
-export type { JsonValue, ModuleType, PlaythroughStatus };
+export type { PlaythroughStatus };
 
 export interface PlayerHistoryItem {
 	accuracy: number;

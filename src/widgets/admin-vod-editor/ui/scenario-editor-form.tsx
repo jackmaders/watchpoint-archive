@@ -1,10 +1,7 @@
 "use client";
 
 import { useId } from "react";
-import {
-	getVodEndSeconds,
-	getVodStartSeconds,
-} from "@/shared/lib/vod-time-range";
+import { getVodEndSeconds, getVodStartSeconds } from "@/entities/vod";
 import { Alert, AlertDescription } from "@/shared/ui/alert";
 import { Button } from "@/shared/ui/button";
 import { FieldDescription, FieldLabel } from "@/shared/ui/field";

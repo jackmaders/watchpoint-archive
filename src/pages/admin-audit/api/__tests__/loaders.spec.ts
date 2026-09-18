@@ -1,10 +1,10 @@
 import type { QueryClient } from "@tanstack/react-query";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("@/shared/lib/audit");
+vi.mock("@/shared/logging/index.server");
 
-import { queryKeys } from "@/shared/api";
-import { getAdminAuditLogs } from "@/shared/lib/audit";
+import { queryKeys } from "@/shared/db";
+import { getAdminAuditLogs } from "@/shared/logging/index.server";
 import { adminAuditQueryOptions, loadAdminAudit } from "../loaders";
 
 describe("admin-audit loaders", () => {

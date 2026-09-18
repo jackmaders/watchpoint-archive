@@ -15,22 +15,29 @@ import {
 	getLocalDemoFixtureVod,
 	getLocalFixtureScenarios,
 	getLocalFixtureVod,
-} from "../../seed/fixtures";
-import { assertLocalSeedTarget, getSeedCredentials } from "../../seed/policy";
-import { executeSeed } from "../../seed/seeder";
-import { accounts } from "../schema/account";
-import { attemptRecords } from "../schema/attempt-record";
-import { auditEntries } from "../schema/audit";
-import { playthroughStatusEnum, playthroughs } from "../schema/playthrough";
-import { playthroughCompletions } from "../schema/playthrough-completion";
-import { playthroughModuleSelections } from "../schema/playthrough-module-selection";
-import { relations } from "../schema/relations";
-import { inputTypeEnum, moduleTypeEnum, scenarios } from "../schema/scenario";
-import { scenarioSnapshots } from "../schema/scenario-snapshot";
-import { sessions } from "../schema/session";
-import { userRoleEnum, users } from "../schema/user";
-import { verifications } from "../schema/verification";
-import { heroRoleEnum, vods } from "../schema/vod";
+} from "../lib/seed/fixtures";
+import { assertLocalSeedTarget, getSeedCredentials } from "../lib/seed/policy";
+import { executeSeed } from "../lib/seed/seeder";
+import {
+	heroRoleEnum,
+	inputTypeEnum,
+	moduleTypeEnum,
+	playthroughStatusEnum,
+	userRoleEnum,
+} from "../model/database-contracts";
+import { accounts } from "../model/schema/account";
+import { attemptRecords } from "../model/schema/attempt-record";
+import { auditEntries } from "../model/schema/audit";
+import { playthroughs } from "../model/schema/playthrough";
+import { playthroughCompletions } from "../model/schema/playthrough-completion";
+import { playthroughModuleSelections } from "../model/schema/playthrough-module-selection";
+import { relations } from "../model/schema/relations";
+import { scenarios } from "../model/schema/scenario";
+import { scenarioSnapshots } from "../model/schema/scenario-snapshot";
+import { sessions } from "../model/schema/session";
+import { users } from "../model/schema/user";
+import { verifications } from "../model/schema/verification";
+import { vods } from "../model/schema/vod";
 
 // Audit domain queries
 export const queryAuditEntries = vi.fn(async () => []);
@@ -116,6 +123,7 @@ export const createDbClient = vi.fn();
 export const filterToSQL = vi.fn();
 export const orderToSQL = vi.fn();
 export const DEFAULT_LIMIT = 50;
+export { queryKeys } from "../api/query-keys";
 
 // Schema definitions & enums
 // Seed fixtures & runners

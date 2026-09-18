@@ -5,7 +5,7 @@
  * via `getAdminAuditLogs`, redirecting to `/admin/content` if the requested VOD does not exist.
  */
 import { redirect } from "@tanstack/react-router";
-import { getAdminAuditLogs } from "@/shared/lib/audit";
+import { getAdminAuditLogs } from "@/shared/logging/index.server";
 import { getAdminVodById } from "@/widgets/admin-vod-editor";
 
 export async function loadAdminContentIdPage({

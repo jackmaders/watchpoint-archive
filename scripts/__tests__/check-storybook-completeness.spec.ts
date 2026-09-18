@@ -13,7 +13,7 @@ const buttonSurface = `
 
 const validButtonStory = `
 	import type { Meta, StoryObj } from "@storybook/react-vite";
-	import { Button } from "@/shared/ui";
+	import { Button } from "@/shared/ui/button";
 	const meta = { component: Button, title: "Shared UI / Button" } satisfies Meta<typeof Button>;
 	export default meta;
 	type Story = StoryObj<typeof meta>;
@@ -102,9 +102,9 @@ describe("checkCompleteness", () => {
 
 		// Act
 		const errors = checkCompleteness(root, {
-			readFile: (path) =>
-				path.endsWith("index.ts") ? buttonSurface : (files.get(path) ?? ""),
+			readFile: (path) => files.get(path) ?? "",
 			storyFiles: [...files.keys()],
+			uiSurface: buttonSurface,
 		});
 
 		// Assert
@@ -119,8 +119,9 @@ describe("checkCompleteness", () => {
 
 		// Act
 		const errors = checkCompleteness(root, {
-			readFile: (path) => (path.endsWith("index.ts") ? buttonSurface : story),
+			readFile: () => story,
 			storyFiles: [storyPath],
+			uiSurface: buttonSurface,
 		});
 
 		// Assert
@@ -138,8 +139,9 @@ describe("checkCompleteness", () => {
 
 		// Act
 		const errors = checkCompleteness(root, {
-			readFile: (path) => (path.endsWith("index.ts") ? buttonSurface : "{}"),
+			readFile: () => "{}",
 			storyFiles: [],
+			uiSurface: buttonSurface,
 			waiverFile: "{",
 		});
 

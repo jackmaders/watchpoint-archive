@@ -5,21 +5,20 @@
  * and browser-safe contracts while deliberately excluding seed operations.
  */
 
-export { createDbClient } from "./client";
-export * from "./index";
+export { createDbClient } from "./api/client";
 export {
 	createAttemptRecord,
 	deleteAttemptRecord,
 	getAttemptRecordById,
 	queryAttemptRecords,
 	updateAttemptRecord,
-} from "./queries/attempts";
+} from "./api/queries/attempts";
 export {
 	createAuditEntry,
 	deleteAuditEntry,
 	getAuditEntryById,
 	queryAuditEntries,
-} from "./queries/audit";
+} from "./api/queries/audit";
 export {
 	createPlaythrough,
 	createPlaythroughCompletion,
@@ -33,7 +32,7 @@ export {
 	queryPlaythroughs,
 	queryScenarioSnapshots,
 	updatePlaythrough,
-} from "./queries/playthroughs";
+} from "./api/queries/playthroughs";
 export {
 	createScenario,
 	createScenarios,
@@ -42,7 +41,7 @@ export {
 	queryScenarios,
 	reorderScenarios,
 	updateScenario,
-} from "./queries/scenarios";
+} from "./api/queries/scenarios";
 export {
 	createUser,
 	deleteUser,
@@ -50,7 +49,7 @@ export {
 	getUserById,
 	queryUsers,
 	updateUser,
-} from "./queries/users";
+} from "./api/queries/users";
 export {
 	bulkDeleteVods,
 	bulkPublishVods,
@@ -59,23 +58,25 @@ export {
 	getVodById,
 	queryVods,
 	updateVod,
-} from "./queries/vods";
+} from "./api/queries/vods";
 export {
 	DEFAULT_LIMIT,
 	filterToSQL,
 	orderToSQL,
 	type QueryOptions,
-} from "./query";
-export { accounts } from "./schema/account";
-export { attemptRecords } from "./schema/attempt-record";
-export { auditEntries } from "./schema/audit";
-export { playthroughs } from "./schema/playthrough";
-export { playthroughCompletions } from "./schema/playthrough-completion";
-export { playthroughModuleSelections } from "./schema/playthrough-module-selection";
-export { relations } from "./schema/relations";
-export { scenarios } from "./schema/scenario";
-export { scenarioSnapshots } from "./schema/scenario-snapshot";
-export { sessions } from "./schema/session";
-export { users } from "./schema/user";
-export { verifications } from "./schema/verification";
-export { vods } from "./schema/vod";
+} from "./api/query";
+export * from "./index";
+export * from "./lib/seed/index.server";
+export { accounts } from "./model/schema/account";
+export { attemptRecords } from "./model/schema/attempt-record";
+export { auditEntries } from "./model/schema/audit";
+export { playthroughs } from "./model/schema/playthrough";
+export { playthroughCompletions } from "./model/schema/playthrough-completion";
+export { playthroughModuleSelections } from "./model/schema/playthrough-module-selection";
+export { relations } from "./model/schema/relations";
+export { scenarios } from "./model/schema/scenario";
+export { scenarioSnapshots } from "./model/schema/scenario-snapshot";
+export { sessions } from "./model/schema/session";
+export { users } from "./model/schema/user";
+export { verifications } from "./model/schema/verification";
+export { vods } from "./model/schema/vod";

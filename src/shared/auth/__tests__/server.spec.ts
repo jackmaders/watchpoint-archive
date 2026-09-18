@@ -12,7 +12,7 @@ import {
 	getCurrentUser,
 	handleAuthRequest,
 	isRegistrationOpen,
-} from "../server";
+} from "../api/auth-server";
 
 const authConfig = {
 	allowRegistration: false,

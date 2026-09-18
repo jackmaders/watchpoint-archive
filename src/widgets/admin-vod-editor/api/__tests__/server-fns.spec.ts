@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@tanstack/react-start");
-vi.mock("@/shared/lib/permissions");
+vi.mock("@/shared/auth/index.server");
 vi.mock("../../model/vod-rules");
 vi.mock("../../model/scenario-rules");
 vi.mock("../../model/get-admin-vods");
 
-import { requirePermission } from "@/shared/lib/permissions";
+import { requirePermission } from "@/shared/auth/index.server";
 import {
 	bulkDeleteVodsRule,
 	bulkPublishVodsRule,

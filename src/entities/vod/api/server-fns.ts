@@ -13,12 +13,12 @@ import {
 	queryScenarios,
 	queryVods,
 } from "@/shared/db/index.server";
-import { isWithinVodTimeRange } from "@/shared/lib/vod-time-range";
 import {
 	type RecordAttemptInput,
 	RecordAttemptInputSchema,
 	type RecordAttemptResult,
 } from "../model/attempt";
+import { isWithinVodTimeRange } from "../model/time-range";
 import type { PublishedVodItem, SessionManifest } from "../model/types";
 import {
 	completePlaythroughAction,
@@ -26,12 +26,7 @@ import {
 	startPlaythroughAction,
 } from "./playthrough";
 import { recordAttemptAction } from "./record-attempt";
-import {
-	normalizeSessionManifestQuery,
-	type SessionManifestTransportQuery,
-} from "./session-manifest-query";
-
-export type GetSessionManifestPayload = SessionManifestTransportQuery;
+import { normalizeSessionManifestQuery } from "./session-manifest-query";
 
 function isScenarioInVodRange(
 	timestampSeconds: number | null | undefined,

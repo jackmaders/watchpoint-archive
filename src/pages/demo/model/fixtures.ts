@@ -5,7 +5,7 @@
  * decision scenarios across Strategy, Tactics, Tracking, and Spatial Awareness module types.
  */
 import type { SessionManifest } from "@/entities/vod";
-import { FIXTURE_DEMO_VOD, getLocalDemoFixtureScenarios } from "@/shared/seed";
+import { FIXTURE_DEMO_VOD, getLocalDemoFixtureScenarios } from "@/shared/db";
 
 export const DEMO_VOD_MANIFEST: SessionManifest = {
 	...FIXTURE_DEMO_VOD,

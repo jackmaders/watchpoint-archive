@@ -16,7 +16,7 @@ import {
 	useState,
 } from "react";
 import type { SessionManifest } from "@/entities/vod";
-import { getVodStartSeconds } from "@/shared/lib/vod-time-range";
+import { getVodStartSeconds } from "@/entities/vod";
 import {
 	type PlaybackRate,
 	type PlaybackStatus,
@@ -30,12 +30,10 @@ import type { AttemptOutcome } from "./attempt";
 import {
 	type NormalizedScenario,
 	normalizeScenario,
-	type ScenarioOption,
 	type ScenarioOverlayState,
 } from "./session-contract";
 import {
 	createSessionPlaythroughState,
-	getScenarioLimitMs,
 	type SessionPlayerState,
 	type SessionPlaythroughAction,
 	type SessionPlaythroughEffect,
@@ -44,11 +42,6 @@ import {
 	sessionPlaythroughReducer,
 } from "./session-playthrough-coordinator";
 import type { SessionSummaryReport } from "./summary";
-
-export type { ScenarioData, ScenarioOverlayState } from "./session-contract";
-export { normalizeScenario, toScenarioOverlayData } from "./session-contract";
-export type { SessionPlayerState } from "./session-playthrough-coordinator";
-export { resolveNewStatusState } from "./session-playthrough-coordinator";
 
 export type ManifestVod = SessionManifest;
 export type ScenarioItem = NormalizedScenario<ManifestVod["scenarios"][number]>;
@@ -102,8 +95,6 @@ export interface UseSessionPlayerResult {
 	vod: ManifestVod | null;
 	volume: number;
 }
-
-export type ScenarioOptionItem = ScenarioOption;
 
 export function toSessionPlaythroughMediaAction(
 	event: SessionMediaEvent,
@@ -582,5 +573,3 @@ export function useSessionPlayer({
 		volume: media.volume,
 	};
 }
-
-export { getScenarioLimitMs };

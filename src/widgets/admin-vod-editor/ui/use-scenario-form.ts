@@ -1,10 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import {
-	getVodEndSeconds,
-	getVodStartSeconds,
-} from "@/shared/lib/vod-time-range";
+import { getVodEndSeconds, getVodStartSeconds } from "@/entities/vod";
 import type { InputType, ModuleType, ScenarioItem } from "../model";
 import {
 	type ScenarioEditorFormProps,

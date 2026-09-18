@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import * as playthroughQueries from "../../src/shared/db/queries/playthroughs";
+import * as playthroughQueries from "../../src/shared/db/api/queries/playthroughs";
 import { executeCleanupOrphanPlaythroughs } from "../cleanup-orphan-playthroughs";
 
 describe("executeCleanupOrphanPlaythroughs", () => {

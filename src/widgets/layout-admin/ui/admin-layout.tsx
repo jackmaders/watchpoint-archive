@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { AccountControls } from "@/features/authentication";
-import type { AuthenticatedUser } from "@/shared/lib/permissions";
+import type { AuthenticatedUser } from "@/shared/auth";
 
 export function AdminLayout({
 	children,

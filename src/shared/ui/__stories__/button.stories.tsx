@@ -7,7 +7,7 @@
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useCallback, useState } from "react";
-import { Button } from "@/shared/ui";
+import { Button } from "@/shared/ui/button";
 
 const meta = {
 	component: Button,

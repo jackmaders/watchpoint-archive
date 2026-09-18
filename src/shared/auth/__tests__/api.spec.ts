@@ -1,15 +1,14 @@
 import { describe, expect, it, vi } from "vitest";
 
 vi.unmock("@tanstack/react-start");
-vi.mock("../server");
+vi.mock("../api/auth-server");
 
 import {
-	authApiRouteOptions,
 	getRegistrationStatusHandler,
 	getSessionUserHandler,
-	handleAuthRequest,
-} from "../api";
-import * as server from "../server";
+} from "../api/auth-functions";
+import * as server from "../api/auth-server";
+import { authApiRouteOptions, handleAuthRequest } from "../api/route-handler";
 
 describe("authentication API boundary", () => {
 	it("exposes GET and POST auth route handlers", () => {

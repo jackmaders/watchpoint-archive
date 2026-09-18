@@ -8,7 +8,7 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { useCallback, useMemo } from "react";
-import { formatDuration } from "@/shared/lib/utils";
+import { formatDuration } from "@/shared/lib";
 import type { AdminVodItem } from "@/widgets/admin-vod-editor";
 import type {
 	ContentSortColumn,
@@ -16,14 +16,14 @@ import type {
 } from "../model/search-params";
 import { RowActionsCell, SortHeaderButton } from "./admin-content-table-cells";
 
-export interface RowSelectionCellProps {
+interface RowSelectionCellProps {
 	id: string;
 	isSelected: boolean;
 	onToggle: (id: string) => void;
 	title: string;
 }
 
-export function RowSelectionCell({
+function RowSelectionCell({
 	id,
 	isSelected,
 	onToggle,

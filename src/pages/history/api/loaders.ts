@@ -10,8 +10,8 @@ import type { QueryClient } from "@tanstack/react-query";
 import { queryOptions } from "@tanstack/react-query";
 import { redirect } from "@tanstack/react-router";
 import { getPublishedVods } from "@/entities/vod";
-import { queryKeys } from "@/shared/api";
 import { getRegistrationStatus, getSessionUser } from "@/shared/auth";
+import { queryKeys } from "@/shared/db";
 import type { HistorySearchParams } from "../model/search-params";
 import { getPlayerHistory } from "./server-fns";
 

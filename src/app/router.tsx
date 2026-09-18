@@ -4,7 +4,7 @@ import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query
 import { registerSessionSync } from "@/shared/auth";
 import { routeTree } from "./routeTree.gen";
 
-export function createRouter() {
+export function getRouter() {
 	const queryClient = new QueryClient();
 
 	const router = createTanStackRouter({
@@ -29,10 +29,8 @@ export function createRouter() {
 	return router;
 }
 
-export const getRouter = createRouter;
-
 declare module "@tanstack/react-router" {
 	interface Register {
-		router: ReturnType<typeof createRouter>;
+		router: ReturnType<typeof getRouter>;
 	}
 }

@@ -13,6 +13,7 @@ export interface AccessibilityWaiver {
 export interface CompletenessOptions {
 	readFile?: (path: string) => string;
 	storyFiles?: string[];
+	uiSurface?: string;
 	waiverFile?: string;
 }
 
@@ -93,7 +94,7 @@ export function checkCompleteness(
 	const uiRoot = join(root, "src/shared/ui");
 	const readFile =
 		options.readFile ?? ((path: string) => readFileSync(path, "utf8"));
-	const surface = readFile(join(uiRoot, "index.ts"));
+	const surface = options.uiSurface ?? readUiSurface(uiRoot, readFile);
 	const storyFiles =
 		options.storyFiles ?? discoverStoryFiles(join(uiRoot, "__stories__"));
 	const errors = validateVisualStories(surface, storyFiles, readFile, root);
@@ -105,6 +106,22 @@ export function checkCompleteness(
 		errors.push(...parseWaivers(readFile(waiverPath)));
 	}
 	return errors;
+}
+
+function readUiSurface(
+	uiRoot: string,
+	readFile: (path: string) => string,
+): string {
+	if (!existsSync(uiRoot)) return "";
+	return readdirSync(uiRoot, { withFileTypes: true })
+		.filter(
+			(entry) =>
+				entry.isFile() &&
+				/\.tsx?$/.test(entry.name) &&
+				!/(?:\.spec|\.test|\.stories)\.[^.]+$/.test(entry.name),
+		)
+		.map((entry) => readFile(join(uiRoot, entry.name)))
+		.join("\n");
 }
 
 function parseWaivers(source: string): string[] {

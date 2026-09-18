@@ -12,7 +12,7 @@ import type {
 	VodTransportRecord,
 } from "@/shared/db";
 
-export type { JsonValue, ModuleType, PlaythroughStatus };
+export type { ModuleType, PlaythroughStatus };
 export type PublishedVodItem = VodTransportRecord;
 
 export interface GetPlayerHistoryOptions {

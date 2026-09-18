@@ -6,7 +6,7 @@
  */
 "use client";
 
-import type { AuthenticatedUser } from "@/shared/lib/permissions";
+import type { AuthenticatedUser } from "@/shared/auth";
 import { Alert, AlertDescription } from "@/shared/ui/alert";
 import {
 	type AdminVodItem,

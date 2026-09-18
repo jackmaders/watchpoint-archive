@@ -16,15 +16,15 @@ import {
 	type AccessState,
 	DEFAULT_ROUTE_INVENTORY,
 	resolveRoutePath,
-} from "../src/shared/routes/inventory";
+} from "../src/app/config/routes/inventory";
 import {
 	evaluateMetricBudget,
 	type MetricEvaluationResult,
 	PERF_METRICS,
 	type PerfBudgetException,
 	validatePerfExceptions,
-} from "../src/shared/routes/perf-budgets";
-import { getSeedCredentials } from "../src/shared/seed/index.server";
+} from "../src/app/perf/perf-budgets";
+import { getSeedCredentials } from "../src/shared/db/lib/seed/index.server";
 
 export interface RouteAuditRunMetrics {
 	cls: number;
@@ -229,7 +229,7 @@ export function loadPerfExceptions(root = process.cwd()): {
 	errors: string[];
 	exceptions: PerfBudgetException[];
 } {
-	const filePath = join(root, "src/shared/routes/perf-exceptions.json");
+	const filePath = join(root, "src/app/perf/perf-exceptions.json");
 	if (!existsSync(filePath)) {
 		return { errors: [], exceptions: [] };
 	}

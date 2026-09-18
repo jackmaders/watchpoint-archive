@@ -6,8 +6,8 @@ vi.mock("@/entities/vod");
 vi.mock("@/shared/auth/index.server");
 
 import { getPublishedVods } from "@/entities/vod";
-import { queryKeys } from "@/shared/api";
 import { isRegistrationOpen } from "@/shared/auth/index.server";
+import { queryKeys } from "@/shared/db";
 import { fetchHomePage, homePageQueryOptions, loadHomePage } from "../loaders";
 
 describe("home loaders", () => {

@@ -16,9 +16,8 @@ import {
 	Shield,
 } from "lucide-react";
 import { useCallback } from "react";
-import { authClient } from "@/shared/auth";
-import { hasPermission, PERMISSIONS } from "@/shared/lib/permissions";
-import { cn } from "@/shared/lib/utils";
+import { authClient, hasPermission, PERMISSIONS } from "@/shared/auth";
+import { cn } from "@/shared/lib";
 import { Button } from "@/shared/ui/button";
 import { useSidebarCollapsedState } from "../model/sidebar-state";
 

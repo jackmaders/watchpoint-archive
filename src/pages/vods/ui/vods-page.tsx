@@ -6,15 +6,13 @@
  */
 import { Link } from "@tanstack/react-router";
 import { useCallback } from "react";
-import { VodFilterInputs } from "@/entities/vod";
-import { formatDuration } from "@/shared/lib/utils";
-import { getEffectiveVodDuration } from "@/shared/lib/vod-time-range";
+import { getEffectiveVodDuration, VodFilterInputs } from "@/entities/vod";
+import { formatDuration } from "@/shared/lib";
 import { Button } from "@/shared/ui/button";
 import type { PublishedVodItem } from "@/widgets/admin-vod-editor";
 import { AppLayout } from "@/widgets/layout-main";
 import type { VodsSearchParams } from "../model/search-params";
 
-export type VodItem = PublishedVodItem;
 export { formatDuration };
 
 export interface VodsPageProps {

@@ -1,8 +1,8 @@
 import type { D1Database } from "@cloudflare/workers-types";
 import { drizzle } from "drizzle-orm/d1";
 import { getPlatformProxy } from "wrangler";
-import { deleteOrphanInProgressPlaythroughs } from "../src/shared/db/queries/playthroughs";
-import { relations } from "../src/shared/db/schema/relations";
+import { deleteOrphanInProgressPlaythroughs } from "../src/shared/db/api/queries/playthroughs";
+import { relations } from "../src/shared/db/model/schema/relations";
 
 export interface CleanupOrphanPlaythroughsResult {
 	deletedCount: number;

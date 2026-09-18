@@ -5,4 +5,11 @@
  * application code, so tests can control session and registration behavior without importing internals.
  */
 
+import { vi } from "vitest";
+
+export * from "./api";
 export * from "./auth";
+export const requirePermission = vi.fn().mockResolvedValue({
+	id: "user-1",
+	role: "ADMIN",
+});

@@ -12,7 +12,7 @@ import {
 	getVodById,
 	queryScenarios,
 } from "@/shared/db/index.server";
-import { isWithinVodTimeRange } from "@/shared/lib/vod-time-range";
+import { isWithinVodTimeRange } from "../model/time-range";
 import type { SessionManifest } from "../model/types";
 import { normalizeSessionManifestModules } from "./session-manifest-query";
 

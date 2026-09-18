@@ -10,10 +10,10 @@ import { QueryClient } from "@tanstack/react-query";
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 import { registerSessionSync } from "@/shared/auth";
-import { createRouter } from "../router";
+import { getRouter } from "../router";
 import { routeTree } from "../routeTree.gen";
 
-describe("createRouter", () => {
+describe("getRouter", () => {
 	it("instantiates QueryClient, passes it to router context, calls setupRouterSsrQueryIntegration, and registers session sync", () => {
 		// Arrange
 		const mockQueryClient = { mock: "query-client" };
@@ -26,7 +26,7 @@ describe("createRouter", () => {
 		);
 
 		// Act
-		const router = createRouter();
+		const router = getRouter();
 
 		// Assert
 		expect(createTanStackRouter).toHaveBeenCalledWith({

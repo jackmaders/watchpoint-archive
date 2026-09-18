@@ -2,10 +2,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@tanstack/react-router");
 vi.mock("@/widgets/admin-vod-editor");
-vi.mock("@/shared/lib/audit");
+vi.mock("@/shared/logging/index.server");
 
 import { redirect } from "@tanstack/react-router";
-import { getAdminAuditLogs } from "@/shared/lib/audit";
+import { getAdminAuditLogs } from "@/shared/logging/index.server";
 import { getAdminVodById } from "@/widgets/admin-vod-editor";
 import { loadAdminContentIdPage } from "../loaders";
 

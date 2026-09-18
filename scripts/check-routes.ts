@@ -3,7 +3,7 @@ import { join } from "node:path";
 import {
 	DEFAULT_ROUTE_INVENTORY,
 	validateRouteInventory,
-} from "../src/shared/routes/inventory";
+} from "../src/app/config/routes/inventory";
 
 export interface CheckRouteOptions {
 	readFile?: (path: string) => string;

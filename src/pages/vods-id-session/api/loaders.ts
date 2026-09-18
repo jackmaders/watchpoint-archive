@@ -12,7 +12,7 @@ import {
 	normalizeSessionManifestModules,
 	startPlaythroughAction,
 } from "@/entities/vod";
-import { queryKeys } from "@/shared/api";
+import { queryKeys } from "@/shared/db";
 import type { SessionSearch } from "../model/session-search";
 
 export const sessionPlaythroughQueryOptions = (

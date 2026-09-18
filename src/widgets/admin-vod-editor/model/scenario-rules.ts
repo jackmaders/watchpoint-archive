@@ -5,6 +5,7 @@
  * with zero exceptions and discriminated union results.
  */
 
+import { isWithinVodTimeRange } from "@/entities/vod";
 import {
 	createAuditEntry,
 	createScenario,
@@ -14,7 +15,6 @@ import {
 	reorderScenarios,
 	updateScenario,
 } from "@/shared/db/index.server";
-import { isWithinVodTimeRange } from "@/shared/lib/vod-time-range";
 import type {
 	CreateScenarioPayload,
 	CreateScenarioResult,

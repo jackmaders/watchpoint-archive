@@ -7,7 +7,7 @@
 
 "use client";
 import type * as React from "react";
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/shared/lib";
 import { Label } from "@/shared/ui/label";
 
 function Field({ className, ...props }: React.ComponentProps<"div">) {

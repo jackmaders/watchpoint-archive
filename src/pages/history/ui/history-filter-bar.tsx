@@ -15,7 +15,7 @@ export const MODULE_LABEL_MAP: Record<ModuleType, string> = {
 	TRACKING: "Tracking",
 };
 
-export const ALL_MODULES: { key: ModuleType; label: string }[] = [
+const ALL_MODULES: { key: ModuleType; label: string }[] = [
 	{ key: "STRATEGY", label: MODULE_LABEL_MAP.STRATEGY },
 	{ key: "TACTICS", label: MODULE_LABEL_MAP.TACTICS },
 	{ key: "TRACKING", label: MODULE_LABEL_MAP.TRACKING },

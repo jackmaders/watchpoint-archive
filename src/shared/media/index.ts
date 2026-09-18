@@ -1,41 +1,15 @@
-import { handleMediaRequest } from "./api";
-
-export const mediaApiRouteOptions = {
-	server: {
-		handlers: {
-			GET: handleMediaRequest,
-		},
-	},
-};
-
-export {
-	getMediaBucket,
-	handleGetMedia,
-	handleMediaRequest,
-	type MediaContext,
-} from "./api";
 export type {
-	SessionMediaAdapterOptions,
 	SessionMediaAdapterResult,
-	SessionMediaCommand,
 	SessionMediaEvent,
-} from "./session-media-adapter";
-export {
-	executeSessionMediaCommand,
-	useSessionMediaAdapter,
-} from "./session-media-adapter";
+} from "./api/session-media-adapter";
+export { useSessionMediaAdapter } from "./api/session-media-adapter";
 export type {
 	PlaybackRate,
 	VodContainerRef,
-	VodPlayerOptions,
-	VodPlayerResult,
-} from "./types";
+} from "./model/types";
 export {
 	type MediaDiagnostic,
 	type MediaFailure,
-	MediaFailureCategory,
-	type MediaFailureOutcome,
 	PLAYBACK_RATES,
 	PlaybackStatus,
-} from "./types";
-export { useVodPlayer } from "./use-vod-player";
+} from "./model/types";

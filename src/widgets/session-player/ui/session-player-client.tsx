@@ -12,13 +12,11 @@ import { useCallback, useMemo } from "react";
 import {
 	completePlaythrough,
 	extractHeroFromTitle,
-	MODULE_MAP,
-} from "@/entities/vod";
-import { formatDuration } from "@/shared/lib/utils";
-import {
 	getEffectiveVodDuration,
 	getVodStartSeconds,
-} from "@/shared/lib/vod-time-range";
+	MODULE_MAP,
+} from "@/entities/vod";
+import { formatDuration } from "@/shared/lib";
 import {
 	PLAYBACK_RATES,
 	type PlaybackRate,

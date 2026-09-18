@@ -1,11 +1,11 @@
 import type { D1Database } from "@cloudflare/workers-types";
 import { drizzle } from "drizzle-orm/d1";
 import { getPlatformProxy } from "wrangler";
-import { relations } from "../src/shared/db/schema/relations";
 import {
 	assertLocalSeedTarget,
 	executeSeed,
-} from "../src/shared/seed/index.server";
+} from "../src/shared/db/lib/seed/index.server";
+import { relations } from "../src/shared/db/model/schema/relations";
 
 async function main() {
 	assertLocalSeedTarget();
