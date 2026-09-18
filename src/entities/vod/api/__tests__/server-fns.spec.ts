@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { getCurrentUser } from "@/shared/auth/index.server";
 import {
 	createDbClient,
 	getVodById as dbGetVodById,
 	queryScenarios,
 	queryVods,
 } from "@/shared/db";
-import { getCurrentUser } from "@/shared/lib/auth";
 import * as recordAttemptModule from "../record-attempt";
 import {
 	completePlaythrough,
@@ -19,7 +19,7 @@ import {
 
 vi.mock("@tanstack/react-start");
 vi.mock("@/shared/db");
-vi.mock("@/shared/lib/auth");
+vi.mock("@/shared/auth/index.server");
 vi.mock("../record-attempt");
 
 describe("entities/vod server-fns", () => {

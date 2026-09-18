@@ -1,7 +1,7 @@
 /**
  * Provides a hook for synchronizing controlled and uncontrolled component state with unified setters.
  *
- * Implements `useControllableState` in `src/shared/lib` following Radix UI controllable state patterns.
+ * Implements `useControllableState` in `src/shared/lib/hooks` following Radix UI controllable state patterns.
  * Allows components to seamlessly operate in either controlled mode (via `prop` and `onChange`) or
  * uncontrolled mode (via `defaultProp` and internal state), preserving callback reference stability.
  */

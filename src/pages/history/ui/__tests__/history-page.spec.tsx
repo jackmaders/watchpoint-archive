@@ -8,7 +8,7 @@ import type {
 import { HistoryPage } from "../history-page";
 
 vi.mock("@tanstack/react-router");
-vi.mock("@/shared/lib/auth-client");
+vi.mock("@/shared/auth");
 
 const mockVod: PublishedVodItem = {
 	createdAt: new Date("2026-01-01"),

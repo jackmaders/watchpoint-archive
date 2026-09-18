@@ -2,10 +2,10 @@ import type { QueryClient } from "@tanstack/react-query";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@tanstack/react-start");
-vi.mock("@/shared/lib/auth");
+vi.mock("@/shared/auth/index.server");
 
 import { queryKeys } from "@/shared/api";
-import { isRegistrationOpen } from "@/shared/lib/auth";
+import { isRegistrationOpen } from "@/shared/auth/index.server";
 import {
 	fetchPrivacyPage,
 	loadPrivacyPage,

@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { PrivacyPage } from "../privacy-page";
 
 vi.mock("@tanstack/react-router");
-vi.mock("@/shared/lib/auth-client");
+vi.mock("@/shared/auth");
 
 describe("PrivacyPage component", () => {
 	it("renders main header and descriptive briefing", () => {

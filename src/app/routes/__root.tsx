@@ -8,8 +8,7 @@ import {
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import appCss from "@/app/styles/globals.css?url";
-
-import { type CurrentUser, getSessionUser } from "@/shared/lib/auth";
+import { type CurrentUser, getSessionUser } from "@/shared/auth";
 
 export interface RouterContext {
 	queryClient: QueryClient;

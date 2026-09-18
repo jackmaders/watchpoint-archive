@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { getCurrentUser } from "@/shared/auth/index.server";
 import {
 	createDbClient,
 	createPlaythrough,
@@ -8,14 +9,13 @@ import {
 	getPlaythroughById,
 	updatePlaythrough,
 } from "@/shared/db";
-import { getCurrentUser } from "@/shared/lib/auth";
 import {
 	completePlaythroughAction,
 	startPlaythroughAction,
 } from "../playthrough";
 
 vi.mock("@/shared/db");
-vi.mock("@/shared/lib/auth");
+vi.mock("@/shared/auth/index.server");
 
 const input: import("../playthrough").StartPlaythroughInput = {
 	id: "playthrough_1",

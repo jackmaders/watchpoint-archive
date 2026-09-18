@@ -10,7 +10,7 @@ import { Link } from "@tanstack/react-router";
 import { Sparkles } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MODULE_MAP } from "@/entities/vod";
-import { AuthModal } from "@/shared/ui/auth-modal";
+import { AuthModal } from "@/features/authentication";
 import type { SessionSummaryReport } from "../model/summary";
 import type { ModuleType } from "../model/types";
 

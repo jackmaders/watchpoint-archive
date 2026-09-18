@@ -11,7 +11,7 @@ import { queryOptions } from "@tanstack/react-query";
 import { redirect } from "@tanstack/react-router";
 import { getPublishedVods } from "@/entities/vod";
 import { queryKeys } from "@/shared/api";
-import { getRegistrationStatus, getSessionUser } from "@/shared/lib/auth";
+import { getRegistrationStatus, getSessionUser } from "@/shared/auth";
 import type { HistorySearchParams } from "../model/search-params";
 import { getPlayerHistory } from "./server-fns";
 

@@ -6,7 +6,7 @@
  */
 import { redirect } from "@tanstack/react-router";
 import { getPublishedVods } from "@/entities/vod";
-import { getRegistrationStatus, getSessionUser } from "@/shared/lib/auth";
+import { getRegistrationStatus, getSessionUser } from "@/shared/auth";
 import type { VodsSearchParams } from "../model/search-params";
 
 export async function vodsBeforeLoad() {

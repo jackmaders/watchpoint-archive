@@ -15,9 +15,9 @@ import {
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@tanstack/react-router");
-vi.mock("@/shared/lib/auth-client");
+vi.mock("@/shared/auth");
 
-import { authClient } from "@/shared/lib/auth-client";
+import { authClient } from "@/shared/auth";
 import { AccountControls, AuthModal, resolveAuthResult } from "../auth-modal";
 
 const onOpenChange = vi.fn();

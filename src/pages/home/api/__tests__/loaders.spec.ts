@@ -3,11 +3,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@tanstack/react-start");
 vi.mock("@/entities/vod");
-vi.mock("@/shared/lib/auth");
+vi.mock("@/shared/auth/index.server");
 
 import { getPublishedVods } from "@/entities/vod";
 import { queryKeys } from "@/shared/api";
-import { isRegistrationOpen } from "@/shared/lib/auth";
+import { isRegistrationOpen } from "@/shared/auth/index.server";
 import { fetchHomePage, homePageQueryOptions, loadHomePage } from "../loaders";
 
 describe("home loaders", () => {

@@ -8,7 +8,7 @@ import {
 	installMockFrames,
 	setYouTubeNamespace,
 	YouTubePlayerState,
-} from "@/shared/lib/testing";
+} from "@/shared/test-fixtures";
 import {
 	SessionPlayerClient,
 	SessionPlayerViewport,

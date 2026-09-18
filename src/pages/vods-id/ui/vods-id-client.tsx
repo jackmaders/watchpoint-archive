@@ -17,8 +17,8 @@ import {
 	type SessionManifest,
 	serializeModulesParam,
 } from "@/entities/vod";
-import { authClient } from "@/shared/lib/auth-client";
-import { AuthModal } from "@/shared/ui/auth-modal";
+import { AuthModal } from "@/features/authentication";
+import { authClient } from "@/shared/auth";
 
 export interface VodsIdClientProps {
 	registrationEnabled?: boolean;

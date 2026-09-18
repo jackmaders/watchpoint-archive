@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@tanstack/react-router");
-vi.mock("@/shared/lib/auth-client");
+vi.mock("@/shared/auth");
 vi.mock("@/widgets/layout-main");
 vi.mock("../hero-section");
 vi.mock("../how-it-works-section");

@@ -1,24 +1,16 @@
 /**
- * Public barrel export for the shared library slice, exposing cross-cutting utilities,
- * authentication helpers, domain metric calculators, and operational telemetry.
+ * Public barrel export for the shared library segment, exposing reusable non-UI infrastructure.
  *
- * Centralizes consumption for higher Feature-Sliced Design layers, aggregating exports
- * from `audit`, `auth`, `auth-client`, `math`, `metrics`, `sentry`, `use-controllable-state`, and `utils`.
+ * Domain-specific APIs, authentication, telemetry, and test fixtures have dedicated shared segments;
+ * this barrel keeps the remaining library utilities available through one stable entrypoint.
  */
 
 export * from "./audit";
-export * from "./auth";
-export {
-	authClient,
-	getSessionSyncTarget,
-	invalidateSessionState,
-	registerSessionSync,
-	type SessionSyncTarget,
-} from "./auth-client";
+export * from "./hooks";
 export * from "./math";
 export * from "./metrics";
+export * from "./permissions";
 export * from "./sentry";
-export * from "./use-controllable-state";
 export * from "./utils";
 export {
 	getEffectiveVodDuration,

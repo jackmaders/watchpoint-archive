@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { setYouTubeNamespace } from "../__mocks__/youtube";
+import { setYouTubeNamespace } from "@/shared/test-fixtures";
 import { PlaybackStatus } from "../types";
 import {
 	createYouTubePlayerInstance,

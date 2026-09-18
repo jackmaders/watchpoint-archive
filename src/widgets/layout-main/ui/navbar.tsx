@@ -9,7 +9,7 @@
 
 import { Link, useLocation } from "@tanstack/react-router";
 import { ChevronRight, Menu, X } from "lucide-react";
-import { AccountControls } from "@/shared/ui/auth-modal";
+import { AccountControls } from "@/features/authentication";
 import { Button } from "@/shared/ui/button";
 
 export interface NavbarProps {

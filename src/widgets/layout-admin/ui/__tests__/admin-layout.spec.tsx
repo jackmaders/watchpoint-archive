@@ -2,9 +2,9 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("@tanstack/react-router");
-vi.mock("@/shared/ui/auth-modal");
+vi.mock("@/features/authentication");
 
-import { AccountControls } from "@/shared/ui/auth-modal";
+import { AccountControls } from "@/features/authentication";
 import { AdminLayout } from "../admin-layout";
 
 describe("AdminLayout", () => {

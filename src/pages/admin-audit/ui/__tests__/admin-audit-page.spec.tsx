@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { AdminAuditLogItem } from "../admin-audit-page";
 
 vi.mock("@tanstack/react-router");
-vi.mock("@/shared/lib/auth-client");
+vi.mock("@/shared/auth");
 
 import { AdminAuditPage } from "../admin-audit-page";
 

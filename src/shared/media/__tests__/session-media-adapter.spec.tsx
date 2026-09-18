@@ -5,7 +5,7 @@ import {
 	installMockFrames,
 	setDocumentVisibility,
 	setYouTubeNamespace,
-} from "../__mocks__/youtube";
+} from "@/shared/test-fixtures";
 import {
 	executeSessionMediaCommand,
 	useSessionMediaAdapter,

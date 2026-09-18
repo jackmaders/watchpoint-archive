@@ -1,12 +1,3 @@
-/**
- * Provides the shared browser-side authentication client for managing player sessions,
- * sign-in operations, and credential lifecycles across the application.
- *
- * Instantiates and exports `authClient` via Better Auth React client (`createAuthClient`),
- * provides session synchronization with TanStack Router and TanStack Query via `registerSessionSync`,
- * and exposes reactive session hooks and authentication methods consumed by client UI components.
- */
-
 import { createAuthClient } from "better-auth/react";
 
 export interface SessionSyncTarget {

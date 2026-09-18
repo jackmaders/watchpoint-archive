@@ -4,9 +4,9 @@ import type {
 	YouTubePlayer,
 	YouTubePlayerOptions,
 	YouTubePlayerState,
-} from "../youtube-adapter";
+} from "../media/youtube-adapter";
 
-export { YouTubePlayerState } from "../youtube-adapter";
+export { YouTubePlayerState } from "../media/youtube-adapter";
 
 export function setYouTubeNamespace(namespace: YouTubeNamespace | undefined) {
 	Object.defineProperty(window, "YT", {

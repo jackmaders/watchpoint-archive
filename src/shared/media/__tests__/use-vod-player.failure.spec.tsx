@@ -1,6 +1,6 @@
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createYouTubeMock, setYouTubeNamespace } from "../__mocks__/youtube";
+import { createYouTubeMock, setYouTubeNamespace } from "@/shared/test-fixtures";
 import { PlaybackStatus } from "../types";
 import type { YouTubeNamespace } from "../youtube-adapter";
 

@@ -6,7 +6,7 @@
  */
 import { queryOptions } from "@tanstack/react-query";
 import { queryKeys } from "@/shared/api";
-import { getRegistrationStatus } from "@/shared/lib/auth";
+import { getRegistrationStatus } from "@/shared/auth";
 import { DEMO_VOD_MANIFEST } from "../model/fixtures";
 
 export const demoPageQueryOptions = () =>

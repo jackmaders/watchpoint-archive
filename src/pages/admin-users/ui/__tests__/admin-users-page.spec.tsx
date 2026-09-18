@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AdminUsersPage } from "../admin-users-page";
 
 vi.mock("@tanstack/react-router");
-vi.mock("@/shared/lib/auth-client");
+vi.mock("@/shared/auth");
 vi.mock("../../api/loaders");
 
 import { useUpdateUserRole } from "../../api/loaders";

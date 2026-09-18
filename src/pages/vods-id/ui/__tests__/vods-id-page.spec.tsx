@@ -7,12 +7,12 @@ import {
 	waitFor,
 } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { authClient } from "@/shared/lib/auth-client";
+import { authClient } from "@/shared/auth";
 import type { SessionManifest } from "@/widgets/admin-vod-editor";
 import { VodsIdPage } from "../vods-id-page";
 
 vi.mock("@tanstack/react-router");
-vi.mock("@/shared/lib/auth-client");
+vi.mock("@/shared/auth");
 
 describe("VodsIdPage", () => {
 	const navigate = vi.fn();
