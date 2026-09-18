@@ -79,7 +79,7 @@ describe("AdminContentTable", () => {
 		expect(screen.getByText("0 Scenarios")).toBeDefined();
 		expect(screen.getByText("Published")).toBeDefined();
 		expect(screen.getByText("Draft")).toBeDefined();
-	});
+	}, 1500);
 
 	it("handles empty vod list with empty state message", () => {
 		// Arrange
