@@ -1,9 +1,0 @@
-{
-	"files": [
-		{
-			"maxPercentIncrease": 5,
-			"maxSize": "10MB",
-			"path": "dist/server/server.js"
-		}
-	]
-}
