@@ -1,15 +1,16 @@
 /**
  * URL search parameter schema and validation for the interactive session player view.
  *
- * Implements `sessionSearchSchema` and `validateSessionSearch` to parse active module filters
- * and prototype diagnostic variants.
+ * Validates and structures URL query search parameters for the interactive session player view,
+ * ensuring type-safe filtering of training modules.
+ *
+ * Implements `sessionSearchSchema` and `validateSessionSearch` using Zod schemas to parse optional
+ * module filters within the `src/pages/vods-id-session/` slice.
  */
 import { z } from "zod";
 
 export const sessionSearchSchema = z.object({
 	modules: z.string().optional(),
-	prototype: z.enum(["media-recovery"]).optional(),
-	variant: z.enum(["A", "B", "C"]).optional(),
 });
 
 export type SessionSearch = z.infer<typeof sessionSearchSchema>;

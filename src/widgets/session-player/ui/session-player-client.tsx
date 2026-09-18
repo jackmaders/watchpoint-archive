@@ -7,7 +7,8 @@
 "use client";
 
 import { Link } from "@tanstack/react-router";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Volume1, Volume2, VolumeX } from "lucide-react";
+import { useCallback, useMemo } from "react";
 import {
 	completePlaythrough,
 	extractHeroFromTitle,
@@ -31,6 +32,7 @@ import {
 	useSessionPlayer,
 } from "../model/use-session-player";
 import { ScenarioOverlay } from "./scenario-overlay";
+import { SessionPlayerMediaRecovery } from "./session-player-media-recovery";
 import { SessionSummaryPanel } from "./session-summary-panel";
 
 export interface SessionPlayerClientProps {
@@ -108,12 +110,16 @@ interface SessionPlayerControlsProps {
 	activeScenarios: ScenarioItem[];
 	currentTime: number;
 	duration: number;
+	isMuted: boolean;
 	isPlaying: boolean;
+	onMuteToggle: () => void;
 	onPause: () => void;
 	onPlay: () => void;
 	onPlaybackRateChange: (rate: PlaybackRate) => void;
 	onReplayContext: () => void;
+	onVolumeChange: (volume: number) => void;
 	playbackRate: PlaybackRate;
+	volume: number;
 }
 
 interface PlaybackRateButtonProps {
@@ -147,16 +153,74 @@ function PlaybackRateButton({
 	);
 }
 
+interface VolumeControlProps {
+	isMuted: boolean;
+	onMuteToggle: () => void;
+	onVolumeChange: (volume: number) => void;
+	volume: number;
+}
+
+function VolumeControl({
+	isMuted,
+	onMuteToggle,
+	onVolumeChange,
+	volume,
+}: VolumeControlProps) {
+	const currentEffectiveVolume = isMuted ? 0 : volume;
+
+	const handleSliderChange = useCallback(
+		(e: React.ChangeEvent<HTMLInputElement>) => {
+			onVolumeChange(Number(e.target.value));
+		},
+		[onVolumeChange],
+	);
+
+	return (
+		<div className="flex items-center gap-1.5 bg-muted/60 rounded-md px-2 py-1 border border-border">
+			<button
+				aria-label={isMuted ? "Unmute Video" : "Mute Video"}
+				className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded flex items-center justify-center p-0.5"
+				onClick={onMuteToggle}
+				type="button"
+			>
+				{isMuted || volume === 0 ? (
+					<VolumeX aria-hidden="true" className="w-4 h-4" />
+				) : volume < 50 ? (
+					<Volume1 aria-hidden="true" className="w-4 h-4" />
+				) : (
+					<Volume2 aria-hidden="true" className="w-4 h-4" />
+				)}
+			</button>
+			<input
+				aria-label="Volume"
+				aria-valuemax={100}
+				aria-valuemin={0}
+				aria-valuenow={currentEffectiveVolume}
+				className="w-16 sm:w-20 h-1.5 accent-primary bg-muted rounded-lg appearance-none cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+				max={100}
+				min={0}
+				onChange={handleSliderChange}
+				type="range"
+				value={currentEffectiveVolume}
+			/>
+		</div>
+	);
+}
+
 function SessionPlayerControls({
 	activeScenarios,
 	currentTime,
 	duration,
+	isMuted,
 	isPlaying,
+	onMuteToggle,
 	onPause,
 	onPlay,
 	onPlaybackRateChange,
 	onReplayContext,
+	onVolumeChange,
 	playbackRate,
+	volume,
 }: SessionPlayerControlsProps) {
 	const progressPercent =
 		duration > 0
@@ -204,6 +268,13 @@ function SessionPlayerControls({
 						↺ Replay 10s
 					</button>
 
+					<VolumeControl
+						isMuted={isMuted}
+						onMuteToggle={onMuteToggle}
+						onVolumeChange={onVolumeChange}
+						volume={volume}
+					/>
+
 					<fieldset
 						aria-label="Playback speed"
 						className="flex items-center bg-muted/60 rounded-md p-0.5 border border-border m-0 min-w-0"
@@ -247,7 +318,6 @@ interface SessionPlayerViewportProps {
 	totalMs?: number;
 }
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: the viewport owns the layered player states at the established UI seam.
 export function SessionPlayerViewport({
 	containerRef,
 	isCompleted,
@@ -265,27 +335,6 @@ export function SessionPlayerViewport({
 	remainingMs,
 	totalMs,
 }: SessionPlayerViewportProps) {
-	const recoveryHeadingRef = useRef<HTMLHeadingElement>(null);
-	const previousMediaHealthRef = useRef<typeof mediaHealth | undefined>(
-		undefined,
-	);
-	const [announcement, setAnnouncement] = useState("");
-	const isBlockingRecovery =
-		mediaHealth === "recovering" || mediaHealth === "failed";
-
-	useEffect(() => {
-		if (isBlockingRecovery && previousMediaHealthRef.current !== mediaHealth) {
-			recoveryHeadingRef.current?.focus();
-		}
-		if (
-			previousMediaHealthRef.current === "recovering" &&
-			mediaHealth === "ready"
-		) {
-			setAnnouncement("Playback resumed. Your session progress is preserved.");
-		}
-		previousMediaHealthRef.current = mediaHealth;
-	}, [isBlockingRecovery, mediaHealth]);
-
 	return (
 		<section
 			aria-label="Session media player"
@@ -297,11 +346,11 @@ export function SessionPlayerViewport({
 		>
 			<div className="w-full h-full pointer-events-none" ref={containerRef} />
 
-			{announcement ? (
-				<div className="sr-only" role="status">
-					{announcement}
-				</div>
-			) : null}
+			<SessionPlayerMediaRecovery
+				mediaHealth={mediaHealth}
+				onRestartSession={onRestartSession}
+				onRetryMedia={onRetryMedia}
+			/>
 
 			{isLoading ? (
 				<div
@@ -312,56 +361,6 @@ export function SessionPlayerViewport({
 					<p className="text-sm font-semibold text-muted-foreground">
 						Initializing Video Stream...
 					</p>
-				</div>
-			) : null}
-
-			{mediaHealth === "buffering" ? (
-				<div
-					className="absolute left-3 top-3 z-20 rounded-md bg-background/85 px-3 py-2 text-xs font-semibold text-foreground shadow-sm"
-					role="status"
-				>
-					Buffering…
-				</div>
-			) : null}
-
-			{isBlockingRecovery ? (
-				<div
-					aria-live="assertive"
-					className="absolute inset-0 z-40 flex items-center justify-center bg-background/95 p-6 text-center"
-					role="alert"
-				>
-					<div className="max-w-sm space-y-4">
-						<h2
-							className="text-lg font-bold text-foreground"
-							ref={recoveryHeadingRef}
-							tabIndex={-1}
-						>
-							{mediaHealth === "recovering"
-								? "Recovering video…"
-								: "Video playback is unavailable"}
-						</h2>
-						<p className="text-sm text-muted-foreground">
-							{mediaHealth === "recovering"
-								? "Your session and scenario progress are preserved."
-								: "Playback could not continue, but your training context is preserved."}
-						</p>
-						<div className="flex flex-wrap justify-center gap-3">
-							<button
-								className="rounded-md bg-primary px-4 py-2 text-xs font-bold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-								onClick={onRetryMedia}
-								type="button"
-							>
-								Try again
-							</button>
-							<button
-								className="rounded-md border border-input px-4 py-2 text-xs font-bold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-								onClick={onRestartSession}
-								type="button"
-							>
-								Restart session
-							</button>
-						</div>
-					</div>
 				</div>
 			) : null}
 
@@ -525,12 +524,16 @@ export function SessionPlayerClient(props: SessionPlayerClientProps) {
 					activeScenarios={player.activeScenarios}
 					currentTime={player.currentTime}
 					duration={effectiveDuration}
+					isMuted={player.isMuted}
 					isPlaying={player.state === "PLAYING"}
+					onMuteToggle={player.toggleMute}
 					onPause={player.pause}
 					onPlay={player.play}
 					onPlaybackRateChange={player.setPlaybackRate}
 					onReplayContext={player.replayContext}
+					onVolumeChange={player.setVolume}
 					playbackRate={player.playbackRate}
+					volume={player.volume}
 				/>
 			) : null}
 		</div>

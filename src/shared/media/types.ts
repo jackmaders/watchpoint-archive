@@ -61,12 +61,18 @@ export interface VodPlayerResult {
 	containerRef: VodContainerRef;
 	currentTime: number;
 	duration: number;
+	isMuted: boolean;
 	isReady: boolean;
+	mute: () => void;
 	pause: () => void;
 	play: () => void;
 	playbackRate: PlaybackRate;
 	replay: () => void;
 	seekTo: (seconds: number, allowSeekAhead?: boolean) => void;
 	setPlaybackRate: (rate: PlaybackRate) => void;
+	setVolume: (volume: number) => void;
 	status: PlaybackStatus;
+	toggleMute: () => void;
+	unMute: () => void;
+	volume: number;
 }

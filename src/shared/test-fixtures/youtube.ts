@@ -36,11 +36,18 @@ export function createYouTubeMock(
 		options: YouTubePlayerOptions,
 	): MockYouTubePlayer {
 		let currentPlaybackRate = 1;
+		let currentVolume = 100;
+		let isMuted = false;
 		const player = {
 			destroy: vi.fn(),
 			getCurrentTime: vi.fn(() => 0),
 			getDuration: vi.fn(() => duration),
 			getPlaybackRate: vi.fn(() => currentPlaybackRate),
+			getVolume: vi.fn(() => currentVolume),
+			isMuted: vi.fn(() => isMuted),
+			mute: vi.fn(() => {
+				isMuted = true;
+			}),
 			options,
 			pauseVideo: vi.fn(),
 			playVideo: vi.fn(),
@@ -48,12 +55,18 @@ export function createYouTubeMock(
 			setPlaybackRate: vi.fn((rate: number) => {
 				currentPlaybackRate = rate;
 			}),
+			setVolume: vi.fn((volume: number) => {
+				currentVolume = volume;
+			}),
 			triggerReady: () => {
 				options.events?.onReady?.({ target: player });
 			},
 			triggerStateChange: (state: YouTubePlayerState) => {
 				options.events?.onStateChange?.({ data: state, target: player });
 			},
+			unMute: vi.fn(() => {
+				isMuted = false;
+			}),
 		} as MockYouTubePlayer;
 
 		players.push(player);

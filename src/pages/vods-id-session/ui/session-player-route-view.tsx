@@ -1,15 +1,14 @@
 /**
- * Router view controller delegating between the production session player and media recovery prototypes.
+ * Router view controller delegating to the production session player page.
  *
- * Implements `SessionPlayerRouteView` switching views based on URL search params (`search.prototype === "media-recovery"`).
+ * Provides the presentation view boundary for interactive VOD playthroughs, binding route parameters
+ * and active module filters to the canonical player experience.
+ *
+ * Implements `SessionPlayerRouteView` within the `src/pages/vods-id-session/` slice.
+ * Passes route parameters, active playthrough identifier, scenario snapshots, and module filters
+ * to `SessionPlayerPage`.
  */
-import { useCallback } from "react";
-import {
-	type ManifestVod,
-	type MediaRecoveryPrototypeVariant,
-	SessionPlayerMediaRecoveryPrototype,
-	SessionPlayerPage,
-} from "@/widgets/session-player";
+import { type ManifestVod, SessionPlayerPage } from "@/widgets/session-player";
 import type { SessionSearch } from "../model/session-search";
 
 export interface SessionPlayerRouteViewProps {
@@ -24,46 +23,13 @@ export interface SessionPlayerRouteViewProps {
 }
 
 export function SessionPlayerRouteView({
-	onNavigateSearch,
 	playthroughId,
 	scenarioSnapshotIds,
 	search = {},
 	vod,
 	vodId,
 }: SessionPlayerRouteViewProps) {
-	const { modules, prototype, variant } = search;
-
-	const setPrototypeVariant = useCallback(
-		(nextVariant: MediaRecoveryPrototypeVariant) =>
-			onNavigateSearch((previous) => ({
-				...previous,
-				prototype: "media-recovery",
-				variant: nextVariant,
-			})),
-		[onNavigateSearch],
-	);
-
-	const exitPrototype = useCallback(
-		() =>
-			onNavigateSearch((previous) => ({
-				...previous,
-				prototype: undefined,
-				variant: undefined,
-			})),
-		[onNavigateSearch],
-	);
-
-	if (import.meta.env.DEV && prototype === "media-recovery") {
-		return (
-			<main className="min-h-screen bg-background px-4 py-6 text-foreground sm:px-6 sm:py-8">
-				<SessionPlayerMediaRecoveryPrototype
-					onExit={exitPrototype}
-					onVariantChange={setPrototypeVariant}
-					variant={variant ?? "A"}
-				/>
-			</main>
-		);
-	}
+	const { modules } = search;
 
 	return (
 		<SessionPlayerPage

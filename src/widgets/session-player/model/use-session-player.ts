@@ -75,13 +75,15 @@ export interface UseSessionPlayerResult {
 	currentTime: number;
 	duration: number;
 	exitSession: () => void;
+	isMuted: boolean;
 	isReady: boolean;
+	mediaHealth: "loading" | "ready" | "buffering" | "recovering" | "failed";
+	mute: () => void;
 	overlayState: ScenarioOverlayState | null;
 	pause: () => void;
 	play: () => void;
 	playbackRate: PlaybackRate;
 	playbackStatus: PlaybackStatus;
-	mediaHealth: "loading" | "ready" | "buffering" | "recovering" | "failed";
 	remainingMs?: number;
 	replayContext: () => void;
 	resumePlayback: () => void;
@@ -89,11 +91,15 @@ export interface UseSessionPlayerResult {
 	retryMedia: () => void;
 	selectOption: (optionId: string) => void;
 	setPlaybackRate: (rate: PlaybackRate) => void;
+	setVolume: (volume: number) => void;
 	skipUnsupportedInput: () => void;
 	state: SessionPlayerState;
 	summary: SessionSummaryReport | null;
+	toggleMute: () => void;
 	totalMs?: number;
+	unMute: () => void;
 	vod: ManifestVod | null;
+	volume: number;
 }
 
 export type ScenarioOptionItem = ScenarioOption;
@@ -554,17 +560,23 @@ export function useSessionPlayer({
 		currentTime: media.currentTime,
 		duration: media.duration,
 		...actions,
+		isMuted: media.isMuted,
 		isReady: media.isReady,
 		mediaHealth: coordinator.mediaHealth,
+		mute: media.mute,
 		overlayState: coordinator.session.overlayState,
 		playbackRate: media.playbackRate,
 		playbackStatus: media.status,
 		remainingMs,
 		setPlaybackRate: media.setPlaybackRate,
+		setVolume: media.setVolume,
 		state: coordinator.session.state,
 		summary: coordinator.summary,
+		toggleMute: media.toggleMute,
 		totalMs: coordinator.session.totalMs,
+		unMute: media.unMute,
 		vod,
+		volume: media.volume,
 	};
 }
 

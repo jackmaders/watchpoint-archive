@@ -30,10 +30,22 @@ function clampSeekSeconds(seconds: number, duration: number): number {
 	return seconds;
 }
 
+function clampVolume(volume: number): number {
+	if (!Number.isFinite(volume) || volume < 0) {
+		return 0;
+	}
+	if (volume > 100) {
+		return 100;
+	}
+	return volume;
+}
+
 function usePlayerControls(
 	activePlayerRef: React.RefObject<YouTubePlayer | null>,
 	durationRef: React.RefObject<number>,
 	setPlaybackRateState: (rate: PlaybackRate) => void,
+	setVolumeState: (volume: number) => void,
+	setIsMutedState: React.Dispatch<React.SetStateAction<boolean>>,
 ) {
 	const play = useCallback(() => {
 		activePlayerRef.current?.playVideo();
@@ -62,6 +74,48 @@ function usePlayerControls(
 		[activePlayerRef, setPlaybackRateState],
 	);
 
+	const setVolume = useCallback(
+		(volume: number) => {
+			if (!activePlayerRef.current) {
+				return;
+			}
+			const clamped = clampVolume(volume);
+			activePlayerRef.current.setVolume?.(clamped);
+			setVolumeState(clamped);
+		},
+		[activePlayerRef, setVolumeState],
+	);
+
+	const mute = useCallback(() => {
+		if (!activePlayerRef.current) {
+			return;
+		}
+		activePlayerRef.current.mute?.();
+		setIsMutedState(true);
+	}, [activePlayerRef, setIsMutedState]);
+
+	const unMute = useCallback(() => {
+		if (!activePlayerRef.current) {
+			return;
+		}
+		activePlayerRef.current.unMute?.();
+		setIsMutedState(false);
+	}, [activePlayerRef, setIsMutedState]);
+
+	const toggleMute = useCallback(() => {
+		if (!activePlayerRef.current) {
+			return;
+		}
+		setIsMutedState((prev) => {
+			if (prev) {
+				activePlayerRef.current?.unMute?.();
+				return false;
+			}
+			activePlayerRef.current?.mute?.();
+			return true;
+		});
+	}, [activePlayerRef, setIsMutedState]);
+
 	const replay = useCallback(() => {
 		if (!activePlayerRef.current) {
 			return;
@@ -70,7 +124,17 @@ function usePlayerControls(
 		activePlayerRef.current.playVideo();
 	}, [activePlayerRef]);
 
-	return { pause, play, replay, seekTo, setPlaybackRate };
+	return {
+		mute,
+		pause,
+		play,
+		replay,
+		seekTo,
+		setPlaybackRate,
+		setVolume,
+		toggleMute,
+		unMute,
+	};
 }
 
 interface UseVodPlayerStateOptions extends VodPlayerOptions {
@@ -92,8 +156,10 @@ interface PlayerEventHandlersContext {
 	setActivePlayer: (player: YouTubePlayer) => void;
 	setCurrentTime: (time: number) => void;
 	setDuration: (duration: number) => void;
+	setIsMuted: (isMuted: boolean) => void;
 	setIsReady: (isReady: boolean) => void;
 	setStatus: (status: PlaybackStatus) => void;
+	setVolume: (volume: number) => void;
 }
 
 function createPlayerEventHandlers(ctx: PlayerEventHandlersContext) {
@@ -119,8 +185,16 @@ function createPlayerEventHandlers(ctx: PlayerEventHandlersContext) {
 		ctx.markReadyNotified();
 		const readyDuration = safeMediaValue(event.target.getDuration());
 		const readyCurrentTime = safeMediaValue(event.target.getCurrentTime());
+		const readyVolume = event.target.getVolume
+			? clampVolume(event.target.getVolume())
+			: 100;
+		const readyMuted = event.target.isMuted
+			? Boolean(event.target.isMuted())
+			: false;
 		ctx.setDuration(readyDuration);
 		ctx.setCurrentTime(readyCurrentTime);
+		ctx.setVolume(readyVolume);
+		ctx.setIsMuted(readyMuted);
 		ctx.setIsReady(true);
 		ctx.onReady?.(readyDuration);
 	};
@@ -162,8 +236,10 @@ interface PlayerLifecycleParams extends UseVodPlayerStateOptions {
 	generationRef: React.RefObject<number>;
 	setCurrentTime: (time: number) => void;
 	setDuration: (duration: number) => void;
+	setIsMuted: (isMuted: boolean) => void;
 	setIsReady: (isReady: boolean) => void;
 	setStatus: (status: PlaybackStatus) => void;
+	setVolume: (volume: number) => void;
 }
 
 function resetPlayerState({
@@ -209,8 +285,10 @@ function usePlayerLifecycle({
 	onTimeUpdate,
 	setCurrentTime,
 	setDuration,
+	setIsMuted,
 	setIsReady,
 	setStatus,
+	setVolume,
 	videoId,
 }: PlayerLifecycleParams) {
 	const onReadyRef = useRef(onReady);
@@ -290,8 +368,10 @@ function usePlayerLifecycle({
 					durationRef.current = d;
 					setDuration(d);
 				},
+				setIsMuted,
 				setIsReady,
 				setStatus,
+				setVolume,
 			});
 		const readinessTimer = setTimeout(() => {
 			if (!hasNotifiedReady) {
@@ -354,8 +434,10 @@ function usePlayerLifecycle({
 		lifecycleKey,
 		setCurrentTime,
 		setDuration,
+		setIsMuted,
 		setIsReady,
 		setStatus,
+		setVolume,
 		videoId,
 	]);
 }
@@ -371,6 +453,8 @@ function useVodPlayerState(options: UseVodPlayerStateOptions) {
 	const [duration, setDuration] = useState(0);
 	const [currentTime, setCurrentTime] = useState(0);
 	const [playbackRate, setPlaybackRate] = useState<PlaybackRate>(1);
+	const [volume, setVolume] = useState(100);
+	const [isMuted, setIsMuted] = useState(false);
 
 	usePlayerLifecycle({
 		...options,
@@ -379,8 +463,10 @@ function useVodPlayerState(options: UseVodPlayerStateOptions) {
 		generationRef,
 		setCurrentTime,
 		setDuration,
+		setIsMuted,
 		setIsReady,
 		setStatus,
+		setVolume,
 	});
 
 	return {
@@ -388,10 +474,14 @@ function useVodPlayerState(options: UseVodPlayerStateOptions) {
 		currentTime,
 		duration,
 		durationRef,
+		isMuted,
 		isReady,
 		playbackRate,
+		setIsMuted,
 		setPlaybackRate,
+		setVolume,
 		status,
+		volume,
 	};
 }
 
@@ -427,19 +517,27 @@ export function useVodPlayer({
 		state.activePlayerRef,
 		state.durationRef,
 		state.setPlaybackRate,
+		state.setVolume,
+		state.setIsMuted,
 	);
 
 	return {
 		containerRef,
 		currentTime: state.currentTime,
 		duration: state.duration,
+		isMuted: state.isMuted,
 		isReady: state.isReady,
+		mute: controls.mute,
 		pause: controls.pause,
 		play: controls.play,
 		playbackRate: state.playbackRate,
 		replay: controls.replay,
 		seekTo: controls.seekTo,
 		setPlaybackRate: controls.setPlaybackRate,
+		setVolume: controls.setVolume,
 		status: state.status,
+		toggleMute: controls.toggleMute,
+		unMute: controls.unMute,
+		volume: state.volume,
 	};
 }

@@ -1,6 +1,6 @@
 import { act, render, renderHook } from "@testing-library/react";
 import { StrictMode } from "react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
 	createYouTubeMock,
 	installMockFrames,
@@ -8,23 +8,20 @@ import {
 	setYouTubeNamespace,
 } from "@/shared/test-fixtures";
 import { PlaybackStatus } from "../types";
+import { useVodPlayer } from "../use-vod-player";
 import { YouTubePlayerState } from "../youtube-adapter";
 
 describe("useVodPlayer", () => {
-	beforeEach(() => {
-		vi.resetModules();
-	});
-
 	afterEach(() => {
 		vi.restoreAllMocks();
 		setYouTubeNamespace(undefined);
+		setDocumentVisibility("visible");
 		document.head.replaceChildren();
 		delete window.onYouTubeIframeAPIReady;
 	});
 
 	it("initializes as unready and transitions to ready when container mounts and player fires onReady", async () => {
 		// Arrange
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock(142);
 		setYouTubeNamespace(youtube.namespace);
 		const onReady = vi.fn();
@@ -80,7 +77,6 @@ describe("useVodPlayer", () => {
 
 	it("does not create a player without a mounted container", async () => {
 		// Arrange
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock();
 		setYouTubeNamespace(youtube.namespace);
 
@@ -101,7 +97,6 @@ describe("useVodPlayer", () => {
 
 	it("normalizes unsafe media values when the player becomes ready", async () => {
 		// Arrange
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock();
 		setYouTubeNamespace(youtube.namespace);
 		const container = document.createElement("div");
@@ -130,7 +125,6 @@ describe("useVodPlayer", () => {
 
 	it("destroys the old player and ignores its late ready callback when the VOD changes", async () => {
 		// Arrange
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock();
 		setYouTubeNamespace(youtube.namespace);
 		const onReady = vi.fn();
@@ -172,7 +166,6 @@ describe("useVodPlayer", () => {
 
 	it("cleans up its owned player when unmounted or container is detached", async () => {
 		// Arrange
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock();
 		setYouTubeNamespace(youtube.namespace);
 		const onReady = vi.fn();
@@ -201,7 +194,6 @@ describe("useVodPlayer", () => {
 
 	it("waits for a conditionally mounted container in a component", async () => {
 		// Arrange
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock(142);
 		setYouTubeNamespace(youtube.namespace);
 		let latestState: ReturnType<typeof useVodPlayer> | undefined;
@@ -228,7 +220,6 @@ describe("useVodPlayer", () => {
 
 	it("cleans up player when rendered in StrictMode", async () => {
 		// Arrange
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock();
 		setYouTubeNamespace(youtube.namespace);
 		function StrictPlayer() {
@@ -255,7 +246,6 @@ describe("useVodPlayer", () => {
 
 	it("safely ignores control commands before a player exists or becomes ready", async () => {
 		// Arrange
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock();
 		setYouTubeNamespace(youtube.namespace);
 		const container = document.createElement("div");
@@ -268,6 +258,10 @@ describe("useVodPlayer", () => {
 		result.current.pause();
 		result.current.seekTo(10, false);
 		result.current.replay();
+		result.current.setVolume(50);
+		result.current.mute();
+		result.current.unMute();
+		result.current.toggleMute();
 		act(() => {
 			result.current.containerRef(container);
 		});
@@ -280,16 +274,22 @@ describe("useVodPlayer", () => {
 		result.current.pause();
 		result.current.seekTo(20, true);
 		result.current.replay();
+		result.current.setVolume(75);
+		result.current.mute();
+		result.current.unMute();
+		result.current.toggleMute();
 
 		// Assert
 		expect(player.playVideo).not.toHaveBeenCalled();
 		expect(player.pauseVideo).not.toHaveBeenCalled();
 		expect(player.seekTo).not.toHaveBeenCalled();
+		expect(player.setVolume).not.toHaveBeenCalled();
+		expect(player.mute).not.toHaveBeenCalled();
+		expect(player.unMute).not.toHaveBeenCalled();
 	});
 
 	it("delegates play, pause, and seekTo with defensive clamping once ready", async () => {
 		// Arrange
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock(100);
 		setYouTubeNamespace(youtube.namespace);
 		const container = document.createElement("div");
@@ -327,7 +327,6 @@ describe("useVodPlayer", () => {
 
 	it("updates playback rate and delegates setPlaybackRate to the active player", async () => {
 		// Arrange
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock(100);
 		setYouTubeNamespace(youtube.namespace);
 		const container = document.createElement("div");
@@ -355,9 +354,134 @@ describe("useVodPlayer", () => {
 		expect(player.setPlaybackRate).toHaveBeenCalledWith(1.5);
 	});
 
+	it("updates volume and delegates setVolume with defensive clamping", async () => {
+		// Arrange
+		const youtube = createYouTubeMock(100);
+		setYouTubeNamespace(youtube.namespace);
+		const container = document.createElement("div");
+		const { result } = renderHook(() =>
+			useVodPlayer({ videoId: "volume-video" }),
+		);
+		act(() => {
+			result.current.containerRef(container);
+		});
+		await act(async () => {
+			await Promise.resolve();
+			await Promise.resolve();
+		});
+		const player = youtube.players[0];
+		act(() => player.triggerReady());
+
+		// Act
+		const initialVolume = result.current.volume;
+		act(() => {
+			result.current.setVolume(75);
+			result.current.setVolume(-10); // clamps to 0
+			result.current.setVolume(150); // clamps to 100
+			result.current.setVolume(Number.NaN); // clamps to 0
+		});
+
+		// Assert
+		expect(initialVolume).toBe(100);
+		expect(result.current.volume).toBe(0);
+		expect(player.setVolume).toHaveBeenNthCalledWith(1, 75);
+		expect(player.setVolume).toHaveBeenNthCalledWith(2, 0);
+		expect(player.setVolume).toHaveBeenNthCalledWith(3, 100);
+		expect(player.setVolume).toHaveBeenNthCalledWith(4, 0);
+	});
+
+	it("toggles mute, mute, and unMute with delegation to active player", async () => {
+		// Arrange
+		const youtube = createYouTubeMock(100);
+		setYouTubeNamespace(youtube.namespace);
+		const container = document.createElement("div");
+		const { result } = renderHook(() =>
+			useVodPlayer({ videoId: "mute-video" }),
+		);
+		act(() => {
+			result.current.containerRef(container);
+		});
+		await act(async () => {
+			await Promise.resolve();
+			await Promise.resolve();
+		});
+		const player = youtube.players[0];
+		act(() => player.triggerReady());
+
+		// Act
+		const initialMuted = result.current.isMuted;
+		act(() => {
+			result.current.mute();
+			result.current.unMute();
+			result.current.toggleMute();
+			result.current.toggleMute();
+		});
+
+		// Assert
+		expect(initialMuted).toBe(false);
+		expect(result.current.isMuted).toBe(false);
+		expect(player.mute).toHaveBeenCalledTimes(2);
+		expect(player.unMute).toHaveBeenCalledTimes(2);
+	});
+
+	it("initializes custom volume and muted state from player when becoming ready", async () => {
+		// Arrange
+		const youtube = createYouTubeMock(100);
+		setYouTubeNamespace(youtube.namespace);
+		const container = document.createElement("div");
+		const { result } = renderHook(() =>
+			useVodPlayer({ videoId: "initial-audio-video" }),
+		);
+		act(() => {
+			result.current.containerRef(container);
+		});
+		await act(async () => {
+			await Promise.resolve();
+			await Promise.resolve();
+		});
+		const player = youtube.players[0];
+		vi.mocked(player.getVolume).mockReturnValue(45);
+		vi.mocked(player.isMuted).mockReturnValue(true);
+
+		// Act
+		act(() => player.triggerReady());
+
+		// Assert
+		expect(result.current.volume).toBe(45);
+		expect(result.current.isMuted).toBe(true);
+	});
+
+	it("falls back to default volume and unmuted state when player lacks volume methods", async () => {
+		// Arrange
+		const youtube = createYouTubeMock(100);
+		setYouTubeNamespace(youtube.namespace);
+		const container = document.createElement("div");
+		const { result } = renderHook(() =>
+			useVodPlayer({ videoId: "fallback-audio-video" }),
+		);
+		act(() => {
+			result.current.containerRef(container);
+		});
+		await act(async () => {
+			await Promise.resolve();
+			await Promise.resolve();
+		});
+		const player = youtube.players[0];
+		// @ts-expect-error simulating legacy or minimal player without audio methods
+		delete player.getVolume;
+		// @ts-expect-error simulating legacy or minimal player without audio methods
+		delete player.isMuted;
+
+		// Act
+		act(() => player.triggerReady());
+
+		// Assert
+		expect(result.current.volume).toBe(100);
+		expect(result.current.isMuted).toBe(false);
+	});
+
 	it("executes replay as seek-to-zero followed by play in exact sequence", async () => {
 		// Arrange
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock(142);
 		setYouTubeNamespace(youtube.namespace);
 		const container = document.createElement("div");
@@ -392,7 +516,6 @@ describe("useVodPlayer", () => {
 
 	it("tracks status transitions and forwards onStatusChange callbacks", async () => {
 		// Arrange
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock(142);
 		setYouTubeNamespace(youtube.namespace);
 		const onStatusChange = vi.fn();
@@ -431,7 +554,6 @@ describe("useVodPlayer", () => {
 
 	it("resets status on VOD change and routes commands and events to the active player only", async () => {
 		// Arrange
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock(142);
 		setYouTubeNamespace(youtube.namespace);
 		const onStatusChange = vi.fn();
@@ -479,7 +601,6 @@ describe("useVodPlayer", () => {
 	it("starts requestAnimationFrame sampling on PLAYING state and publishes currentTime and onTimeUpdate", async () => {
 		// Arrange
 		const frames = installMockFrames();
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock(142);
 		setYouTubeNamespace(youtube.namespace);
 		const onTimeUpdate = vi.fn();
@@ -520,7 +641,6 @@ describe("useVodPlayer", () => {
 	it("stops requestAnimationFrame polling on non-playing states and preserves the last paused time", async () => {
 		// Arrange
 		const frames = installMockFrames();
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock(142);
 		setYouTubeNamespace(youtube.namespace);
 		const onTimeUpdate = vi.fn();
@@ -559,7 +679,6 @@ describe("useVodPlayer", () => {
 	it("stops requestAnimationFrame polling when player enters ENDED state", async () => {
 		// Arrange
 		const frames = installMockFrames();
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock(142);
 		setYouTubeNamespace(youtube.namespace);
 		const onTimeUpdate = vi.fn();
@@ -598,7 +717,6 @@ describe("useVodPlayer", () => {
 	it("pauses player on document visibility hidden without resuming when returning to visible", async () => {
 		// Arrange
 		installMockFrames();
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock(142);
 		setYouTubeNamespace(youtube.namespace);
 		const container = document.createElement("div");
@@ -633,7 +751,6 @@ describe("useVodPlayer", () => {
 	it("cancels pending animation frames and removes visibility listener on unmount", async () => {
 		// Arrange
 		const frames = installMockFrames();
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock(142);
 		setYouTubeNamespace(youtube.namespace);
 		const container = document.createElement("div");
@@ -667,7 +784,6 @@ describe("useVodPlayer", () => {
 	it("normalizes non-finite or negative currentTime samples during active playback frames", async () => {
 		// Arrange
 		const frames = installMockFrames();
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock(142);
 		setYouTubeNamespace(youtube.namespace);
 		const onTimeUpdate = vi.fn();
@@ -713,7 +829,6 @@ describe("useVodPlayer", () => {
 		vi.spyOn(window, "cancelAnimationFrame").mockImplementation(
 			() => undefined,
 		);
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock(142);
 		setYouTubeNamespace(youtube.namespace);
 		const onTimeUpdate = vi.fn();
@@ -747,7 +862,6 @@ describe("useVodPlayer", () => {
 
 	it("safely ignores visibility changes before a player instance is created", async () => {
 		// Arrange
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock(142);
 		setYouTubeNamespace(youtube.namespace);
 
@@ -762,7 +876,6 @@ describe("useVodPlayer", () => {
 	it("pauses player when document.hidden is true", async () => {
 		// Arrange
 		installMockFrames();
-		const { useVodPlayer } = await import("../use-vod-player");
 		const youtube = createYouTubeMock(142);
 		setYouTubeNamespace(youtube.namespace);
 		const container = document.createElement("div");

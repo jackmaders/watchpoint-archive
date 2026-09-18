@@ -3,10 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/widgets/session-player");
 
-import {
-	SessionPlayerMediaRecoveryPrototype,
-	SessionPlayerPage,
-} from "@/widgets/session-player";
+import { SessionPlayerPage } from "@/widgets/session-player";
 import { SessionPlayerRouteView } from "../session-player-route-view";
 
 describe("SessionPlayerRouteView", () => {
@@ -14,9 +11,6 @@ describe("SessionPlayerRouteView", () => {
 		vi.clearAllMocks();
 		vi.mocked(SessionPlayerPage).mockReturnValue(
 			<div data-testid="mock-session-player-page">Session Player Page</div>,
-		);
-		vi.mocked(SessionPlayerMediaRecoveryPrototype).mockReturnValue(
-			<div data-testid="mock-media-prototype">Media Prototype</div>,
 		);
 	});
 
@@ -49,91 +43,6 @@ describe("SessionPlayerRouteView", () => {
 				},
 				vod: mockVod,
 			},
-			undefined,
-		);
-	});
-
-	it("renders MediaRecoveryPrototype in DEV mode when prototype param is set", () => {
-		// Arrange
-		const mockNavigate = vi.fn();
-
-		// Act
-		render(
-			<SessionPlayerRouteView
-				onNavigateSearch={mockNavigate}
-				playthroughId={null}
-				scenarioSnapshotIds={[]}
-				search={{
-					prototype: "media-recovery",
-					variant: "B",
-				}}
-				vod={null}
-				vodId="vod_1"
-			/>,
-		);
-
-		// Assert
-		expect(screen.getByTestId("mock-media-prototype")).toBeDefined();
-		expect(SessionPlayerMediaRecoveryPrototype).toHaveBeenCalledWith(
-			expect.objectContaining({
-				variant: "B",
-			}),
-			undefined,
-		);
-
-		// Act: test variant change and exit callbacks
-		const lastCallProps = vi.mocked(SessionPlayerMediaRecoveryPrototype).mock
-			.calls[0]?.[0];
-		lastCallProps?.onVariantChange("C");
-		const variantUpdater = mockNavigate.mock.calls[0]?.[0];
-		const variantResult =
-			typeof variantUpdater === "function"
-				? variantUpdater({ existing: true })
-				: undefined;
-		lastCallProps?.onExit();
-		const exitUpdater = mockNavigate.mock.calls[1]?.[0];
-		const exitResult =
-			typeof exitUpdater === "function"
-				? exitUpdater({ existing: true })
-				: undefined;
-
-		// Assert
-		expect(mockNavigate).toHaveBeenCalledTimes(2);
-		expect(variantResult).toEqual({
-			existing: true,
-			prototype: "media-recovery",
-			variant: "C",
-		});
-		expect(exitResult).toEqual({
-			existing: true,
-			prototype: undefined,
-			variant: undefined,
-		});
-	});
-
-	it("defaults variant to A when prototype is media-recovery without explicit variant", () => {
-		// Arrange
-		const mockNavigate = vi.fn();
-
-		// Act
-		render(
-			<SessionPlayerRouteView
-				onNavigateSearch={mockNavigate}
-				playthroughId={null}
-				scenarioSnapshotIds={[]}
-				search={{
-					prototype: "media-recovery",
-				}}
-				vod={null}
-				vodId="vod_1"
-			/>,
-		);
-
-		// Assert
-		expect(SessionPlayerMediaRecoveryPrototype).toHaveBeenCalledWith(
-			expect.objectContaining({
-				variant: "A",
-			}),
 			undefined,
 		);
 	});
