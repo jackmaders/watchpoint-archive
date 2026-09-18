@@ -13,6 +13,7 @@ import {
 	queryVods,
 } from "@/shared/db";
 import { getCurrentUser } from "@/shared/lib/auth";
+import { isWithinVodTimeRange } from "@/shared/lib/vod-time-range";
 import {
 	type RecordAttemptInput,
 	RecordAttemptInputSchema,
@@ -31,6 +32,16 @@ import {
 } from "./session-manifest-query";
 
 export type GetSessionManifestPayload = SessionManifestTransportQuery;
+
+function isScenarioInVodRange(
+	timestampSeconds: number | null | undefined,
+	vod: Parameters<typeof isWithinVodTimeRange>[1],
+): boolean {
+	return (
+		typeof timestampSeconds !== "number" ||
+		isWithinVodTimeRange(timestampSeconds, vod)
+	);
+}
 
 export const getPublishedVods = createServerFn({ method: "GET" })
 	.validator((data: unknown) => {
@@ -73,8 +84,13 @@ export const getPublishedVods = createServerFn({ method: "GET" })
 			},
 			db,
 		);
+		const vodById = new Map(vodList.map((vod) => [vod.id, vod]));
 		const scenariosByVodId = new Map<string, Array<{ id: string }>>();
 		for (const scenario of scenariosList) {
+			const vod = vodById.get(scenario.vodId);
+			if (!vod || !isScenarioInVodRange(scenario.timestampSeconds, vod)) {
+				continue;
+			}
 			const list = scenariosByVodId.get(scenario.vodId) ?? [];
 			list.push({ id: scenario.id });
 			scenariosByVodId.set(scenario.vodId, list);
@@ -93,12 +109,16 @@ export const getVodById = createServerFn({ method: "GET" })
 		if (!vod) {
 			return null;
 		}
-		const scenarios = await queryScenarios(
-			{
-				filter: { vodId: { eq: data.id } },
-				order: { timestampSeconds: "asc" },
-			},
-			db,
+		const scenarios = (
+			await queryScenarios(
+				{
+					filter: { vodId: { eq: data.id } },
+					order: { timestampSeconds: "asc" },
+				},
+				db,
+			)
+		).filter((scenario) =>
+			isScenarioInVodRange(scenario.timestampSeconds, vod),
 		);
 		return {
 			...vod,
@@ -122,12 +142,16 @@ export const getSessionManifest = createServerFn({ method: "GET" })
 			filter.moduleType = { in: data.modules };
 		}
 
-		const scenarios = await queryScenarios(
-			{
-				filter,
-				order: { timestampSeconds: "asc" },
-			},
-			db,
+		const scenarios = (
+			await queryScenarios(
+				{
+					filter,
+					order: { timestampSeconds: "asc" },
+				},
+				db,
+			)
+		).filter((scenario) =>
+			isScenarioInVodRange(scenario.timestampSeconds, vod),
 		);
 
 		return {
@@ -156,12 +180,16 @@ export const getProtectedSessionManifest = createServerFn({ method: "GET" })
 			filter.moduleType = { in: data.modules };
 		}
 
-		const scenarios = await queryScenarios(
-			{
-				filter,
-				order: { timestampSeconds: "asc" },
-			},
-			db,
+		const scenarios = (
+			await queryScenarios(
+				{
+					filter,
+					order: { timestampSeconds: "asc" },
+				},
+				db,
+			)
+		).filter((scenario) =>
+			isScenarioInVodRange(scenario.timestampSeconds, vod),
 		);
 
 		return {

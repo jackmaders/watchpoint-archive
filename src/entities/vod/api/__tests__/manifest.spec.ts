@@ -133,6 +133,33 @@ describe("GET /api/vods/[id]/manifest handler", () => {
 		);
 	});
 
+	it("only exposes scenarios inside a trimmed VOD range", async () => {
+		// Arrange
+		const mockVod = {
+			durationSeconds: 600,
+			endSeconds: 420,
+			id: "vod_trimmed",
+			startSeconds: 90,
+		};
+		const scenarios = [
+			{ id: "before", timestampSeconds: 60 },
+			{ id: "inside", timestampSeconds: 120 },
+			{ id: "after", timestampSeconds: 450 },
+		];
+		vi.mocked(getVodById).mockResolvedValueOnce(mockVod as never);
+		vi.mocked(queryScenarios).mockResolvedValueOnce(scenarios as never);
+
+		// Act
+		const res = await handleGetVodManifest(
+			new Request("http://localhost/api/vods/vod_trimmed/manifest"),
+			{ params: Promise.resolve({ id: "vod_trimmed" }) },
+		);
+		const body = (await res.json()) as { scenarios: typeof scenarios };
+
+		// Assert
+		expect(body.scenarios).toEqual([scenarios[1]]);
+	});
+
 	it("returns 404 JSON response if VOD manifest is not found", async () => {
 		// Arrange
 		vi.mocked(getVodById).mockResolvedValueOnce(undefined as never);

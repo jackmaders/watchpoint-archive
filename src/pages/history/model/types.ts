@@ -9,11 +9,11 @@ import type {
 	JsonValue,
 	ModuleType,
 	PlaythroughStatus,
-	vods,
+	VodTransportRecord,
 } from "@/shared/db";
 
 export type { JsonValue, ModuleType, PlaythroughStatus };
-export type PublishedVodItem = typeof vods.$inferSelect;
+export type PublishedVodItem = VodTransportRecord;
 
 export interface GetPlayerHistoryOptions {
 	hero?: string;

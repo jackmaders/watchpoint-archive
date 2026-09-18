@@ -16,6 +16,7 @@ import {
 	useState,
 } from "react";
 import type { SessionManifest } from "@/entities/vod";
+import { getVodStartSeconds } from "@/shared/lib/vod-time-range";
 import {
 	type PlaybackRate,
 	type PlaybackStatus,
@@ -320,9 +321,11 @@ function useSessionMedia(
 
 	return useSessionMediaAdapter({
 		autoplay,
+		endSeconds: vod?.endSeconds ?? undefined,
 		generation,
 		onDiagnostics: onMediaDiagnostics,
 		onEvent: onMediaEvent,
+		startSeconds: vod ? getVodStartSeconds(vod) : 0,
 		videoId: vod?.youtubeVideoId ?? "",
 	});
 }

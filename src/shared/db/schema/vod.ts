@@ -17,6 +17,7 @@ export const vods = sqliteTable(
 			.notNull()
 			.$defaultFn(() => new Date()),
 		durationSeconds: integer("duration_seconds").notNull(),
+		endSeconds: integer("end_seconds"),
 		heroName: text("hero_name").notNull(),
 		id: text("id")
 			.primaryKey()
@@ -28,6 +29,7 @@ export const vods = sqliteTable(
 		mapName: text("map_name").notNull(),
 		rankTier: text("rank_tier").notNull(),
 		role: text("role", { enum: heroRoleEnum }).notNull(),
+		startSeconds: integer("start_seconds").notNull().default(0),
 		title: text("title").notNull(),
 		youtubeVideoId: text("youtube_video_id").notNull(),
 	},
@@ -42,3 +44,17 @@ export const vods = sqliteTable(
 		),
 	}),
 );
+
+export type VodRecord = typeof vods.$inferSelect;
+
+/**
+ * Transport projection for manifests created before the trim columns existed. Database queries
+ * retain the strict `VodRecord` type while application boundaries can normalize these fields.
+ */
+export type VodTransportRecord = Omit<
+	VodRecord,
+	"endSeconds" | "startSeconds"
+> & {
+	endSeconds?: number | null;
+	startSeconds?: number;
+};

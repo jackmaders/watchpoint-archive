@@ -20,3 +20,10 @@ export * from "./metrics";
 export * from "./sentry";
 export * from "./use-controllable-state";
 export * from "./utils";
+export {
+	getEffectiveVodDuration,
+	getVodEndSeconds,
+	getVodStartSeconds,
+	isWithinVodTimeRange,
+	type VodTimeRangeInput,
+} from "./vod-time-range";

@@ -1,6 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { ScenarioEditorForm } from "../scenario-editor-form";
+import {
+	ScenarioEditorForm,
+	validateScenarioForm,
+} from "../scenario-editor-form";
 
 describe("ScenarioEditorForm", () => {
 	const defaultVod = {
@@ -8,6 +11,42 @@ describe("ScenarioEditorForm", () => {
 		id: "vod_1",
 		title: "Grandmaster Ana",
 	};
+
+	it("rejects timestamps before a trimmed VOD start", () => {
+		// Arrange
+		const timestampSeconds = 60;
+
+		// Act
+		const result = validateScenarioForm(
+			"Prompt",
+			"Explanation",
+			timestampSeconds,
+			600,
+			90,
+			420,
+		);
+
+		// Assert
+		expect(result).toBe("Timestamp (60s) precedes VOD start (90s)");
+	});
+
+	it("allows the end of an untrimmed VOD as a scenario timestamp", () => {
+		// Arrange
+		const timestampSeconds = 600;
+
+		// Act
+		const result = validateScenarioForm(
+			"Prompt",
+			"Explanation",
+			timestampSeconds,
+			600,
+			0,
+			null,
+		);
+
+		// Assert
+		expect(result).toBeNull();
+	});
 
 	it("renders blank create form with default values", () => {
 		// Arrange

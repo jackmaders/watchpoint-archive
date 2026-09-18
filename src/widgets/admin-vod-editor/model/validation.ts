@@ -9,6 +9,11 @@
 
 import { z } from "zod";
 import type { inputTypeEnum, scenarios } from "@/shared/db";
+import {
+	getVodEndSeconds,
+	getVodStartSeconds,
+	type VodTimeRangeInput,
+} from "@/shared/lib/vod-time-range";
 
 export const multipleChoiceOptionSchema = z.object({
 	id: z.string().min(1),
@@ -161,9 +166,12 @@ export function validateScenarioConfig(scenario: {
 }
 
 export function validateVodForPublishing(
-	vod: { durationSeconds: number },
+	vod: VodTimeRangeInput,
 	scenariosList: ReadonlyArray<typeof scenarios.$inferSelect>,
 ): { error?: string; valid: boolean } {
+	const rangeError = validateVodTimeRange(vod);
+	if (rangeError) return { error: rangeError, valid: false };
+
 	if (!scenariosList || scenariosList.length === 0) {
 		return {
 			error: "Cannot publish a VOD with zero scenarios",
@@ -179,13 +187,73 @@ export function validateVodForPublishing(
 				valid: false,
 			};
 		}
-		if (scenario.timestampSeconds > vod.durationSeconds) {
+		if (
+			scenario.timestampSeconds < getVodStartSeconds(vod) ||
+			scenario.timestampSeconds > getVodEndSeconds(vod)
+		) {
 			return {
-				error: `Scenario timestamp (${scenario.timestampSeconds}s) exceeds VOD duration (${vod.durationSeconds}s)`,
+				error: getScenarioRangeError(scenario.timestampSeconds, vod),
 				valid: false,
 			};
 		}
 	}
 
 	return { valid: true };
+}
+
+export function validateVodTimeRange(vod: VodTimeRangeInput): string | null {
+	const startSeconds = getVodStartSeconds(vod);
+	if (!Number.isInteger(vod.durationSeconds) || vod.durationSeconds <= 0) {
+		return "VOD duration must be a positive integer";
+	}
+	return (
+		validateVodStartSeconds(startSeconds, vod.durationSeconds) ??
+		validateVodEndSeconds(startSeconds, vod.endSeconds, vod.durationSeconds)
+	);
+}
+
+function validateVodStartSeconds(
+	startSeconds: number,
+	durationSeconds: number,
+): string | null {
+	if (!Number.isInteger(startSeconds) || startSeconds < 0) {
+		return "VOD start offset must be a non-negative integer";
+	}
+	if (startSeconds > durationSeconds) {
+		return `VOD start offset (${startSeconds}s) exceeds VOD duration (${durationSeconds}s)`;
+	}
+	return null;
+}
+
+function validateVodEndSeconds(
+	startSeconds: number,
+	endSeconds: number | null | undefined,
+	durationSeconds: number,
+): string | null {
+	if (endSeconds === null || endSeconds === undefined) return null;
+	if (!Number.isInteger(endSeconds) || endSeconds < 0) {
+		return "VOD end offset must be a non-negative integer";
+	}
+	if (endSeconds <= startSeconds) {
+		return "VOD end offset must be greater than the start offset";
+	}
+	if (endSeconds > durationSeconds) {
+		return `VOD end offset (${endSeconds}s) exceeds VOD duration (${durationSeconds}s)`;
+	}
+	return null;
+}
+
+export function getScenarioRangeError(
+	timestampSeconds: number,
+	vod: VodTimeRangeInput,
+): string {
+	const startSeconds = getVodStartSeconds(vod);
+	const endSeconds = getVodEndSeconds(vod);
+	if (timestampSeconds < startSeconds) {
+		return `Scenario timestamp (${timestampSeconds}s) precedes VOD start (${startSeconds}s)`;
+	}
+	if (vod.endSeconds === null || vod.endSeconds === undefined) {
+		return `Scenario timestamp (${timestampSeconds}s) exceeds VOD duration (${vod.durationSeconds}s)`;
+	}
+	return `Scenario timestamp (${timestampSeconds}s) exceeds playable VOD end (${endSeconds}s)`;
 }
