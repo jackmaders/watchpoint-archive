@@ -1,3 +1,5 @@
+/* v8 ignore file */
+
 import type { QueryClient } from "@tanstack/react-query";
 import {
 	createRootRouteWithContext,

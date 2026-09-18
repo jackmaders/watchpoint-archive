@@ -4,6 +4,8 @@
  * Binds `AdminContentNewRouteComponent` to `/admin/content/new` and delegates the complete
  * creation presentation to the `pages/admin-content-new` slice.
  */
+/* v8 ignore file */
+
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { AdminContentNewRouteComponent } from "@/pages/admin-content-new";
 

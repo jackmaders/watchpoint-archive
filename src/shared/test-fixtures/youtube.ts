@@ -1,3 +1,5 @@
+/* v8 ignore file */
+
 import { vi } from "vitest";
 import type {
 	YouTubeNamespace,
