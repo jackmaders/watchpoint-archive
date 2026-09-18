@@ -2,12 +2,6 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
 	resolve: {
-		alias: {
-			"cloudflare:workers": new URL(
-				"./src/shared/db/__mocks__/cloudflare-workers.ts",
-				import.meta.url,
-			).pathname,
-		},
 		tsconfigPaths: true,
 	},
 	test: {
@@ -29,7 +23,6 @@ export default defineConfig({
 				"src/**/types.ts",
 			],
 			include: ["src/**/*.{ts,tsx}"],
-			reporter: ["text-summary"],
 			thresholds: {
 				branches: 100,
 				functions: 100,
@@ -54,7 +47,6 @@ export default defineConfig({
 		globals: true,
 		include: ["**/*.spec.{ts,tsx}"],
 		maxWorkers: process.env.CI ? 2 : 8,
-		reporters: ["minimal"],
 		setupFiles: ["./vitest.setup.ts"],
 		testTimeout: process.env.CI ? 500 : 1500,
 	},
