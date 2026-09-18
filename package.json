@@ -94,10 +94,7 @@
 		"storybook:check:browser": "playwright test --config=storybook-a11y.config.ts",
 		"storybook:check:completeness": "bun scripts/check-storybook-completeness.ts",
 		"test:coverage": "vitest run --coverage",
-		"test:coverage:merge": "vitest run --merge-reports --coverage",
-		"test:coverage:shard": "vitest run --coverage --reporter=default --reporter=blob --coverage.thresholds.lines=0 --coverage.thresholds.functions=0 --coverage.thresholds.branches=0 --coverage.thresholds.statements=0",
 		"test:e2e": "playwright test",
-		"test:routes": "vitest run src/app/routes",
 		"test:unit": "vitest run",
 		"validate": "export WRANGLER_LOG='none' && bun run check:sync && bun run check:types && bun run check:all && bun run check:architecture && bun run test:coverage && bun run build:quiet && bun run deploy --dry-run",
 		"validate:fast": "bun run check:types && bun run check:all && bun run check:architecture && bun run test:unit"
