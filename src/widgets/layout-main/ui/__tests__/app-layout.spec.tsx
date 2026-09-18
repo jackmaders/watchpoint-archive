@@ -12,6 +12,7 @@ import { AppLayout } from "../app-layout";
 describe("AppLayout", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
+		localStorage.clear();
 	});
 
 	it("renders clean layout without sidebar or mobile toggle for unauthenticated visitors", () => {
@@ -166,6 +167,36 @@ describe("AppLayout", () => {
 		// Assert
 		const expandBtn = screen.getByRole("button", { name: "Expand sidebar" });
 		expect(expandBtn).toBeDefined();
+	});
+
+	it("preserves desktop sidebar collapse preference when the layout remounts", () => {
+		// Arrange
+		vi.mocked(authClient.useSession).mockReturnValue({
+			data: {
+				session: { id: "s1" },
+				user: { id: "u1", name: "Player One" },
+			},
+			isPending: false,
+		} as never);
+		const firstRender = render(
+			<AppLayout>
+				<div>First page</div>
+			</AppLayout>,
+		);
+
+		// Act - Collapse, then simulate a route-driven layout remount
+		fireEvent.click(screen.getByRole("button", { name: "Collapse sidebar" }));
+		firstRender.unmount();
+		render(
+			<AppLayout>
+				<div>Second page</div>
+			</AppLayout>,
+		);
+
+		// Assert
+		expect(
+			screen.getByRole("button", { name: "Expand sidebar" }),
+		).toBeDefined();
 	});
 
 	it("opens and closes mobile drawer when mobile hamburger toggle is clicked for authenticated user", () => {
